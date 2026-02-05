@@ -1,10 +1,17 @@
 {
 	"name": "@9to5/core",
-	"version": "0.0.1",
+	"version": "0.1.0",
 	"type": "module",
+	"license": "MIT",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/Michaelliv/9to5",
+		"directory": "packages/core"
+	},
 	"exports": {
 		".": "./src/index.ts"
 	},
+	"files": ["src"],
 	"dependencies": {
 		"nanoid": "^5.1.6",
 		"rrule": "^2.8.1"

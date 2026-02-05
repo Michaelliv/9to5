@@ -5,9 +5,6 @@ hero:
   name: "9to5"
   text: "Automate Claude Code"
   tagline: Schedule recurring tasks, track runs, and manage results — all from your terminal
-  image:
-    src: /images/tui-automations.png
-    alt: 9to5 TUI Dashboard
   actions:
     - theme: brand
       text: Get Started
