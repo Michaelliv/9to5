@@ -6,7 +6,7 @@ hero:
   text: "Automate Claude Code"
   tagline: Schedule recurring tasks, track runs, and manage results — all from your terminal
   image:
-    src: /9to5/images/tui-automations.png
+    src: /images/tui-automations.png
     alt: 9to5 TUI Dashboard
   actions:
     - theme: brand
@@ -32,6 +32,6 @@ features:
 ---
 
 <div style="display: flex; gap: 16px; justify-content: center; max-width: 900px; margin: 0 auto 48px;">
-  <img src="./public/images/tui-automations.png" style="width: 49%; border-radius: 8px; border: 1px solid #333; box-shadow: 0 4px 24px rgba(0,0,0,0.4);" alt="Automations view" />
-  <img src="./public/images/tui-runs.png" style="width: 49%; border-radius: 8px; border: 1px solid #333; box-shadow: 0 4px 24px rgba(0,0,0,0.4);" alt="Runs view" />
+  <img src="/images/tui-automations.png" style="width: 49%; border-radius: 8px; border: 1px solid #333; box-shadow: 0 4px 24px rgba(0,0,0,0.4);" alt="Automations view" />
+  <img src="/images/tui-runs.png" style="width: 49%; border-radius: 8px; border: 1px solid #333; box-shadow: 0 4px 24px rgba(0,0,0,0.4);" alt="Runs view" />
 </div>
