@@ -1,6 +1,6 @@
 # 9to5
 
-Cron for [Claude Code](https://docs.anthropic.com/en/docs/claude-code). Give it a prompt and a schedule — 9to5 spawns real Claude Code sessions on a timer, with budget controls. Claude Code does the actual work: reading files, running commands, opening PRs, writing code. 9to5 just handles the when, how much, and keeps track of what happened.
+Cron for [Claude Code](https://docs.anthropic.com/en/docs/claude-code). A CLI tool to create and manage scheduled automations that run Claude Code sessions on a timer. Claude Code does the actual work — reading files, running commands, opening PRs, writing code. 9to5 handles the when, how much, and keeps track of what happened.
 
 <p align="center">
   <img src="docs/public/images/tui-automations.png" width="49%" alt="Automations view" />
