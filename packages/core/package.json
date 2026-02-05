@@ -1,0 +1,12 @@
+{
+	"name": "@9to5/core",
+	"version": "0.0.1",
+	"type": "module",
+	"exports": {
+		".": "./src/index.ts"
+	},
+	"dependencies": {
+		"nanoid": "^5.1.6",
+		"rrule": "^2.8.1"
+	}
+}

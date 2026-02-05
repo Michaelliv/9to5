@@ -1,0 +1,12 @@
+{
+	"name": "@9to5/cli",
+	"version": "0.0.1",
+	"type": "module",
+	"bin": {
+		"9to5": "./src/index.ts"
+	},
+	"dependencies": {
+		"@9to5/core": "workspace:*",
+		"commander": "^14.0.3"
+	}
+}

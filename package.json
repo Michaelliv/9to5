@@ -1,0 +1,15 @@
+{
+	"name": "9to5",
+	"private": true,
+	"workspaces": ["packages/*"],
+	"scripts": {
+		"dev": "bun run packages/cli/src/index.ts",
+		"build": "bun build --compile packages/cli/src/index.ts --outfile 9to5",
+		"check": "bunx biome check .",
+		"test": "bun test"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "^1.9.0",
+		"@types/bun": "^1.1.0"
+	}
+}
