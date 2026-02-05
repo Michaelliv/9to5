@@ -1,11 +1,22 @@
 {
 	"name": "9to5",
-	"version": "0.1.1",
-	"private": true,
+	"version": "0.1.2",
+	"description": "Cron for Claude Code — schedule and automate Claude Code tasks",
+	"license": "MIT",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/Michaelliv/9to5"
+	},
+	"homepage": "https://michaelliv.github.io/9to5/",
 	"workspaces": ["packages/*"],
 	"bin": {
 		"9to5": "./packages/cli/src/index.ts"
 	},
+	"files": [
+		"packages/cli/src",
+		"packages/core/src",
+		"packages/tui/src"
+	],
 	"scripts": {
 		"dev": "bun run packages/cli/src/index.ts",
 		"build": "bun build --compile packages/cli/src/index.ts --outfile 9to5",
