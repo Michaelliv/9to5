@@ -1,6 +1,6 @@
 # 9to5
 
-Schedule and automate Claude Code tasks. Define recurring automations with budget controls, custom system prompts, and model selection — then monitor everything from a terminal TUI or CLI.
+Cron for [Claude Code](https://docs.anthropic.com/en/docs/claude-code). Define a prompt and a schedule — 9to5 runs Claude Code on your behalf, on a timer, with budget controls. Each automation spawns a real Claude Code session that can read files, run commands, open PRs, and do anything Claude Code can do. You just define what and when.
 
 <p align="center">
   <img src="docs/public/images/tui-automations.png" width="49%" alt="Automations view" />
