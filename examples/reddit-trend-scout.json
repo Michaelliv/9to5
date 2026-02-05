@@ -1,0 +1,11 @@
+{
+  "name": "Reddit trend scout",
+  "prompt": "Step 1: Fetch trending posts from r/ClaudeAI using curl:\n  curl -s -H \"User-Agent: 9to5-bot/1.0\" \"https://www.reddit.com/r/ClaudeAI/hot.json?limit=25\" | jq \"[.data.children[].data | {id, title, selftext, url, score, num_comments, created_utc}]\"\n\nStep 2: Filter for posts with 20+ score or 15+ comments. Ignore memes, images (i.redd.it), megathreads, and pure industry gossip.\n\nStep 3: Assess which posts overlap with these topics: Claude Code, agent architecture, tool design, infrastructure, context engineering, CLI tooling, semantic layers, software engineering. Pick the single best candidate for a blog post.\n\nStep 4: If you find a strong candidate:\n- Read .claude/skills/writing-guidelines/SKILL.md for style rules\n- Read 2-3 recent posts from src/content/blog/ to match the voice\n- Search existing posts for internal backlink candidates\n- Draft a 300-600 word post in src/content/blog/<slug>.md\n- Create branch post/<slug>, commit, push, open a PR with summary\n\nStep 5: If nothing is worth drafting, report what you found and why you skipped.",
+  "status": "active",
+  "cwd": "/Users/michael/projects/blog",
+  "rrule": "FREQ=HOURLY;INTERVAL=4",
+  "model": "sonnet",
+  "max_budget_usd": 0.5,
+  "allowed_tools": null,
+  "system_prompt": "You are a blog content scout. Be aggressive about drafting - a throwaway PR is cheap, missing a trending topic is expensive. No fluff, no filler, no emojis. First person, direct voice."
+}

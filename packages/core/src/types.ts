@@ -25,6 +25,10 @@ export interface Run {
 	session_id: string | null;
 	output: string | null;
 	error: string | null;
+	result: string | null;
+	cost_usd: number | null;
+	duration_ms: number | null;
+	num_turns: number | null;
 	started_at: number | null;
 	completed_at: number | null;
 	created_at: number;

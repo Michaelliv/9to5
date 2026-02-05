@@ -37,20 +37,31 @@ export async function executeRun(
 		const exitCode = await proc.exited;
 
 		if (exitCode === 0) {
-			db.run(
-				"UPDATE runs SET status = 'completed', output = ?, completed_at = ? WHERE id = ?",
-				[output, Date.now(), runId],
-			);
-
 			let summary = output.slice(0, 500);
+			let result: string | null = null;
+			let costUsd: number | null = null;
+			let durationMs: number | null = null;
+			let numTurns: number | null = null;
+
 			try {
 				const parsed = JSON.parse(output);
 				if (parsed.result) {
-					summary = String(parsed.result).slice(0, 500);
+					result = String(parsed.result);
+					summary = result.slice(0, 500);
 				}
+				if (typeof parsed.total_cost_usd === "number")
+					costUsd = parsed.total_cost_usd;
+				if (typeof parsed.duration_ms === "number")
+					durationMs = parsed.duration_ms;
+				if (typeof parsed.num_turns === "number") numTurns = parsed.num_turns;
 			} catch {
 				// not JSON, use raw
 			}
+
+			db.run(
+				"UPDATE runs SET status = 'completed', output = ?, result = ?, cost_usd = ?, duration_ms = ?, num_turns = ?, completed_at = ? WHERE id = ?",
+				[output, result, costUsd, durationMs, numTurns, Date.now(), runId],
+			);
 
 			db.run(
 				"INSERT INTO inbox (id, title, summary, run_id, created_at) VALUES (?, ?, ?, ?, ?)",

@@ -38,11 +38,18 @@ export function initSchema(db: Database): void {
   `);
 
 	// Migrations for existing databases
-	try {
-		db.run("ALTER TABLE automations ADD COLUMN system_prompt TEXT");
-	} catch {
-		// column already exists
-	}
+	const migrate = (sql: string) => {
+		try {
+			db.run(sql);
+		} catch {
+			// column already exists
+		}
+	};
+	migrate("ALTER TABLE automations ADD COLUMN system_prompt TEXT");
+	migrate("ALTER TABLE runs ADD COLUMN cost_usd REAL");
+	migrate("ALTER TABLE runs ADD COLUMN duration_ms INTEGER");
+	migrate("ALTER TABLE runs ADD COLUMN num_turns INTEGER");
+	migrate("ALTER TABLE runs ADD COLUMN result TEXT");
 
 	db.run(`
     CREATE TABLE IF NOT EXISTS inbox (
