@@ -4,6 +4,7 @@ import { registerAdd } from "./commands/add.ts";
 import { registerInbox } from "./commands/inbox.ts";
 import { registerList } from "./commands/list.ts";
 import { registerRemove } from "./commands/remove.ts";
+import { registerRun } from "./commands/run.ts";
 import { registerRuns } from "./commands/runs.ts";
 import { registerStart } from "./commands/start.ts";
 import { registerStop } from "./commands/stop.ts";
@@ -16,6 +17,7 @@ const program = new Command()
 registerAdd(program);
 registerList(program);
 registerRemove(program);
+registerRun(program);
 registerRuns(program);
 registerInbox(program);
 registerStart(program);

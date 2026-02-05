@@ -1,5 +1,4 @@
-import { existsSync, unlinkSync } from "node:fs";
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync, unlinkSync } from "node:fs";
 import { PID_FILE } from "@9to5/core";
 import type { Command } from "commander";
 

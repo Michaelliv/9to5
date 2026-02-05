@@ -1,4 +1,4 @@
-import { existsSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { PID_FILE, ensureDataDir } from "@9to5/core";
 import type { Command } from "commander";
 
@@ -9,7 +9,7 @@ export function registerStart(program: Command): void {
 		.action(() => {
 			if (existsSync(PID_FILE)) {
 				const existingPid = Number.parseInt(
-					Bun.file(PID_FILE).text() as unknown as string,
+					readFileSync(PID_FILE, "utf-8").trim(),
 					10,
 				);
 				try {

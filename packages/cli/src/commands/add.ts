@@ -11,6 +11,10 @@ export function registerAdd(program: Command): void {
 		.option("--model <model>", "Claude model to use", "sonnet")
 		.option("--max-budget-usd <amount>", "Max budget in USD", Number.parseFloat)
 		.option("--allowed-tools <tools>", "Comma-separated list of allowed tools")
+		.option(
+			"--system-prompt <prompt>",
+			"System prompt to append to Claude's default",
+		)
 		.action((name: string, opts) => {
 			const db = getDb();
 			const now = Date.now();
@@ -30,8 +34,8 @@ export function registerAdd(program: Command): void {
 				: null;
 
 			db.run(
-				`INSERT INTO automations (id, name, prompt, status, next_run_at, cwd, rrule, model, max_budget_usd, allowed_tools, created_at, updated_at)
-				 VALUES (?, ?, ?, 'active', ?, ?, ?, ?, ?, ?, ?, ?)`,
+				`INSERT INTO automations (id, name, prompt, status, next_run_at, cwd, rrule, model, max_budget_usd, allowed_tools, system_prompt, created_at, updated_at)
+				 VALUES (?, ?, ?, 'active', ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
 				[
 					id,
 					name,
@@ -42,6 +46,7 @@ export function registerAdd(program: Command): void {
 					opts.model,
 					opts.maxBudgetUsd ?? null,
 					allowedTools,
+					opts.systemPrompt ?? null,
 					now,
 					now,
 				],

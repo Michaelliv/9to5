@@ -16,3 +16,5 @@ export { getDb } from "./db/index.ts";
 export { initSchema } from "./db/schema.ts";
 export { nanoid as generateId } from "nanoid";
 export { RRule } from "rrule";
+export { buildClaudeArgs } from "./claude.ts";
+export { executeRun, type RunResult } from "./runner.ts";

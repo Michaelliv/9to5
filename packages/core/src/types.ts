@@ -13,6 +13,7 @@ export interface Automation {
 	model: string;
 	max_budget_usd: number | null;
 	allowed_tools: string | null;
+	system_prompt: string | null;
 	created_at: number;
 	updated_at: number;
 }

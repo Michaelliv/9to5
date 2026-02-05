@@ -17,6 +17,7 @@ export function initSchema(db: Database): void {
       model TEXT DEFAULT 'sonnet',
       max_budget_usd REAL,
       allowed_tools TEXT,
+      system_prompt TEXT,
       created_at INTEGER NOT NULL,
       updated_at INTEGER NOT NULL
     )
@@ -35,6 +36,13 @@ export function initSchema(db: Database): void {
       created_at INTEGER NOT NULL
     )
   `);
+
+	// Migrations for existing databases
+	try {
+		db.run("ALTER TABLE automations ADD COLUMN system_prompt TEXT");
+	} catch {
+		// column already exists
+	}
 
 	db.run(`
     CREATE TABLE IF NOT EXISTS inbox (
