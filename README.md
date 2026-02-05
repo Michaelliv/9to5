@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="docs/public/images/logo.svg" width="400" alt="9to5 — Cron for Claude Code" />
+  <img src="docs/public/images/logo-v2.svg" width="400" alt="9to5 — Cron for Claude Code" />
 </p>
 
 <p align="center">
