@@ -17,8 +17,9 @@ jobs:
             target: linux-x64
           - os: macos-latest
             target: darwin-arm64
-          - os: macos-13
+          - os: macos-latest
             target: darwin-x64
+            cross: --target=bun-darwin-x64
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
@@ -28,7 +29,7 @@ jobs:
       - run: bun install
 
       - name: Build binary
-        run: bun build --compile packages/cli/src/index.ts --outfile 9to5-${{ matrix.target }}
+        run: bun build --compile ${{ matrix.cross }} packages/cli/src/index.ts --outfile 9to5-${{ matrix.target }}
 
       - uses: actions/upload-artifact@v4
         with:
