@@ -14,7 +14,7 @@ title: Competitor Comparisons
 
 - **[9to5 vs MCP Cron](./9to5-vs-mcp-cron.md)** — MCP server for Claude Desktop/Cursor with seconds-precision scheduling. Choose 9to5 if you need a standalone daemon and cost control.
 
-- **[9to5 vs Claude Cron](./9to5-vs-claude-cron.md)** — Event-driven automation (hooks, file watching, task dependencies) within Claude Code. Choose 9to5 if you want time-based scheduling with cost caps.
+- **[9to5 vs Claude Cron](./9to5-vs-claudecron.md)** — Event-driven automation (hooks, file watching, task dependencies) within Claude Code. Choose 9to5 if you want time-based scheduling with cost caps.
 
 - **[9to5 vs Cron + MCP Scheduler](./9to5-vs-cron-mcp-scheduler.md)** — Python-based scheduler for servers, with MCP bridging to external systems. Choose 9to5 if you're automating Claude Code tasks on your local machine.
 
