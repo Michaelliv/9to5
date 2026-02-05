@@ -29,8 +29,8 @@ features:
 ---
 
 <div style="display: flex; gap: 12px; justify-content: center; margin: 24px 0;">
-  <img src="/9to5/images/tui-automations.png" style="width: 49%; border-radius: 8px; border: 1px solid #333;" alt="Automations view" />
-  <img src="/9to5/images/tui-runs.png" style="width: 49%; border-radius: 8px; border: 1px solid #333;" alt="Runs view" />
+  <img src="./public/images/tui-automations.png" style="width: 49%; border-radius: 8px; border: 1px solid #333;" alt="Automations view" />
+  <img src="./public/images/tui-runs.png" style="width: 49%; border-radius: 8px; border: 1px solid #333;" alt="Runs view" />
 </div>
 
 <div class="terminal-preview">
