@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 120">
+  <defs>
+    <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#c084fc;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#818cf8;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="clock-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#c084fc;stop-opacity:0.3" />
+      <stop offset="100%" style="stop-color:#818cf8;stop-opacity:0.15" />
+    </linearGradient>
+  </defs>
+
+  <!-- Clock icon -->
+  <circle cx="52" cy="60" r="32" fill="none" stroke="url(#grad)" stroke-width="3"/>
+  <circle cx="52" cy="60" r="26" fill="url(#clock-grad)"/>
+  <!-- Hour hand -->
+  <line x1="52" y1="60" x2="52" y2="42" stroke="url(#grad)" stroke-width="3" stroke-linecap="round"/>
+  <!-- Minute hand -->
+  <line x1="52" y1="60" x2="64" y2="52" stroke="url(#grad)" stroke-width="2.5" stroke-linecap="round"/>
+  <!-- Center dot -->
+  <circle cx="52" cy="60" r="2.5" fill="#c084fc"/>
+  <!-- Clock ticks -->
+  <line x1="52" y1="31" x2="52" y2="34" stroke="#c084fc" stroke-width="1.5" stroke-linecap="round"/>
+  <line x1="52" y1="86" x2="52" y2="89" stroke="#c084fc" stroke-width="1.5" stroke-linecap="round"/>
+  <line x1="25" y1="60" x2="28" y2="60" stroke="#c084fc" stroke-width="1.5" stroke-linecap="round"/>
+  <line x1="76" y1="60" x2="79" y2="60" stroke="#c084fc" stroke-width="1.5" stroke-linecap="round"/>
+
+  <!-- "9to5" text -->
+  <text x="104" y="76" font-family="'JetBrains Mono', 'SF Mono', 'Fira Code', monospace" font-size="56" font-weight="800" fill="url(#grad)" letter-spacing="-2">9to5</text>
+
+  <!-- Subtitle -->
+  <text x="106" y="96" font-family="'Inter', -apple-system, sans-serif" font-size="13" fill="#888" letter-spacing="3">CRON FOR CLAUDE CODE</text>
+</svg>

@@ -1,6 +1,10 @@
-# 9to5
+<p align="center">
+  <img src="docs/public/images/logo.svg" width="400" alt="9to5 — Cron for Claude Code" />
+</p>
 
-Cron for [Claude Code](https://docs.anthropic.com/en/docs/claude-code). A CLI tool to create and manage scheduled automations that run Claude Code sessions on a timer. Claude Code does the actual work — reading files, running commands, opening PRs, writing code. 9to5 handles the when, how much, and keeps track of what happened.
+<p align="center">
+  A CLI tool to create and manage scheduled automations that run <a href="https://docs.anthropic.com/en/docs/claude-code">Claude Code</a> sessions on a timer.
+</p> Claude Code does the actual work — reading files, running commands, opening PRs, writing code. 9to5 handles the when, how much, and keeps track of what happened.
 
 <p align="center">
   <img src="docs/public/images/tui-automations.png" width="49%" alt="Automations view" />
