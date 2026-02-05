@@ -25,6 +25,7 @@ function formatCountdown(ts: number | null): string | null {
 const RUNS_HINTS = [
 	{ k: "←", label: "back" },
 	{ k: "↑↓", label: "navigate" },
+	{ k: "c", label: "copy output" },
 	{ k: "m", label: "toggle read" },
 	{ k: "dd", label: "delete" },
 ];

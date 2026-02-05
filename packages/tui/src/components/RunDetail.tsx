@@ -9,6 +9,15 @@ const STATUS_STYLE: Record<string, { symbol: string; color: string }> = {
 	failed: { symbol: "✗", color: "red" },
 };
 
+function prettyText(raw: string): string {
+	try {
+		const parsed = JSON.parse(raw);
+		return JSON.stringify(parsed, null, 2);
+	} catch {
+		return raw;
+	}
+}
+
 function formatDuration(ms: number | null): string {
 	if (ms == null) return "—";
 	if (ms < 1000) return `${ms}ms`;
@@ -76,11 +85,11 @@ export function RunDetail({
 				{/* Result or Output */}
 				{run.result ? (
 					<Section title="Result">
-						<text>{run.result}</text>
+						<text>{prettyText(run.result)}</text>
 					</Section>
 				) : run.output ? (
 					<Section title="Output">
-						<text>{run.output}</text>
+						<text>{prettyText(run.output)}</text>
 					</Section>
 				) : null}
 

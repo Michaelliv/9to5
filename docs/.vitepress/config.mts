@@ -28,6 +28,7 @@ export default defineConfig({
       { text: 'TUI', link: '/tui/' },
       { text: 'Guides', link: '/guides/scheduling' },
       { text: 'Examples', link: '/examples/' },
+      { text: 'Comparisons', link: '/comparisons/' },
     ],
 
     sidebar: {
@@ -46,6 +47,7 @@ export default defineConfig({
           items: [
             { text: 'Overview', link: '/cli/' },
             { text: '9to5 add', link: '/cli/add' },
+            { text: '9to5 edit', link: '/cli/edit' },
             { text: '9to5 list', link: '/cli/list' },
             { text: '9to5 remove', link: '/cli/remove' },
             { text: '9to5 run', link: '/cli/run' },
@@ -90,6 +92,20 @@ export default defineConfig({
             { text: 'Daily Test Runner', link: '/examples/daily-tests' },
             { text: 'Automated Code Review', link: '/examples/code-review' },
             { text: 'Report Generation', link: '/examples/report-gen' },
+          ],
+        },
+      ],
+      '/comparisons/': [
+        {
+          text: 'Comparisons',
+          items: [
+            { text: 'Overview', link: '/comparisons/' },
+            { text: 'vs Claude Code Scheduler', link: '/comparisons/9to5-vs-claude-code-scheduler' },
+            { text: 'vs Claude Tasks', link: '/comparisons/9to5-vs-claude-tasks' },
+            { text: 'vs runCLAUDErun', link: '/comparisons/9to5-vs-runclauderun' },
+            { text: 'vs OpenClaw', link: '/comparisons/9to5-vs-openclaw' },
+            { text: 'vs MCP Cron', link: '/comparisons/9to5-vs-mcp-cron' },
+            { text: 'vs Claude MCP Scheduler', link: '/comparisons/9to5-vs-claude-mcp-scheduler' },
           ],
         },
       ],

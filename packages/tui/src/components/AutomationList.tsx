@@ -130,6 +130,10 @@ export function AutomationList({
 					: (STATUS_ICON[a.status] ?? STATUS_ICON.active);
 				const sel = i === selectedIndex;
 				const nameColor = sel ? "cyan" : isRunning ? "#ccc" : isPaused ? "#777" : "#ddd";
+				const suffixLen =
+					(a.unread_count > 0 ? ` (${a.unread_count})`.length : 0) +
+					(isRunning ? " running…".length : 0);
+				const nameMax = MAX_NAME_LEN - suffixLen;
 
 				return (
 					<ListItem key={a.id} selected={sel} onClick={() => setSelectedIndex(i)}>
@@ -137,7 +141,7 @@ export function AutomationList({
 							<span fg={sel ? "cyan" : "#333"}>{sel ? "▸ " : "  "}</span>
 							<span fg={s.color}>{s.symbol} </span>
 							<span fg={nameColor}>
-								<strong>{truncate(a.name, MAX_NAME_LEN)}</strong>
+								<strong>{truncate(a.name, nameMax)}</strong>
 							</span>
 							{a.unread_count > 0 ? (
 								<span fg="cyan">{` (${a.unread_count})`}</span>

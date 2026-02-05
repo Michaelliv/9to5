@@ -1,6 +1,7 @@
 #!/usr/bin/env bun
 import { Command } from "commander";
 import { registerAdd } from "./commands/add.ts";
+import { registerEdit } from "./commands/edit.ts";
 import { registerExport } from "./commands/export.ts";
 import { registerImport } from "./commands/import.ts";
 import { registerInbox } from "./commands/inbox.ts";
@@ -17,6 +18,7 @@ const program = new Command()
 	.version("0.0.1");
 
 registerAdd(program);
+registerEdit(program);
 registerExport(program);
 registerImport(program);
 registerList(program);

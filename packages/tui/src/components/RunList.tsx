@@ -89,6 +89,25 @@ export function RunList({
 
 		if (!selected) return;
 
+		if (key.name === "c") {
+			const lines: string[] = [];
+			lines.push(`Run: ${selected.id}`);
+			lines.push(`Status: ${selected.status}`);
+			if (selected.session_id) lines.push(`Session: ${selected.session_id}`);
+			if (selected.started_at) lines.push(`Started: ${new Date(selected.started_at).toLocaleString()}`);
+			if (selected.completed_at) lines.push(`Completed: ${new Date(selected.completed_at).toLocaleString()}`);
+			if (selected.cost_usd != null) lines.push(`Cost: $${selected.cost_usd.toFixed(4)}`);
+			if (selected.duration_ms != null) lines.push(`Duration: ${selected.duration_ms}ms`);
+			if (selected.num_turns != null) lines.push(`Turns: ${selected.num_turns}`);
+			if (selected.result) { lines.push(""); lines.push("--- Result ---"); lines.push(selected.result); }
+			if (selected.output) { lines.push(""); lines.push("--- Output ---"); lines.push(selected.output); }
+			if (selected.error) { lines.push(""); lines.push("--- Error ---"); lines.push(selected.error); }
+			const content = lines.join("\n");
+			Bun.spawn(["pbcopy"], { stdin: new Blob([content]) });
+			onNotify("Copied run details to clipboard");
+			return;
+		}
+
 		if (key.name === "m" && selected.inbox_id) {
 			const newReadAt = selected.inbox_read_at ? null : Date.now();
 			db.run("UPDATE inbox SET read_at = ? WHERE id = ?", [
