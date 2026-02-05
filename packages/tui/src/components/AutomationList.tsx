@@ -1,142 +1,154 @@
 import { type Automation, executeRun, generateId, getDb } from "@9to5/core";
-import { Box, Text, useInput } from "ink";
-import { useConfirm } from "../hooks/useConfirm.ts";
+import { useKeyboard } from "@opentui/react";
+import { useCallback, useEffect } from "react";
+import { useDoubleTap } from "../hooks/useConfirm.ts";
 import { useDbQuery } from "../hooks/useDbQuery.ts";
 import { useListNav } from "../hooks/useListNav.ts";
 import { ListItem } from "./ListItem.tsx";
-import { StatusBar } from "./StatusBar.tsx";
 
 const STATUS_ICON: Record<string, { symbol: string; color: string }> = {
 	active: { symbol: "●", color: "green" },
-	paused: { symbol: "○", color: "yellow" },
+	paused: { symbol: "◦", color: "#666" },
 };
 
-function formatNext(ts: number | null): string {
-	if (!ts) return "not scheduled";
-	const d = new Date(ts);
-	const now = new Date();
-	const diff = ts - now.getTime();
-	if (diff < 0) return "overdue";
-	if (diff < 3600000) return `in ${Math.ceil(diff / 60000)}m`;
-	if (diff < 86400000) return `in ${Math.ceil(diff / 3600000)}h`;
-	return d.toLocaleDateString();
+const MAX_NAME_LEN = 20;
+
+function truncate(str: string, max: number): string {
+	return str.length > max ? `${str.slice(0, max - 1)}…` : str;
 }
 
+type AutomationRow = Automation & {
+	running_count: number;
+	unread_count: number;
+};
+
 export function AutomationList({
-	isActive,
-	onOpenDetail,
+	focused,
+	onSelect,
+	onNotify,
+	onDrillDown,
 }: {
-	isActive: boolean;
-	onOpenDetail: (detail: {
-		type: "automation";
-		automation: Automation;
-	}) => void;
+	focused: boolean;
+	onSelect: (automation: Automation) => void;
+	onNotify: (message: string) => void;
+	onDrillDown: () => void;
 }) {
 	const db = getDb();
 
-	const { data: automations, refresh } = useDbQuery<Automation[]>(
+	const { data: automations, refresh } = useDbQuery<AutomationRow[]>(
 		() =>
 			db
-				.query("SELECT * FROM automations ORDER BY created_at DESC")
-				.all() as Automation[],
+				.query(
+					`SELECT a.*,
+						(SELECT COUNT(*) FROM runs r WHERE r.automation_id = a.id
+						 AND r.status IN ('running','pending')) as running_count,
+						(SELECT COUNT(*) FROM inbox i JOIN runs r ON i.run_id = r.id
+						 WHERE r.automation_id = a.id AND i.read_at IS NULL) as unread_count
+					 FROM automations a ORDER BY created_at DESC`,
+				)
+				.all() as AutomationRow[],
 	);
 
-	const { pending, message, confirm } = useConfirm(isActive);
-	const { selectedIndex } = useListNav(
-		automations.length,
-		isActive && !pending,
-	);
+	const { selectedIndex, setSelectedIndex } = useListNav(automations.length, focused);
 
-	const selected = automations[selectedIndex] as Automation | undefined;
+	const selected = automations[selectedIndex] as AutomationRow | undefined;
 
-	useInput(
-		(input, key) => {
-			if (!selected || pending) return;
+	// Notify parent about selected item for detail panel
+	useEffect(() => {
+		if (selected) {
+			onSelect(selected);
+		}
+	}, [selected, onSelect]);
 
-			if (key.return) {
-				onOpenDetail({ type: "automation", automation: selected });
-			}
+	useKeyboard((key) => {
+		if (!focused || !selected) return;
 
-			if (input === "r") {
-				const runId = generateId();
-				const sessionId = generateId();
-				executeRun(selected, runId, sessionId, db, generateId);
-				refresh();
-			}
+		if (key.name === "return" || key.name === "right") {
+			onDrillDown();
+			return;
+		}
 
-			if (input === "p") {
-				const newStatus = selected.status === "active" ? "paused" : "active";
-				db.run(
-					"UPDATE automations SET status = ?, updated_at = ? WHERE id = ?",
-					[newStatus, Date.now(), selected.id],
-				);
-				refresh();
-			}
+		if (key.name === "r") {
+			const runId = generateId();
+			const sessionId = crypto.randomUUID();
+			executeRun(selected, runId, sessionId, db, generateId);
+			refresh();
+			onNotify(`Started run for "${selected.name}"`);
+		}
 
-			if (input === "d") {
-				confirm(`Delete "${selected.name}"?`).then((yes) => {
-					if (yes) {
-						db.run(
-							"DELETE FROM inbox WHERE run_id IN (SELECT id FROM runs WHERE automation_id = ?)",
-							[selected.id],
-						);
-						db.run("DELETE FROM runs WHERE automation_id = ?", [selected.id]);
-						db.run("DELETE FROM automations WHERE id = ?", [selected.id]);
-						refresh();
-					}
-				});
-			}
-		},
-		{ isActive },
+		if (key.name === "p") {
+			const newStatus = selected.status === "active" ? "paused" : "active";
+			db.run(
+				"UPDATE automations SET status = ?, updated_at = ? WHERE id = ?",
+				[newStatus, Date.now(), selected.id],
+			);
+			refresh();
+			onNotify(newStatus === "paused" ? `Paused "${selected.name}"` : `Resumed "${selected.name}"`);
+		}
+	});
+
+	useDoubleTap(
+		"d",
+		useCallback(() => {
+			if (!focused || !selected) return;
+			const name = selected.name;
+			db.run(
+				"DELETE FROM inbox WHERE run_id IN (SELECT id FROM runs WHERE automation_id = ?)",
+				[selected.id],
+			);
+			db.run("DELETE FROM runs WHERE automation_id = ?", [selected.id]);
+			db.run("DELETE FROM automations WHERE id = ?", [selected.id]);
+			refresh();
+			onNotify(`Deleted "${name}"`);
+		}, [focused, selected, db, refresh, onNotify]),
 	);
 
 	if (automations.length === 0) {
 		return (
-			<Box flexDirection="column" paddingY={1}>
-				<Text dimColor>{"  No automations yet."}</Text>
-				<Text dimColor>
-					{"  Run "}
-					<Text color="cyan">9to5 add</Text>
-					{" to create one."}
-				</Text>
-			</Box>
+			<box flexDirection="column" padding={1} gap={1}>
+				<text>
+					<span fg="#555">No automations yet.</span>
+				</text>
+				<text>
+					<span fg="#555">{"Run "}</span>
+					<span fg="cyan">
+						<strong>9to5 add</strong>
+					</span>
+					<span fg="#555">{" to create one."}</span>
+				</text>
+			</box>
 		);
 	}
 
 	return (
-		<Box flexDirection="column">
+		<box flexDirection="column">
 			{automations.map((a, i) => {
-				const s = STATUS_ICON[a.status] ?? STATUS_ICON.active;
+				const isRunning = a.running_count > 0;
+				const isPaused = a.status === "paused";
+				const s = isRunning
+					? { symbol: "⟳", color: "#5599ff" }
+					: (STATUS_ICON[a.status] ?? STATUS_ICON.active);
 				const sel = i === selectedIndex;
+				const nameColor = sel ? "cyan" : isRunning ? "#ccc" : isPaused ? "#777" : "#ddd";
+
 				return (
-					<ListItem key={a.id} selected={sel}>
-						<Box flexDirection="column">
-							<Box gap={1}>
-								<Text color={s.color}>{s.symbol}</Text>
-								<Text bold color={sel ? "cyan" : undefined}>
-									{a.name}
-								</Text>
-								<Text dimColor>({a.model})</Text>
-							</Box>
-							<Box gap={1} paddingLeft={2}>
-								<Text dimColor>
-									{a.rrule ?? "manual"} · next: {formatNext(a.next_run_at)}
-								</Text>
-							</Box>
-						</Box>
+					<ListItem key={a.id} selected={sel} onClick={() => setSelectedIndex(i)}>
+						<text>
+							<span fg={sel ? "cyan" : "#333"}>{sel ? "▸ " : "  "}</span>
+							<span fg={s.color}>{s.symbol} </span>
+							<span fg={nameColor}>
+								<strong>{truncate(a.name, MAX_NAME_LEN)}</strong>
+							</span>
+							{a.unread_count > 0 ? (
+								<span fg="cyan">{` (${a.unread_count})`}</span>
+							) : null}
+							{isRunning ? (
+								<span fg="#5599ff">{" "}running…</span>
+							) : null}
+						</text>
 					</ListItem>
 				);
 			})}
-			<StatusBar
-				hints={[
-					{ k: "↑↓", label: "navigate" },
-					{ k: "↵", label: "detail" },
-					{ k: "r", label: "run" },
-					{ k: "p", label: "pause" },
-					{ k: "d", label: "delete" },
-				]}
-				confirmMessage={pending ? message : undefined}
-			/>
-		</Box>
+		</box>
 	);
 }

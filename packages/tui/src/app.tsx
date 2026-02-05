@@ -1,109 +1,188 @@
 import type { Automation, Run } from "@9to5/core";
-import { Box, Text, useApp, useInput } from "ink";
+import { getDb } from "@9to5/core";
+import { useKeyboard, useRenderer } from "@opentui/react";
 import { useState } from "react";
 import { AutomationDetail } from "./components/AutomationDetail.tsx";
 import { AutomationList } from "./components/AutomationList.tsx";
-import { Inbox } from "./components/Inbox.tsx";
 import { RunDetail } from "./components/RunDetail.tsx";
-import { RunHistory } from "./components/RunHistory.tsx";
+import { RunList } from "./components/RunList.tsx";
+import { StatusBar } from "./components/StatusBar.tsx";
+import { useDbQuery } from "./hooks/useDbQuery.ts";
+import { useNotification } from "./hooks/useNotification.ts";
 
-type Tab = "automations" | "runs" | "inbox";
+type View = "automations" | "runs";
 
-type DetailView =
-	| { type: "automation"; automation: Automation }
-	| { type: "run"; run: Run; automationName?: string };
+function formatCountdown(ts: number | null): string | null {
+	if (ts == null) return null;
+	const diff = ts - Date.now();
+	if (diff <= 0) return "now";
+	if (diff < 60000) return `${Math.ceil(diff / 1000)}s`;
+	if (diff < 3600000) return `${Math.floor(diff / 60000)}m`;
+	if (diff < 86400000) return `${Math.floor(diff / 3600000)}h`;
+	return `${Math.floor(diff / 86400000)}d`;
+}
 
-const TABS: { key: Tab; label: string; num: string }[] = [
-	{ key: "automations", label: "Automations", num: "1" },
-	{ key: "runs", label: "Runs", num: "2" },
-	{ key: "inbox", label: "Inbox", num: "3" },
+const RUNS_HINTS = [
+	{ k: "←", label: "back" },
+	{ k: "↑↓", label: "navigate" },
+	{ k: "m", label: "toggle read" },
+	{ k: "dd", label: "delete" },
 ];
 
 export function App() {
-	const { exit } = useApp();
-	const [activeTab, setActiveTab] = useState<Tab>("automations");
-	const [detail, setDetail] = useState<DetailView | null>(null);
+	const renderer = useRenderer();
+	const db = getDb();
+	const [view, setView] = useState<View>("automations");
+	const [selectedAutomation, setSelectedAutomation] = useState<Automation | null>(null);
+	const [selectedRun, setSelectedRun] = useState<Run | null>(null);
+	const { message: notification, notify } = useNotification();
 
-	const inList = detail === null;
-
-	useInput((input, key) => {
-		if (key.escape && detail) {
-			setDetail(null);
-			return;
-		}
-
-		if (inList) {
-			if (input === "1") setActiveTab("automations");
-			if (input === "2") setActiveTab("runs");
-			if (input === "3") setActiveTab("inbox");
-			if (input === "q") exit();
-		}
+	const { data: stats } = useDbQuery(() => {
+		const { count: running } = db
+			.query("SELECT COUNT(*) as count FROM runs WHERE status IN ('running','pending')")
+			.get() as { count: number };
+		const { count: failed } = db
+			.query(
+				`SELECT COUNT(*) as count FROM runs r
+				 JOIN inbox i ON i.run_id = r.id
+				 WHERE r.status = 'failed' AND i.read_at IS NULL`,
+			)
+			.get() as { count: number };
+		const { next: nextRunAt } = db
+			.query(
+				"SELECT MIN(next_run_at) as next FROM automations WHERE status = 'active' AND next_run_at IS NOT NULL",
+			)
+			.get() as { next: number | null };
+		return { running, failed, nextRunAt };
 	});
 
-	return (
-		<Box flexDirection="column">
-			{/* Header */}
-			<Box flexDirection="column">
-				<Box paddingX={1} gap={1}>
-					<Text color="magenta" bold>
-						{"◆ 9to5"}
-					</Text>
-					<Text dimColor>│</Text>
-					{TABS.map((tab) => {
-						const active = activeTab === tab.key;
-						return (
-							<Box key={tab.key} marginRight={1}>
-								<Text dimColor={!active} color={active ? "cyan" : undefined}>
-									{active ? "▸ " : "  "}
-								</Text>
-								<Text
-									bold={active}
-									color={active ? "cyan" : undefined}
-									dimColor={!active}
-								>
-									{tab.num} {tab.label}
-								</Text>
-							</Box>
-						);
-					})}
-				</Box>
-				<Text dimColor>{"─".repeat(60)}</Text>
-			</Box>
+	const statParts: string[] = [];
+	if (stats.running > 0) statParts.push(`${stats.running} running`);
+	if (stats.failed > 0) statParts.push(`${stats.failed} failed`);
+	const nextIn = formatCountdown(stats.nextRunAt);
+	if (nextIn) statParts.push(`next in ${nextIn}`);
 
-			{/* Content */}
-			<Box flexDirection="column" paddingX={1} paddingTop={1}>
-				{detail ? (
-					detail.type === "automation" ? (
-						<AutomationDetail automation={detail.automation} />
-					) : (
-						<RunDetail
-							run={detail.run}
-							automationName={detail.automationName}
+	useKeyboard((key) => {
+		if (key.name === "q") renderer.destroy();
+	});
+
+	const handleDrillDown = () => {
+		if (selectedAutomation) {
+			setSelectedRun(null);
+			setView("runs");
+		}
+	};
+
+	const handleBack = () => {
+		setView("automations");
+		setSelectedRun(null);
+	};
+
+	const leftTitle =
+		view === "automations" ? (
+			<span fg="cyan"><strong>Automations</strong></span>
+		) : (
+			<>
+				<span fg="cyan">{"← "}</span>
+				<span fg="cyan"><strong>{selectedAutomation?.name ?? ""}</strong></span>
+			</>
+		);
+
+	return (
+		<box
+			flexDirection="column"
+			width="100%"
+			height="100%"
+			position="relative"
+		>
+		<box
+			flexDirection="column"
+			flexGrow={1}
+			border
+			borderStyle="rounded"
+			borderColor="#444"
+		>
+			{/* Header */}
+			<box height={1} flexDirection="row" paddingLeft={1} paddingRight={1}>
+				<text>
+					<span fg="#c084fc">
+						<strong>{"◆ 9to5"}</strong>
+					</span>
+				</text>
+				<box flexGrow={1} />
+				{statParts.length > 0 ? (
+					<text>
+						<span fg="#666">{statParts.join(" · ")}</span>
+					</text>
+				) : null}
+			</box>
+
+			{/* 2-Column Content */}
+			<box flexDirection="row" flexGrow={1}>
+				{/* Left Panel */}
+				<box
+					flexDirection="column"
+					width={28}
+					overflow="hidden"
+				>
+					<box height={1} paddingLeft={1}>
+						<text>{leftTitle}</text>
+					</box>
+					{view === "automations" ? (
+						<AutomationList
+							focused={true}
+							onSelect={setSelectedAutomation}
+							onNotify={notify}
+							onDrillDown={handleDrillDown}
 						/>
-					)
-				) : (
-					<>
-						{activeTab === "automations" && (
-							<AutomationList
-								isActive={inList && activeTab === "automations"}
-								onOpenDetail={setDetail}
-							/>
-						)}
-						{activeTab === "runs" && (
-							<RunHistory
-								isActive={inList && activeTab === "runs"}
-								onOpenDetail={setDetail}
-							/>
-						)}
-						{activeTab === "inbox" && (
-							<Inbox
-								isActive={inList && activeTab === "inbox"}
-								onOpenDetail={setDetail}
-							/>
-						)}
-					</>
-				)}
-			</Box>
-		</Box>
+					) : selectedAutomation ? (
+						<RunList
+							key={selectedAutomation.id}
+							automationId={selectedAutomation.id}
+							focused={true}
+							onSelect={setSelectedRun}
+							onNotify={notify}
+							onBack={handleBack}
+						/>
+					) : null}
+				</box>
+
+				{/* Separator */}
+				<box width={1} backgroundColor="#444" />
+
+				{/* Right Panel - Detail */}
+				<box flexDirection="column" flexGrow={1} paddingLeft={1}>
+					{view === "automations" && selectedAutomation ? (
+						<AutomationDetail automation={selectedAutomation} />
+					) : view === "runs" && selectedRun ? (
+						<RunDetail
+							run={selectedRun}
+							automationName={selectedAutomation?.name}
+						/>
+					) : (
+						<box
+							flexGrow={1}
+							justifyContent="center"
+							alignItems="center"
+						>
+							<text>
+								<span fg="#666">Select an item to view details</span>
+							</text>
+						</box>
+					)}
+				</box>
+			</box>
+
+			{/* Status Bar */}
+			<StatusBar hints={view === "runs" ? RUNS_HINTS : [
+				{ k: "↑↓", label: "navigate" },
+				{ k: "→/⏎", label: "runs" },
+				{ k: "r", label: "run" },
+				{ k: "p", label: selectedAutomation?.status === "active" ? "pause" : "resume" },
+				{ k: "dd", label: "delete" },
+			]} notification={notification} />
+		</box>
+
+		</box>
 	);
 }

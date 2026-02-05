@@ -1,0 +1,786 @@
+/* ═══════════════════════════════════════════════════
+   9to5 — Monochrome, million-dollar polish v4
+   ═══════════════════════════════════════════════════ */
+
+/* ─── Tokens ─── */
+:root {
+  --ease-out: cubic-bezier(0.25, 0.1, 0.25, 1.0);
+  --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-spring: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  --dur-fast: 200ms;
+  --dur-mid: 350ms;
+  --dur-slow: 500ms;
+
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', 'SF Mono', monospace;
+
+  --vp-font-family-base: var(--font-sans);
+  --vp-font-family-mono: var(--font-mono);
+}
+
+/* ─── Warm monochrome (light) ─── */
+:root {
+  --vp-c-brand-1: #111111;
+  --vp-c-brand-2: #222222;
+  --vp-c-brand-3: #333333;
+  --vp-c-brand-soft: rgba(17, 17, 17, 0.05);
+
+  --vp-c-bg: #fafafa;
+  --vp-c-bg-soft: #f0f0f0;
+  --vp-c-bg-mute: #e6e6e6;
+
+  --vp-c-text-1: #111111;
+  --vp-c-text-2: #555555;
+  --vp-c-text-3: #888888;
+
+  --vp-c-divider: rgba(17, 17, 17, 0.08);
+
+  --vp-c-default-1: #111111;
+  --vp-c-default-2: #222222;
+  --vp-c-default-3: #333333;
+  --vp-c-default-soft: rgba(17, 17, 17, 0.05);
+
+  --vp-button-brand-border: #111111;
+  --vp-button-brand-text: #fafafa;
+  --vp-button-brand-bg: #111111;
+  --vp-button-brand-hover-border: #333333;
+  --vp-button-brand-hover-text: #fafafa;
+  --vp-button-brand-hover-bg: #333333;
+  --vp-button-brand-active-border: #111111;
+  --vp-button-brand-active-text: #fafafa;
+  --vp-button-brand-active-bg: #222222;
+
+  --vp-button-alt-border: #111111;
+  --vp-button-alt-text: #111111;
+  --vp-button-alt-bg: transparent;
+  --vp-button-alt-hover-border: #111111;
+  --vp-button-alt-hover-text: #fafafa;
+  --vp-button-alt-hover-bg: #111111;
+  --vp-button-alt-active-border: #111111;
+  --vp-button-alt-active-text: #fafafa;
+  --vp-button-alt-active-bg: #222222;
+
+  --vp-home-hero-name-color: #111111;
+  --vp-home-hero-name-background: none;
+
+  --vp-custom-block-tip-border: #c0c0c0;
+  --vp-custom-block-tip-text: #111111;
+  --vp-custom-block-tip-bg: rgba(17, 17, 17, 0.02);
+  --vp-custom-block-tip-code-bg: rgba(17, 17, 17, 0.04);
+  --vp-custom-block-warning-border: #c0c0c0;
+  --vp-custom-block-warning-text: #111111;
+  --vp-custom-block-warning-bg: rgba(17, 17, 17, 0.02);
+  --vp-custom-block-warning-code-bg: rgba(17, 17, 17, 0.04);
+  --vp-custom-block-danger-border: #c0c0c0;
+  --vp-custom-block-danger-text: #111111;
+  --vp-custom-block-danger-bg: rgba(17, 17, 17, 0.02);
+  --vp-custom-block-danger-code-bg: rgba(17, 17, 17, 0.04);
+  --vp-custom-block-info-border: #c0c0c0;
+  --vp-custom-block-info-text: #111111;
+  --vp-custom-block-info-bg: rgba(17, 17, 17, 0.02);
+  --vp-custom-block-info-code-bg: rgba(17, 17, 17, 0.04);
+
+  --vp-code-block-bg: #f0f0f0;
+  --vp-code-color: #111111;
+}
+
+/* ─── Warm monochrome (dark) ─── */
+.dark {
+  --vp-c-brand-1: #f0f0f0;
+  --vp-c-brand-2: #d4d4d4;
+  --vp-c-brand-3: #b8b8b8;
+  --vp-c-brand-soft: rgba(240, 240, 240, 0.05);
+
+  --vp-c-bg: #0a0a0a;
+  --vp-c-bg-soft: #131313;
+  --vp-c-bg-mute: #1c1c1c;
+
+  --vp-c-text-1: #f0f0f0;
+  --vp-c-text-2: #a0a0a0;
+  --vp-c-text-3: #606060;
+
+  --vp-c-divider: rgba(240, 240, 240, 0.08);
+
+  --vp-c-default-1: #f0f0f0;
+  --vp-c-default-2: #d4d4d4;
+  --vp-c-default-3: #b8b8b8;
+  --vp-c-default-soft: rgba(240, 240, 240, 0.05);
+
+  --vp-button-brand-border: #f0f0f0;
+  --vp-button-brand-text: #0a0a0a;
+  --vp-button-brand-bg: #f0f0f0;
+  --vp-button-brand-hover-border: #b8b8b8;
+  --vp-button-brand-hover-text: #0a0a0a;
+  --vp-button-brand-hover-bg: #b8b8b8;
+  --vp-button-brand-active-border: #f0f0f0;
+  --vp-button-brand-active-text: #0a0a0a;
+  --vp-button-brand-active-bg: #d4d4d4;
+
+  --vp-button-alt-border: #f0f0f0;
+  --vp-button-alt-text: #f0f0f0;
+  --vp-button-alt-bg: transparent;
+  --vp-button-alt-hover-border: #f0f0f0;
+  --vp-button-alt-hover-text: #0a0a0a;
+  --vp-button-alt-hover-bg: #f0f0f0;
+  --vp-button-alt-active-border: #f0f0f0;
+  --vp-button-alt-active-text: #0a0a0a;
+  --vp-button-alt-active-bg: #d4d4d4;
+
+  --vp-home-hero-name-color: #f0f0f0;
+  --vp-home-hero-name-background: none;
+
+  --vp-custom-block-tip-border: #333333;
+  --vp-custom-block-tip-text: #f0f0f0;
+  --vp-custom-block-tip-bg: rgba(240, 240, 240, 0.02);
+  --vp-custom-block-tip-code-bg: rgba(240, 240, 240, 0.04);
+  --vp-custom-block-warning-border: #333333;
+  --vp-custom-block-warning-text: #f0f0f0;
+  --vp-custom-block-warning-bg: rgba(240, 240, 240, 0.02);
+  --vp-custom-block-warning-code-bg: rgba(240, 240, 240, 0.04);
+  --vp-custom-block-danger-border: #333333;
+  --vp-custom-block-danger-text: #f0f0f0;
+  --vp-custom-block-danger-bg: rgba(240, 240, 240, 0.02);
+  --vp-custom-block-danger-code-bg: rgba(240, 240, 240, 0.04);
+  --vp-custom-block-info-border: #333333;
+  --vp-custom-block-info-text: #f0f0f0;
+  --vp-custom-block-info-bg: rgba(240, 240, 240, 0.02);
+  --vp-custom-block-info-code-bg: rgba(240, 240, 240, 0.04);
+
+  --vp-code-block-bg: #111111;
+  --vp-code-color: #d4d4d4;
+}
+
+/* ═══════════════════════════════════════════════════
+   Dot grid background — subtle depth
+   ═══════════════════════════════════════════════════ */
+
+.VPHome {
+  background-image: radial-gradient(circle, rgba(17,17,17,0.07) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+.dark .VPHome {
+  background-image: radial-gradient(circle, rgba(240,240,240,0.04) 1px, transparent 1px);
+}
+
+/* ═══════════════════════════════════════════════════
+   Frosted glass navbar
+   ═══════════════════════════════════════════════════ */
+
+.VPNav {
+  background: rgba(250, 250, 250, 0.7) !important;
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
+}
+
+.dark .VPNav {
+  background: rgba(10, 10, 10, 0.7) !important;
+}
+
+.VPNavBar {
+  background: transparent !important;
+  border-bottom: 1px solid var(--vp-c-divider) !important;
+}
+
+.VPNavBar .divider {
+  display: none;
+}
+
+/* ═══════════════════════════════════════════════════
+   Text selection
+   ═══════════════════════════════════════════════════ */
+
+::selection {
+  background: var(--vp-c-text-1);
+  color: var(--vp-c-bg);
+}
+
+/* ═══════════════════════════════════════════════════
+   Animations
+   ═══════════════════════════════════════════════════ */
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+.vp-doc {
+  animation: fadeUp var(--dur-mid) var(--ease-out) both;
+}
+
+.VPContent {
+  transition: opacity var(--dur-fast) var(--ease-smooth);
+}
+
+/* ═══════════════════════════════════════════════════
+   Hero — monospace brand, shimmer, cursor blink
+   ═══════════════════════════════════════════════════ */
+
+.VPHero .name,
+.VPHero .text,
+.VPHero .tagline,
+.VPHero .actions {
+  animation: fadeUp var(--dur-slow) var(--ease-out) both;
+}
+
+.VPHero .name {
+  font-family: var(--font-mono) !important;
+  font-size: 4.5rem !important;
+  font-weight: 700 !important;
+  letter-spacing: -0.06em;
+  line-height: 1 !important;
+  animation-delay: 0ms;
+  position: relative;
+}
+
+/* Shimmer sweep on the brand name */
+.VPHero .name .clip {
+  background: linear-gradient(
+    90deg,
+    var(--vp-c-text-1) 0%,
+    var(--vp-c-text-1) 40%,
+    var(--vp-c-text-3) 50%,
+    var(--vp-c-text-1) 60%,
+    var(--vp-c-text-1) 100%
+  );
+  background-size: 200% auto;
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  animation: shimmer 3s var(--ease-smooth) 0.8s 1 both;
+}
+
+.VPHero .text {
+  font-size: 2.5rem !important;
+  font-weight: 700 !important;
+  letter-spacing: -0.03em;
+  color: var(--vp-c-text-1) !important;
+  background: none !important;
+  -webkit-background-clip: unset !important;
+  background-clip: unset !important;
+  -webkit-text-fill-color: unset !important;
+  animation-delay: 80ms;
+}
+
+.VPHero .tagline {
+  font-size: 1.1rem !important;
+  color: var(--vp-c-text-3) !important;
+  font-weight: 400;
+  line-height: 1.65 !important;
+  max-width: 520px;
+  animation-delay: 160ms;
+}
+
+.VPHero .actions {
+  padding-top: 48px !important;
+  animation-delay: 240ms;
+}
+
+@media (min-width: 640px) {
+  .VPHero .name { font-size: 5.5rem !important; }
+  .VPHero .text { font-size: 3rem !important; }
+  .VPHero .tagline { font-size: 1.2rem !important; }
+}
+
+@media (min-width: 960px) {
+  .VPHero .name { font-size: 6.5rem !important; }
+  .VPHero .text { font-size: 3.5rem !important; }
+  .VPHero .actions { padding-top: 56px !important; }
+}
+
+.VPHero .image-bg {
+  display: none !important;
+}
+
+/* More vertical space around the hero */
+.VPHero {
+  padding-top: 80px !important;
+  padding-bottom: 40px !important;
+}
+
+@media (min-width: 960px) {
+  .VPHero {
+    padding-top: 100px !important;
+    padding-bottom: 56px !important;
+  }
+}
+
+/* ═══════════════════════════════════════════════════
+   Terminal preview — glow, cursor blink
+   ═══════════════════════════════════════════════════ */
+
+.terminal-preview {
+  max-width: 640px;
+  margin: 72px auto 0;
+  animation: fadeUp var(--dur-slow) var(--ease-out) both;
+  animation-delay: 400ms;
+  position: relative;
+}
+
+/* Subtle glow behind terminal */
+.terminal-preview::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  background: var(--vp-c-text-1);
+  opacity: 0.04;
+  filter: blur(40px);
+  z-index: -1;
+}
+
+.dark .terminal-preview::before {
+  opacity: 0.08;
+}
+
+.terminal-chrome {
+  background: var(--vp-c-text-1);
+  padding: 10px 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.terminal-dots {
+  display: flex;
+  gap: 6px;
+}
+
+.terminal-dots span {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.15);
+  transition: background var(--dur-fast) var(--ease-smooth);
+}
+
+.terminal-preview:hover .terminal-dots span:nth-child(1) { background: #ff5f57; }
+.terminal-preview:hover .terminal-dots span:nth-child(2) { background: #febc2e; }
+.terminal-preview:hover .terminal-dots span:nth-child(3) { background: #28c840; }
+
+.terminal-title {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: var(--vp-c-bg);
+  opacity: 0.4;
+  letter-spacing: 0.02em;
+  flex: 1;
+  text-align: center;
+}
+
+.terminal-body {
+  background: #1a1a1a;
+  padding: 24px 28px;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  line-height: 1.8;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-top: none;
+}
+
+.dark .terminal-body {
+  background: #0f0f0f;
+  border-color: rgba(255, 255, 255, 0.06);
+}
+
+.terminal-line {
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.terminal-continued { padding-left: 2ch; }
+.terminal-output { margin-top: 4px; }
+
+.terminal-prompt { color: #555555; margin-right: 1ch; }
+.terminal-cmd { color: #ffffff; font-weight: 600; }
+.terminal-flag { color: #777777; }
+.terminal-string { color: #999999; }
+.terminal-value { color: #cccccc; }
+.terminal-muted { color: #555555; }
+.terminal-id { color: #ffffff; font-weight: 600; }
+
+/* Blinking cursor after last line */
+.terminal-cursor::after {
+  content: '';
+  display: inline-block;
+  width: 8px;
+  height: 15px;
+  background: #555555;
+  margin-left: 4px;
+  vertical-align: text-bottom;
+  animation: blink 1.2s step-end infinite;
+}
+
+/* ═══════════════════════════════════════════════════
+   Buttons — sharp, spring hover, shadow
+   ═══════════════════════════════════════════════════ */
+
+.VPButton {
+  border-radius: 0 !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  font-size: 0.75rem !important;
+  padding: 14px 32px !important;
+  transition:
+    background-color var(--dur-fast) var(--ease-smooth),
+    border-color var(--dur-fast) var(--ease-smooth),
+    color var(--dur-fast) var(--ease-smooth),
+    transform 120ms var(--ease-spring),
+    box-shadow var(--dur-mid) var(--ease-smooth);
+}
+
+.VPButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+}
+
+.dark .VPButton:hover {
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+}
+
+.VPButton:active {
+  transform: translateY(0);
+  box-shadow: none;
+  transition-duration: 60ms;
+}
+
+/* ═══════════════════════════════════════════════════
+   Feature cards — hover border sweep + subtle lift
+   ═══════════════════════════════════════════════════ */
+
+.VPFeatures .VPFeature {
+  border: none !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  padding: 32px 24px !important;
+  position: relative;
+  animation: fadeUp var(--dur-mid) var(--ease-out) both;
+  transition:
+    transform var(--dur-mid) var(--ease-smooth),
+    background-color var(--dur-mid) var(--ease-smooth);
+}
+
+/* Top border sweep */
+.VPFeatures .VPFeature::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 24px;
+  right: 24px;
+  height: 1px;
+  background: var(--vp-c-text-1);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform var(--dur-mid) var(--ease-out);
+}
+
+.VPFeatures .VPFeature:hover {
+  background: var(--vp-c-brand-soft) !important;
+  transform: translateY(-3px);
+}
+
+.VPFeatures .VPFeature:hover::before {
+  transform: scaleX(1);
+}
+
+.VPFeatures .VPFeature:nth-child(1) { animation-delay: 300ms; }
+.VPFeatures .VPFeature:nth-child(2) { animation-delay: 360ms; }
+.VPFeatures .VPFeature:nth-child(3) { animation-delay: 420ms; }
+.VPFeatures .VPFeature:nth-child(4) { animation-delay: 480ms; }
+.VPFeatures .VPFeature:nth-child(5) { animation-delay: 540ms; }
+.VPFeatures .VPFeature:nth-child(6) { animation-delay: 600ms; }
+
+.VPFeature .box { padding: 0 !important; }
+
+.VPFeatures .container {
+  border-top: 1px solid var(--vp-c-divider);
+  padding-top: 64px;
+  margin-top: 16px;
+}
+
+.VPFeature .title {
+  font-weight: 700 !important;
+  font-size: 0.95rem !important;
+  letter-spacing: -0.01em;
+  transition: letter-spacing var(--dur-fast) var(--ease-smooth);
+}
+
+.VPFeatures .VPFeature:hover .title {
+  letter-spacing: 0.01em;
+}
+
+.VPFeature .details {
+  color: var(--vp-c-text-3) !important;
+  font-size: 0.85rem !important;
+  line-height: 1.65 !important;
+}
+
+/* ═══════════════════════════════════════════════════
+   Sidebar — inverted pill, nudge
+   ═══════════════════════════════════════════════════ */
+
+.VPSidebar .VPSidebarItem.is-active > .item > .indicator {
+  display: none;
+}
+
+.VPSidebar .VPSidebarItem .link .text {
+  transition:
+    color var(--dur-fast) var(--ease-smooth),
+    background-color var(--dur-fast) var(--ease-smooth),
+    padding-left var(--dur-fast) var(--ease-smooth);
+  padding: 2px 8px;
+  margin: -2px -8px;
+}
+
+.VPSidebar .VPSidebarItem .link:hover .text {
+  padding-left: 12px;
+}
+
+.VPSidebar .VPSidebarItem.is-active > .item > .link > .text {
+  color: var(--vp-c-bg) !important;
+  background: var(--vp-c-text-1);
+  font-weight: 600;
+  padding-left: 8px;
+}
+
+/* ═══════════════════════════════════════════════════
+   Nav — monospace brand, underline sweep
+   ═══════════════════════════════════════════════════ */
+
+.VPNavBarTitle .title {
+  font-family: var(--font-mono) !important;
+  font-weight: 700 !important;
+  letter-spacing: -0.04em;
+  font-size: 1.15rem !important;
+}
+
+.VPNavBar .VPNavBarMenuLink {
+  font-weight: 500;
+  font-size: 0.85rem !important;
+  letter-spacing: 0.01em;
+  position: relative;
+  transition: opacity var(--dur-fast) var(--ease-smooth);
+}
+
+.VPNavBar .VPNavBarMenuLink::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: var(--vp-c-text-1);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform var(--dur-fast) var(--ease-out);
+}
+
+.VPNavBar .VPNavBarMenuLink:hover::after,
+.VPNavBar .VPNavBarMenuLink.active::after {
+  transform: scaleX(1);
+}
+
+/* ═══════════════════════════════════════════════════
+   Links — underline thickens
+   ═══════════════════════════════════════════════════ */
+
+.vp-doc a {
+  color: var(--vp-c-text-1) !important;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-thickness: 1px;
+  font-weight: 500;
+  transition:
+    text-decoration-thickness var(--dur-fast) var(--ease-smooth),
+    opacity var(--dur-fast) var(--ease-smooth);
+}
+
+.vp-doc a:hover {
+  text-decoration-thickness: 2px;
+  opacity: 0.7;
+}
+
+/* ═══════════════════════════════════════════════════
+   Code blocks — recessed, monochrome, hover glow
+   ═══════════════════════════════════════════════════ */
+
+.vp-doc div[class*='language-'] {
+  border-radius: 0 !important;
+  border: 1px solid var(--vp-c-divider);
+  transition:
+    border-color var(--dur-mid) var(--ease-smooth),
+    box-shadow var(--dur-mid) var(--ease-smooth);
+}
+
+.vp-doc div[class*='language-']:hover {
+  border-color: var(--vp-c-text-3);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+}
+
+.dark .vp-doc div[class*='language-']:hover {
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
+}
+
+.vp-doc :not(pre) > code {
+  border-radius: 0 !important;
+  background: var(--vp-c-bg-soft) !important;
+  color: var(--vp-c-text-1) !important;
+  font-weight: 500;
+  font-size: 0.85em !important;
+  padding: 2px 6px !important;
+}
+
+/* Shiki monochrome */
+.vp-doc [class*='language-'] span {
+  color: var(--vp-c-text-2) !important;
+}
+
+.vp-doc [class*='language-'] .line {
+  color: var(--vp-c-text-2);
+}
+
+/* ═══════════════════════════════════════════════════
+   Tables — thin rules, hover, uppercase micro headers
+   ═══════════════════════════════════════════════════ */
+
+.vp-doc table { border-collapse: collapse; }
+
+.vp-doc tr {
+  border-top: 1px solid var(--vp-c-divider) !important;
+  background: transparent !important;
+  transition: background-color var(--dur-fast) var(--ease-smooth);
+}
+
+.vp-doc tr:hover {
+  background: var(--vp-c-brand-soft) !important;
+}
+
+.vp-doc th, .vp-doc td {
+  border: none !important;
+  border-bottom: 1px solid var(--vp-c-divider) !important;
+}
+
+.vp-doc th {
+  font-weight: 700 !important;
+  text-transform: uppercase;
+  font-size: 0.65rem !important;
+  letter-spacing: 0.1em;
+  color: var(--vp-c-text-3) !important;
+}
+
+/* ═══════════════════════════════════════════════════
+   Custom blocks — sharp, left accent
+   ═══════════════════════════════════════════════════ */
+
+.vp-doc .custom-block {
+  border-radius: 0 !important;
+  border: 1px solid var(--vp-c-divider) !important;
+  border-left: 2px solid var(--vp-c-text-3) !important;
+}
+
+/* ═══════════════════════════════════════════════════
+   Typography — 1.25 scale, vertical rhythm
+   ═══════════════════════════════════════════════════ */
+
+.vp-doc h1 {
+  font-size: 2.44rem !important;
+  font-weight: 900 !important;
+  letter-spacing: -0.035em;
+  line-height: 1.15 !important;
+  margin-bottom: 32px !important;
+}
+
+.vp-doc h2 {
+  font-size: 1.56rem !important;
+  font-weight: 800 !important;
+  letter-spacing: -0.025em;
+  line-height: 1.3 !important;
+  border-top: 1px solid var(--vp-c-divider);
+  padding-top: 32px;
+  margin-top: 56px !important;
+  margin-bottom: 24px !important;
+}
+
+.vp-doc h3 {
+  font-size: 1.25rem !important;
+  font-weight: 700 !important;
+  letter-spacing: -0.015em;
+  line-height: 1.4 !important;
+  margin-top: 40px !important;
+  margin-bottom: 16px !important;
+}
+
+.vp-doc p {
+  line-height: 1.75 !important;
+  margin-bottom: 16px !important;
+}
+
+.vp-doc li { line-height: 1.7 !important; }
+
+.vp-doc h1 code, .vp-doc h2 code, .vp-doc h3 code {
+  font-family: var(--font-mono) !important;
+  font-weight: inherit;
+  background: none !important;
+  padding: 0 !important;
+  font-size: 0.9em !important;
+}
+
+/* ═══════════════════════════════════════════════════
+   Footer
+   ═══════════════════════════════════════════════════ */
+
+.VPFooter {
+  border-top: 1px solid var(--vp-c-divider) !important;
+}
+
+.VPFooter .message, .VPFooter .copyright {
+  color: var(--vp-c-text-3) !important;
+  font-size: 0.75rem !important;
+  letter-spacing: 0.02em;
+}
+
+/* ═══════════════════════════════════════════════════
+   Search — sharp
+   ═══════════════════════════════════════════════════ */
+
+.VPLocalSearchBox .shell { border-radius: 0 !important; }
+
+/* ═══════════════════════════════════════════════════
+   Focus — sharp outline
+   ═══════════════════════════════════════════════════ */
+
+:focus-visible {
+  outline: 2px solid var(--vp-c-text-1) !important;
+  outline-offset: 2px;
+}
+
+/* ═══════════════════════════════════════════════════
+   Scrollbar
+   ═══════════════════════════════════════════════════ */
+
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--vp-c-divider); }
+::-webkit-scrollbar-thumb:hover { background: var(--vp-c-text-3); }
+
+/* ═══════════════════════════════════════════════════
+   Reduced motion
+   ═══════════════════════════════════════════════════ */
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

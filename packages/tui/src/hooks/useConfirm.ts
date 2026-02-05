@@ -1,35 +1,28 @@
-import { useInput } from "ink";
-import { useCallback, useState } from "react";
+import { useKeyboard } from "@opentui/react";
+import { useCallback, useRef } from "react";
 
-export function useConfirm(isActive: boolean): {
-	pending: boolean;
-	message: string;
-	confirm: (message: string) => Promise<boolean>;
-} {
-	const [state, setState] = useState<{
-		pending: boolean;
-		message: string;
-		resolve: ((value: boolean) => void) | null;
-	}>({ pending: false, message: "", resolve: null });
+const DEBOUNCE_MS = 400;
 
-	const confirm = useCallback((message: string): Promise<boolean> => {
-		return new Promise<boolean>((resolve) => {
-			setState({ pending: true, message, resolve });
-		});
-	}, []);
+export function useDoubleTap(
+	targetKey: string,
+	onDoubleTap: () => void,
+): void {
+	const lastTapRef = useRef(0);
 
-	useInput(
-		(input) => {
-			if (input === "y" || input === "Y") {
-				state.resolve?.(true);
-				setState({ pending: false, message: "", resolve: null });
-			} else if (input === "n" || input === "N" || input === "q") {
-				state.resolve?.(false);
-				setState({ pending: false, message: "", resolve: null });
-			}
-		},
-		{ isActive: isActive && state.pending },
+	useKeyboard(
+		useCallback(
+			(key: { name: string }) => {
+				if (key.name !== targetKey) return;
+
+				const now = Date.now();
+				if (now - lastTapRef.current < DEBOUNCE_MS) {
+					lastTapRef.current = 0;
+					onDoubleTap();
+				} else {
+					lastTapRef.current = now;
+				}
+			},
+			[targetKey, onDoubleTap],
+		),
 	);
-
-	return { pending: state.pending, message: state.message, confirm };
 }

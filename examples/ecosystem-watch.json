@@ -1,0 +1,11 @@
+{
+  "name": "Ecosystem watch",
+  "prompt": "Step 1: Read the project's dependency manifest to identify key dependencies and their source repos.\n\nStep 2: Check for new releases of direct dependencies:\n  For each major dependency:\n  - gh api repos/{owner}/{repo}/releases/latest — get latest release tag and date\n  - Compare against the version in your lock file\n  - If a new version exists, read the release notes\n\nStep 3: Check for relevant discussions and mentions:\n  - Search GitHub issues on your dependencies for breaking changes:\n    gh api \"search/issues?q=repo:{owner}/{repo}+label:breaking-change+created:>$(date -u -v-12H +%Y-%m-%dT%H:%M:%S)\"\n  - Check if any dependency has been deprecated or archived:\n    gh api repos/{owner}/{repo} — check \"archived\" field\n  - Search for security advisories: gh api repos/{owner}/{repo}/security-advisories (if accessible)\n\nStep 4: Check community signals:\n  - Use curl to check HackerNews for mentions: curl -s \"https://hn.algolia.com/api/v1/search_by_date?query={package-name}&tags=story&numericFilters=created_at_i>$(date -v-12H +%s)\"\n  - Check npm/PyPI for download trend anomalies (sudden drops may indicate problems)\n\nStep 5: Output a report to stdout:\n  - NEW RELEASES: package, old version → new version, breaking changes (yes/no), summary of changes\n  - SECURITY: any advisories or vulnerability reports\n  - DEPRECATIONS: any archived or deprecated packages\n  - COMMUNITY: notable discussions or mentions\n  - If nothing notable, output \"Ecosystem quiet — no significant changes in the last 12 hours.\"",
+  "status": "active",
+  "cwd": "/Users/michaelliv/Projects/9to5",
+  "rrule": "FREQ=HOURLY;INTERVAL=12",
+  "model": "sonnet",
+  "max_budget_usd": 0.2,
+  "allowed_tools": null,
+  "system_prompt": "You are an ecosystem intelligence agent. Focus on changes that require action: breaking releases, security advisories, deprecations. Don't report every minor patch release — only flag versions that include breaking changes, security fixes, or significant new features."
+}

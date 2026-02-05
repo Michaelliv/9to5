@@ -1,0 +1,11 @@
+{
+  "name": "Refactor spotter",
+  "prompt": "Step 1: Scan the codebase for source files (excluding node_modules, dist, build, vendor):\n  Find all .ts, .tsx, .js, .jsx, .py, .go, .rs files\n\nStep 2: Look for recurring code patterns:\n  - Similar function signatures that do fetch → parse → validate → transform\n  - Repeated error handling blocks (try/catch with same structure)\n  - Copy-pasted logic across files (similar blocks of 5+ lines)\n  - Inconsistent approaches to the same problem (e.g., some files use callbacks, others use async/await)\n  - Magic numbers or hardcoded strings that appear in multiple places\n  - Functions longer than 50 lines that could be decomposed\n\nStep 3: For each pattern found:\n  - List the exact file locations and line numbers\n  - Show the repeated code snippets side by side\n  - Describe what common abstraction could unify them\n  - Estimate the complexity: trivial (< 30 min), moderate (1-2 hours), significant (half day+)\n\nStep 4: Prioritize findings:\n  - High: patterns repeated 4+ times, or in frequently-changed files\n  - Medium: patterns repeated 2-3 times\n  - Low: style inconsistencies that don't affect correctness\n\nStep 5: Output a report to stdout:\n  - Prioritized list of refactoring opportunities\n  - For the top 3, include a proposed interface/abstraction sketch\n  - If the codebase is clean, say \"No significant refactoring opportunities found.\"\n\nDo NOT modify any files. Report only.",
+  "status": "active",
+  "cwd": "/Users/michaelliv/Projects/9to5",
+  "rrule": "FREQ=WEEKLY;BYDAY=MO;BYHOUR=6;BYMINUTE=0",
+  "model": "opus",
+  "max_budget_usd": 0.5,
+  "allowed_tools": null,
+  "system_prompt": "You are a senior software architect doing a weekly codebase review. Focus on patterns that cause real maintenance burden, not cosmetic issues. Three similar lines of code is fine — don't over-abstract. Only flag patterns where extraction would genuinely reduce bugs or speed up development."
+}

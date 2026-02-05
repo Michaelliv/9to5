@@ -14,15 +14,8 @@ Bun.write(PID_FILE, String(process.pid));
 const db = getDb();
 
 async function runAutomation(automation: Automation): Promise<void> {
-	const runId = generateId();
-	const sessionId = crypto.randomUUID();
-
-	await executeRun(automation, runId, sessionId, db, generateId);
-
-	// Update automation: set last_run_at and compute next_run_at
-	const updateTime = Date.now();
+	// Compute next_run_at BEFORE executing so the TUI/daemon see the future timestamp immediately
 	let nextRunAt: number | null = null;
-
 	if (automation.rrule) {
 		const rule = RRule.fromString(`RRULE:${automation.rrule}`);
 		const next = rule.after(new Date());
@@ -30,12 +23,22 @@ async function runAutomation(automation: Automation): Promise<void> {
 	}
 
 	db.run(
-		"UPDATE automations SET last_run_at = ?, next_run_at = ?, updated_at = ? WHERE id = ?",
-		[updateTime, nextRunAt, updateTime, automation.id],
+		"UPDATE automations SET next_run_at = ?, updated_at = ? WHERE id = ?",
+		[nextRunAt, Date.now(), automation.id],
+	);
+
+	const runId = generateId();
+	const sessionId = crypto.randomUUID();
+
+	await executeRun(automation, runId, sessionId, db, generateId);
+
+	db.run(
+		"UPDATE automations SET last_run_at = ?, updated_at = ? WHERE id = ?",
+		[Date.now(), Date.now(), automation.id],
 	);
 }
 
-function tick(): void {
+async function tick(): Promise<void> {
 	const now = Date.now();
 	const due = db
 		.query(
@@ -44,7 +47,7 @@ function tick(): void {
 		.all(now) as Automation[];
 
 	for (const automation of due) {
-		runAutomation(automation);
+		await runAutomation(automation);
 	}
 }
 

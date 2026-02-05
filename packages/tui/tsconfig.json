@@ -3,7 +3,10 @@
 	"compilerOptions": {
 		"outDir": "./dist",
 		"rootDir": "./src",
-		"jsx": "react-jsx"
+		"jsx": "react-jsx",
+		"jsxImportSource": "@opentui/react",
+		"lib": ["ESNext", "DOM"],
+		"allowImportingTsExtensions": true
 	},
 	"include": ["src"]
 }

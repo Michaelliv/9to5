@@ -1,0 +1,11 @@
+{
+  "name": "Morning briefing",
+  "prompt": "Step 1: Gather activity from the last 24 hours in this repository:\n  - Run: git log --since=\"24 hours ago\" --oneline --stat\n  - Run: gh pr list --state all --search \"updated:>$(date -u -v-1d +%Y-%m-%dT%H:%M:%S)\" --json number,title,state,author,updatedAt\n  - Run: gh issue list --state all --search \"updated:>$(date -u -v-1d +%Y-%m-%dT%H:%M:%S)\" --json number,title,state,author,updatedAt\n  - Check CI status: gh run list --limit 10 --json status,conclusion,name,createdAt\n\nStep 2: Check if any direct dependencies released new versions in the last 24h:\n  - Read package.json (or requirements.txt, Cargo.toml, go.mod as appropriate)\n  - For key dependencies, check their latest release: gh api repos/{owner}/{repo}/releases/latest\n\nStep 3: Compile a concise briefing (max 30 lines):\n  - Commits: count + 1-line summary of notable changes\n  - PRs: opened, merged, closed\n  - Issues: opened, closed\n  - CI: any failures? what broke?\n  - Dependency alerts: any new releases worth noting?\n\nStep 4: Output the briefing to stdout. If nothing happened, say \"All quiet — no activity in the last 24 hours.\"",
+  "status": "active",
+  "cwd": "/Users/michaelliv/Projects/9to5",
+  "rrule": "FREQ=DAILY;BYHOUR=7;BYMINUTE=0",
+  "model": "sonnet",
+  "max_budget_usd": 0.1,
+  "allowed_tools": null,
+  "system_prompt": "You are a concise project briefing assistant. Report facts, not opinions. Keep it under 30 lines. Use plain text, no markdown headers. If nothing happened, say so in one line."
+}

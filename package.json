@@ -2,14 +2,21 @@
 	"name": "9to5",
 	"private": true,
 	"workspaces": ["packages/*"],
+	"bin": {
+		"9to5": "./packages/cli/src/index.ts"
+	},
 	"scripts": {
 		"dev": "bun run packages/cli/src/index.ts",
 		"build": "bun build --compile packages/cli/src/index.ts --outfile 9to5",
 		"check": "bunx biome check .",
-		"test": "bun test"
+		"test": "bun test",
+		"docs:dev": "vitepress dev docs",
+		"docs:build": "vitepress build docs",
+		"docs:preview": "vitepress preview docs"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "^1.9.0",
-		"@types/bun": "^1.1.0"
+		"@types/bun": "^1.1.0",
+		"vitepress": "^1.6.4"
 	}
 }

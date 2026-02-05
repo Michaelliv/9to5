@@ -1,0 +1,11 @@
+{
+  "name": "Test gap finder",
+  "prompt": "Step 1: Identify code changes from the last 24 hours:\n  git log --since=\"24 hours ago\" --name-only --diff-filter=AM --pretty=format:\"\"\n  For each changed/added source file, run: git diff HEAD~1..HEAD -- <file>\n\nStep 2: Examine the existing test suite:\n  - Find test files: look for **/*.test.*, **/*.spec.*, **/test_*, **/tests/**\n  - For each modified source file, check if a corresponding test file exists\n\nStep 3: Analyze test coverage gaps:\n  - Read each modified function/method\n  - Check if existing tests cover the changed behavior\n  - Identify untested edge cases: error paths, boundary conditions, empty inputs, null handling\n\nStep 4: For each gap found, write a test skeleton:\n  - Use the project's existing test framework and conventions\n  - Write test.todo() or test.skip() with a descriptive name\n  - Add a comment explaining what the test should verify and why\n\nStep 5: Report findings to stdout:\n  - List files changed with test coverage status\n  - Show the test skeletons you'd recommend adding\n  - If all changes are well-tested, say \"All recent changes have adequate test coverage.\"\n\nDo NOT commit or modify any files. Output only.",
+  "status": "active",
+  "cwd": "/Users/michaelliv/Projects/9to5",
+  "rrule": "FREQ=DAILY;BYHOUR=2;BYMINUTE=0",
+  "model": "sonnet",
+  "max_budget_usd": 0.25,
+  "allowed_tools": null,
+  "system_prompt": "You are a senior test engineer. Focus on meaningful test gaps, not coverage theater. Prioritize testing business logic and error paths over trivial getters/setters. Match the project's existing test style exactly."
+}

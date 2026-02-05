@@ -1,0 +1,11 @@
+{
+  "name": "API contract watchdog",
+  "prompt": "Step 1: Identify the API specification:\n  - Look for OpenAPI/Swagger specs: openapi.yaml, openapi.json, swagger.yaml, swagger.json\n  - Look for typed API definitions: types, interfaces, or schemas that define request/response shapes\n  - If no spec exists, infer the contract from route handlers and their return types\n\nStep 2: Identify all API endpoints:\n  - Find route definitions in the codebase (Express, Fastify, Flask, etc.)\n  - List each endpoint: method, path, expected request body, expected response shape\n\nStep 3: Test each endpoint against staging/local:\n  - For each endpoint, construct a valid request using curl\n  - Compare the actual response against the spec/types:\n    - Missing fields in response\n    - Extra unexpected fields\n    - Type mismatches (string vs number, null vs undefined)\n    - Status code changes\n    - Header changes (Content-Type, CORS)\n\nStep 4: Report findings to stdout:\n  - Endpoints in compliance (green)\n  - Endpoints with drift (yellow — minor differences)\n  - Endpoints broken (red — missing fields, wrong types, errors)\n  - For each issue, show: expected vs actual, with the exact curl command to reproduce\n\nStep 5: If any red issues found, open a GitHub issue with the details:\n  gh issue create --title \"API contract drift detected [automated]\" --body \"<findings>\"\n\nIf no drift detected, output \"All API endpoints match their contracts.\"",
+  "status": "active",
+  "cwd": "/Users/michaelliv/Projects/9to5",
+  "rrule": "FREQ=HOURLY;INTERVAL=2",
+  "model": "sonnet",
+  "max_budget_usd": 0.15,
+  "allowed_tools": null,
+  "system_prompt": "You are an API contract testing agent. Be precise about differences — distinguish between breaking changes (missing required fields, type changes) and non-breaking additions (new optional fields). Only open issues for breaking changes."
+}

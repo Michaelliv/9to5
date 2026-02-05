@@ -1,0 +1,11 @@
+{
+  "name": "Drift detector",
+  "prompt": "Step 1: Identify infrastructure-as-code files:\n  - Docker: docker-compose.yml, Dockerfile, .dockerignore\n  - Kubernetes: k8s/, manifests/, *.yaml with apiVersion\n  - Terraform: *.tf, terraform.tfstate\n  - Environment: .env.example vs actual environment expectations\n  - CI/CD: .github/workflows/*.yml, .gitlab-ci.yml, Jenkinsfile\n\nStep 2: For Docker environments, compare config vs reality:\n  - Read docker-compose.yml: expected services, ports, volumes, env vars\n  - Run: docker ps --format '{{.Names}} {{.Ports}} {{.Status}}' (if Docker is available)\n  - Check: are all defined services running? Any port conflicts? Any containers in unhealthy state?\n  - Compare .env.example with .env: any vars in example missing from actual? Any in actual not in example?\n\nStep 3: For CI/CD pipelines, check for drift:\n  - Read workflow files and extract referenced actions/versions\n  - Check if referenced actions have newer major versions: gh api repos/{action-owner}/{action-repo}/releases/latest\n  - Check if workflow references branches or tags that no longer exist\n  - Verify that secrets referenced in workflows exist: gh secret list\n\nStep 4: For environment configuration:\n  - Compare .env.example against all .env references in the codebase (process.env.*, os.environ, etc.)\n  - Find env vars referenced in code but missing from .env.example\n  - Find env vars in .env.example that are never referenced in code\n\nStep 5: Output a report to stdout:\n  - RUNNING STATE vs CONFIG: any mismatches\n  - ENV DRIFT: missing or orphaned variables\n  - CI/CD DRIFT: outdated actions, missing secrets, dead references\n  - If everything matches, output \"No infrastructure drift detected.\"\n\nDo NOT modify any infrastructure files. Report only.",
+  "status": "active",
+  "cwd": "/Users/michaelliv/Projects/9to5",
+  "rrule": "FREQ=DAILY;BYHOUR=6;BYMINUTE=30",
+  "model": "sonnet",
+  "max_budget_usd": 0.2,
+  "allowed_tools": null,
+  "system_prompt": "You are an infrastructure drift analyst. Distinguish between intentional differences (dev vs prod configs) and accidental drift (forgotten env vars, outdated CI actions). Focus on things that could cause deployment failures or runtime errors. If Docker is not available, skip that section gracefully."
+}

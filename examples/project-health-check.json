@@ -1,0 +1,11 @@
+{
+  "name": "Project health check",
+  "prompt": "Step 1: Run the test suite and capture results:\n  - Run the project's test command (npm test, bun test, pytest, cargo test, go test, etc.)\n  - Record: total tests, passed, failed, skipped, execution time\n\nStep 2: Measure build performance:\n  - Time the build command if one exists\n  - Check the size of build output (dist/, build/, target/)\n\nStep 3: Check repository metrics:\n  - Repo size: du -sh .git and total project size\n  - File count by type: find . -type f | grep -v node_modules | grep -v .git\n  - Lines of code: count source files (cloc or wc -l)\n  - Open PRs: gh pr list --json number | jq length\n  - Open issues: gh issue list --json number | jq length\n  - Stale PRs (>7 days no activity): gh pr list --json number,updatedAt | filter\n  - CI status: gh run list --limit 5 --json conclusion\n\nStep 4: Compare against previous health check:\n  - Read .9to5/health-history.json if it exists\n  - Calculate deltas: test count change, build time change, repo size change\n  - Flag regressions: test count decreased, build time increased >20%, new CI failures\n\nStep 5: Append current metrics to .9to5/health-history.json\n  Commit with message \"chore: update project health metrics [automated]\"\n\nStep 6: Output a dashboard to stdout:\n  - Current metrics with trend arrows (↑↓→)\n  - Any regressions flagged\n  - If everything is stable/improving, say \"Project health: all green.\"",
+  "status": "active",
+  "cwd": "/Users/michaelliv/Projects/9to5",
+  "rrule": "FREQ=HOURLY;INTERVAL=6",
+  "model": "sonnet",
+  "max_budget_usd": 0.2,
+  "allowed_tools": null,
+  "system_prompt": "You are a project health monitor. Track trends, not absolutes — a test suite going from 200 to 195 tests is more concerning than having 50 tests total. Focus on regressions and anomalies. Use simple ASCII for trend indicators."
+}

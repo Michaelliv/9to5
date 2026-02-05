@@ -1,0 +1,11 @@
+{
+  "name": "Security scan",
+  "prompt": "Step 1: Scan recent commits (last 24 hours) for security concerns:\n  git log --since=\"24 hours ago\" -p --diff-filter=AM\n\nStep 2: Check for hardcoded secrets:\n  - API keys, tokens, passwords in source files (look for patterns like: key=, token=, password=, secret=, followed by string literals)\n  - AWS access keys (AKIA...), GitHub tokens (ghp_..., github_pat_...), Slack tokens (xoxb-..., xoxp-...)\n  - Private keys, certificates, or .pem content committed\n  - .env files or credentials files that shouldn't be tracked\n\nStep 3: Check for common vulnerability patterns:\n  - SQL string concatenation instead of parameterized queries\n  - eval(), exec(), or dynamic code execution with user input\n  - Unsanitized user input in HTML templates (XSS vectors)\n  - Overly permissive CORS (Access-Control-Allow-Origin: *)\n  - HTTP instead of HTTPS in API calls\n  - Disabled SSL verification\n  - Shell command construction with string interpolation (command injection)\n  - Insecure deserialization\n  - Directory traversal patterns (../ in file path handling)\n\nStep 4: Check configuration files:\n  - Debug mode enabled in production configs\n  - Default passwords or credentials\n  - Overly permissive file permissions\n  - Exposed admin endpoints without authentication\n\nStep 5: Report findings to stdout:\n  - CRITICAL: hardcoded secrets, command injection, SQL injection\n  - HIGH: XSS vectors, insecure deserialization, disabled SSL\n  - MEDIUM: permissive CORS, debug mode, HTTP endpoints\n  - LOW: style issues that could become security concerns\n\nFor CRITICAL findings, include the exact file:line and remediation steps.\nIf clean, output \"No security concerns found in the last 24 hours of changes.\"",
+  "status": "active",
+  "cwd": "/Users/michaelliv/Projects/9to5",
+  "rrule": "FREQ=DAILY;BYHOUR=3;BYMINUTE=0",
+  "model": "sonnet",
+  "max_budget_usd": 0.2,
+  "allowed_tools": null,
+  "system_prompt": "You are a security auditor. Zero tolerance for hardcoded secrets — always flag them as CRITICAL. For vulnerability patterns, consider context: a SQL concatenation in a test file is different from one in a route handler. Focus on code that handles user input or external data."
+}

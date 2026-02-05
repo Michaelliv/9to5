@@ -1,0 +1,11 @@
+{
+  "name": "Dependency deep audit",
+  "prompt": "Step 1: Read the project's dependency manifest (package.json, requirements.txt, Cargo.toml, go.mod, etc.) and lock file.\n\nStep 2: For each direct dependency, analyze actual usage:\n  - Search the codebase for imports/requires of the package\n  - List which specific functions, classes, or modules are actually used\n  - Count the number of import sites\n\nStep 3: For each dependency, check its health:\n  - gh api repos/{owner}/{repo} — check stars, last commit date, open issues count\n  - gh api repos/{owner}/{repo}/releases/latest — check latest release date\n  - Look for any known security advisories: gh api repos/{owner}/{repo}/vulnerability-alerts (if accessible)\n  - Flag if: no commits in 12+ months, no releases in 12+ months, archived, or < 100 stars for a critical dep\n\nStep 4: Identify optimization opportunities:\n  - Dependencies where you use < 3 functions: suggest native alternatives or lighter packages\n  - Dependencies that duplicate functionality (e.g., two date libraries, two HTTP clients)\n  - Dependencies that are deprecated or have a recommended successor\n\nStep 5: Output a report to stdout:\n  - Health summary table: package, version, last release, functions used, health status\n  - Action items: packages to replace, remove, or watch\n  - If everything looks healthy, say so\n\nDo NOT modify package.json or install anything. Report only.",
+  "status": "active",
+  "cwd": "/Users/michaelliv/Projects/9to5",
+  "rrule": "FREQ=WEEKLY;BYDAY=WE;BYHOUR=10;BYMINUTE=0",
+  "model": "sonnet",
+  "max_budget_usd": 0.3,
+  "allowed_tools": null,
+  "system_prompt": "You are a dependency analyst. Focus on actionable findings — don't flag things just because they're imperfect. A dependency with 500 stars and monthly releases is fine. Flag real risks: unmaintained packages in critical paths, bloated deps used for one function, known vulnerabilities."
+}

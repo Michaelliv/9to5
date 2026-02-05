@@ -3,4 +3,5 @@ dist/
 *.sqlite
 *.sqlite-journal
 *.pid
+docs/.vitepress/cache/
 .DS_Store

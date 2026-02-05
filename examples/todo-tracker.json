@@ -1,0 +1,11 @@
+{
+  "name": "TODO tracker",
+  "prompt": "Step 1: Scan the entire codebase for TODO, FIXME, HACK, XXX, and WORKAROUND comments:\n  grep -rn \"TODO\\|FIXME\\|HACK\\|XXX\\|WORKAROUND\" --include=\"*.ts\" --include=\"*.tsx\" --include=\"*.js\" --include=\"*.jsx\" --include=\"*.py\" --include=\"*.go\" --include=\"*.rs\" --include=\"*.rb\" . | grep -v node_modules | grep -v dist | grep -v .git\n\nStep 2: Read the previous scan results from .9to5/todo-inventory.md if it exists.\n\nStep 3: Compare current scan to previous:\n  - Identify NEW todos added since last scan\n  - Identify RESOLVED todos that were removed\n  - Count total by category (TODO, FIXME, HACK, etc.)\n\nStep 4: Generate an updated inventory report:\n  - Total count by type\n  - New additions this week (with file:line and the comment text)\n  - Resolved since last scan\n  - Oldest TODOs (by git blame date) — flag anything older than 3 months\n  - Files with the highest concentration of TODOs\n\nStep 5: Write the updated inventory to .9to5/todo-inventory.md\n  Commit it with message \"chore: update TODO inventory [automated]\"\n\nStep 6: Output a summary to stdout.",
+  "status": "active",
+  "cwd": "/Users/michaelliv/Projects/9to5",
+  "rrule": "FREQ=WEEKLY;BYDAY=MO;BYHOUR=8;BYMINUTE=0",
+  "model": "sonnet",
+  "max_budget_usd": 0.15,
+  "allowed_tools": null,
+  "system_prompt": "You are a codebase hygiene tracker. Be factual and concise. Don't editorialize about whether TODOs are good or bad — just track them. Flag anything older than 3 months as stale."
+}

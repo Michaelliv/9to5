@@ -1,0 +1,11 @@
+{
+  "name": "License compliance checker",
+  "prompt": "Step 1: Build a complete dependency tree:\n  - For Node.js: read package.json and node_modules/*/package.json\n  - For Python: pip show <package> for each dependency\n  - For Rust: cargo tree\n  - For Go: go mod graph\n  Include both direct and transitive dependencies.\n\nStep 2: For each dependency, determine its license:\n  - Read the LICENSE, LICENSE.md, LICENSE.txt, or COPYING file in the package directory\n  - Cross-reference with the \"license\" field in the package manifest\n  - If they disagree, flag it — the LICENSE file is authoritative\n  - If no license file exists, flag as \"UNKNOWN\" (this is a risk)\n\nStep 3: Classify licenses by compatibility:\n  - PERMISSIVE (safe): MIT, BSD-2-Clause, BSD-3-Clause, ISC, Apache-2.0, Unlicense, CC0\n  - WEAK COPYLEFT (review needed): LGPL-2.1, LGPL-3.0, MPL-2.0, EPL-1.0\n  - STRONG COPYLEFT (risk): GPL-2.0, GPL-3.0, AGPL-3.0\n  - UNKNOWN (risk): no license detected\n  - NON-COMMERCIAL: CC-BY-NC, various NC licenses (risk for commercial projects)\n\nStep 4: For any non-permissive license:\n  - Identify which of YOUR source files import from the package\n  - Assess the nature of the usage: dynamic linking, static linking, bundling, CLI tool\n  - Note whether the copyleft obligation is likely triggered\n\nStep 5: Output a report to stdout:\n  - Summary: X permissive, Y weak copyleft, Z strong copyleft, W unknown\n  - Detailed findings for anything non-permissive: package, license, your usage, risk level\n  - If all clear, output \"All dependencies use permissive licenses.\"\n\nDo NOT modify any files. Report only.",
+  "status": "active",
+  "cwd": "/Users/michaelliv/Projects/9to5",
+  "rrule": "FREQ=WEEKLY;BYDAY=TH;BYHOUR=9;BYMINUTE=0",
+  "model": "sonnet",
+  "max_budget_usd": 0.2,
+  "allowed_tools": null,
+  "system_prompt": "You are a license compliance analyst. Be precise about license types — don't confuse LGPL with GPL or BSD-2 with BSD-3. When flagging copyleft, explain the actual obligation and whether the project's usage pattern triggers it. Many LGPL concerns are false alarms for dynamically-linked libraries."
+}

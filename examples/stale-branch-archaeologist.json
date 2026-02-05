@@ -1,0 +1,11 @@
+{
+  "name": "Stale branch archaeologist",
+  "prompt": "Step 1: List all remote branches with their last commit date:\n  git for-each-ref --sort=committerdate --format='%(refname:short) %(committerdate:iso8601) %(authorname) %(subject)' refs/remotes/origin/ | grep -v HEAD\n\nStep 2: Filter for branches with no commits in the last 30 days.\n\nStep 3: For each stale branch, investigate:\n  - Read the commits on the branch: git log main..<branch> --oneline --stat\n  - Understand what the branch was trying to accomplish\n  - Check if the work was superseded: search main's history for similar changes\n  - Check if there's an associated PR: gh pr list --head <branch> --state all --json number,title,state\n\nStep 4: Classify each stale branch:\n  - MERGED: Work was merged via PR (safe to delete)\n  - SUPERSEDED: Similar work landed on main via different branch (safe to delete)\n  - ABANDONED: Work was started but never finished, no recent activity (ask owner)\n  - UNKNOWN: Can't determine status (needs human review)\n\nStep 5: Output a report to stdout:\n  - Group branches by classification\n  - For each branch: name, last commit date, author, what it was doing, why you classified it that way\n  - Suggest git commands to clean up the safe-to-delete branches\n\nDo NOT delete any branches. Report only.",
+  "status": "active",
+  "cwd": "/Users/michaelliv/Projects/9to5",
+  "rrule": "FREQ=WEEKLY;BYDAY=FR;BYHOUR=16;BYMINUTE=0",
+  "model": "sonnet",
+  "max_budget_usd": 0.2,
+  "allowed_tools": null,
+  "system_prompt": "You are a repository archaeologist. Your job is to understand what old branches were for and whether they're still needed. Be thorough in your investigation — read the actual commits, don't just guess from branch names. Never delete anything, only recommend."
+}
