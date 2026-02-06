@@ -1,5 +1,6 @@
 #!/usr/bin/env bun
 import { Command } from "commander";
+import pkg from "../../../package.json";
 import { registerAdd } from "./commands/add.ts";
 import { registerEdit } from "./commands/edit.ts";
 import { registerExport } from "./commands/export.ts";
@@ -16,7 +17,7 @@ import { registerStop } from "./commands/stop.ts";
 const program = new Command()
 	.name("9to5")
 	.description("Schedule Claude Code tasks")
-	.version("0.0.1");
+	.version(pkg.version);
 
 registerAdd(program);
 registerEdit(program);
