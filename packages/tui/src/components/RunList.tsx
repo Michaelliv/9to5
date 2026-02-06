@@ -5,11 +5,11 @@ import { useCallback, useEffect } from "react";
 import { useDoubleTap } from "../hooks/useConfirm.ts";
 import { useDbQuery } from "../hooks/useDbQuery.ts";
 import { useListNav } from "../hooks/useListNav.ts";
+import { useSpinner } from "../hooks/useSpinner.ts";
 import { ListItem } from "./ListItem.tsx";
 
 const STATUS_STYLE: Record<string, { symbol: string; color: string }> = {
 	pending: { symbol: "◦", color: "yellow" },
-	running: { symbol: "⟳", color: "#5599ff" },
 	completed: { symbol: "✓", color: "green" },
 	failed: { symbol: "✗", color: "red" },
 };
@@ -59,6 +59,8 @@ export function RunList({
 	);
 
 	const { selectedIndex, setSelectedIndex } = useListNav(rows.length, focused);
+	const hasRunning = rows.some((r) => r.status === "running");
+	const spinnerFrame = useSpinner(hasRunning);
 
 	const selected = rows[selectedIndex] as RunRow | undefined;
 
@@ -131,7 +133,9 @@ export function RunList({
 	return (
 		<box flexDirection="column">
 			{rows.map((r, i) => {
-				const st = STATUS_STYLE[r.status] ?? STATUS_STYLE.pending;
+				const st = r.status === "running"
+					? { symbol: spinnerFrame, color: "#5599ff" }
+					: (STATUS_STYLE[r.status] ?? STATUS_STYLE.pending);
 				const sel = i === selectedIndex;
 				const unread = r.inbox_id != null && r.inbox_read_at == null;
 				const nameColor = sel

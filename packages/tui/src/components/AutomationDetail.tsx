@@ -1,12 +1,12 @@
 import type { Automation, Run } from "@9to5/core";
 import { getDb } from "@9to5/core";
 import { useDbQuery } from "../hooks/useDbQuery.ts";
+import { useSpinner } from "../hooks/useSpinner.ts";
 import { Field } from "./Field.tsx";
 import { Section } from "./Section.tsx";
 
 const STATUS_STYLE: Record<string, { symbol: string; color: string }> = {
 	pending: { symbol: "◦", color: "yellow" },
-	running: { symbol: "⟳", color: "#5599ff" },
 	completed: { symbol: "✓", color: "green" },
 	failed: { symbol: "✗", color: "red" },
 };
@@ -43,6 +43,9 @@ export function AutomationDetail({
 				)
 				.all(a.id) as Run[],
 	);
+
+	const hasRunning = recentRuns.some((r) => r.status === "running");
+	const spinnerFrame = useSpinner(hasRunning);
 
 	const statusColor = a.status === "active" ? "green" : "yellow";
 	const statusSymbol = a.status === "active" ? "●" : "○";
@@ -110,7 +113,9 @@ export function AutomationDetail({
 				{recentRuns.length > 0 ? (
 					<Section title="Recent Runs">
 						{recentRuns.map((run) => {
-							const st = STATUS_STYLE[run.status] ?? STATUS_STYLE.pending;
+							const st = run.status === "running"
+							? { symbol: spinnerFrame, color: "#5599ff" }
+							: (STATUS_STYLE[run.status] ?? STATUS_STYLE.pending);
 							const duration = formatDuration(run.duration_ms);
 							const cost = run.cost_usd != null ? `$${run.cost_usd.toFixed(4)}` : "";
 							const parts = [timeAgo(run.created_at), duration, cost].filter(Boolean).join(" · ");

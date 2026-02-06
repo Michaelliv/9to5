@@ -1,10 +1,10 @@
 import type { Run } from "@9to5/core";
+import { useSpinner } from "../hooks/useSpinner.ts";
 import { Field } from "./Field.tsx";
 import { Section } from "./Section.tsx";
 
 const STATUS_STYLE: Record<string, { symbol: string; color: string }> = {
 	pending: { symbol: "◦", color: "yellow" },
-	running: { symbol: "⟳", color: "blue" },
 	completed: { symbol: "✓", color: "green" },
 	failed: { symbol: "✗", color: "red" },
 };
@@ -29,7 +29,10 @@ export function RunDetail({
 	run,
 	automationName,
 }: { run: Run; automationName?: string }) {
-	const st = STATUS_STYLE[run.status] ?? STATUS_STYLE.pending;
+	const spinnerFrame = useSpinner(run.status === "running");
+	const st = run.status === "running"
+		? { symbol: spinnerFrame, color: "#5599ff" }
+		: (STATUS_STYLE[run.status] ?? STATUS_STYLE.pending);
 
 	return (
 		<scrollbox flexGrow={1}>

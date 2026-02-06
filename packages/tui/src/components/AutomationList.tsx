@@ -4,6 +4,7 @@ import { useCallback, useEffect } from "react";
 import { useDoubleTap } from "../hooks/useConfirm.ts";
 import { useDbQuery } from "../hooks/useDbQuery.ts";
 import { useListNav } from "../hooks/useListNav.ts";
+import { useSpinner } from "../hooks/useSpinner.ts";
 import { ListItem } from "./ListItem.tsx";
 
 const STATUS_ICON: Record<string, { symbol: string; color: string }> = {
@@ -50,6 +51,8 @@ export function AutomationList({
 	);
 
 	const { selectedIndex, setSelectedIndex } = useListNav(automations.length, focused);
+	const hasRunning = automations.some((a) => a.running_count > 0);
+	const spinnerFrame = useSpinner(hasRunning);
 
 	const selected = automations[selectedIndex] as AutomationRow | undefined;
 
@@ -126,7 +129,7 @@ export function AutomationList({
 				const isRunning = a.running_count > 0;
 				const isPaused = a.status === "paused";
 				const s = isRunning
-					? { symbol: "⟳", color: "#5599ff" }
+					? { symbol: spinnerFrame, color: "#5599ff" }
 					: (STATUS_ICON[a.status] ?? STATUS_ICON.active);
 				const sel = i === selectedIndex;
 				const nameColor = sel ? "cyan" : isRunning ? "#ccc" : isPaused ? "#777" : "#ddd";
