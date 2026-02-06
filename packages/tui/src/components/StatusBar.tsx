@@ -3,7 +3,13 @@ export function StatusBar({
 	notification,
 }: { hints: { k: string; label: string }[]; notification?: string | null }) {
 	return (
-		<box height={1} flexDirection="row" paddingLeft={1} paddingRight={1} gap={2}>
+		<box
+			height={1}
+			flexDirection="row"
+			paddingLeft={1}
+			paddingRight={1}
+			gap={2}
+		>
 			{hints.map((h) => (
 				<text key={h.k}>
 					<span fg="cyan">

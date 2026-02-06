@@ -1,4 +1,10 @@
-import { type Automation, executeRun, generateId, getDb } from "@9to5/core";
+import {
+	type Automation,
+	RRule,
+	executeRun,
+	generateId,
+	getDb,
+} from "@9to5/core";
 import { useKeyboard } from "@opentui/react";
 import { useCallback, useEffect } from "react";
 import { useDoubleTap } from "../hooks/useConfirm.ts";
@@ -50,7 +56,10 @@ export function AutomationList({
 				.all() as AutomationRow[],
 	);
 
-	const { selectedIndex, setSelectedIndex } = useListNav(automations.length, focused);
+	const { selectedIndex, setSelectedIndex } = useListNav(
+		automations.length,
+		focused,
+	);
 	const hasRunning = automations.some((a) => a.running_count > 0);
 	const spinnerFrame = useSpinner(hasRunning);
 
@@ -81,12 +90,25 @@ export function AutomationList({
 
 		if (key.name === "p") {
 			const newStatus = selected.status === "active" ? "paused" : "active";
-			db.run(
-				"UPDATE automations SET status = ?, updated_at = ? WHERE id = ?",
-				[newStatus, Date.now(), selected.id],
-			);
+			if (newStatus === "active" && selected.rrule) {
+				const rule = RRule.fromString(`RRULE:${selected.rrule}`);
+				const next = rule.after(new Date());
+				db.run(
+					"UPDATE automations SET status = ?, next_run_at = ?, updated_at = ? WHERE id = ?",
+					[newStatus, next ? next.getTime() : null, Date.now(), selected.id],
+				);
+			} else {
+				db.run(
+					"UPDATE automations SET status = ?, updated_at = ? WHERE id = ?",
+					[newStatus, Date.now(), selected.id],
+				);
+			}
 			refresh();
-			onNotify(newStatus === "paused" ? `Paused "${selected.name}"` : `Resumed "${selected.name}"`);
+			onNotify(
+				newStatus === "paused"
+					? `Paused "${selected.name}"`
+					: `Resumed "${selected.name}"`,
+			);
 		}
 	});
 
@@ -132,14 +154,24 @@ export function AutomationList({
 					? { symbol: spinnerFrame, color: "#5599ff" }
 					: (STATUS_ICON[a.status] ?? STATUS_ICON.active);
 				const sel = i === selectedIndex;
-				const nameColor = sel ? "cyan" : isRunning ? "#ccc" : isPaused ? "#777" : "#ddd";
+				const nameColor = sel
+					? "cyan"
+					: isRunning
+						? "#ccc"
+						: isPaused
+							? "#777"
+							: "#ddd";
 				const suffixLen =
 					(a.unread_count > 0 ? ` (${a.unread_count})`.length : 0) +
 					(isRunning ? " running…".length : 0);
 				const nameMax = MAX_NAME_LEN - suffixLen;
 
 				return (
-					<ListItem key={a.id} selected={sel} onClick={() => setSelectedIndex(i)}>
+					<ListItem
+						key={a.id}
+						selected={sel}
+						onClick={() => setSelectedIndex(i)}
+					>
 						<text>
 							<span fg={sel ? "cyan" : "#333"}>{sel ? "▸ " : "  "}</span>
 							<span fg={s.color}>{s.symbol} </span>
@@ -149,9 +181,7 @@ export function AutomationList({
 							{a.unread_count > 0 ? (
 								<span fg="cyan">{` (${a.unread_count})`}</span>
 							) : null}
-							{isRunning ? (
-								<span fg="#5599ff">{" "}running…</span>
-							) : null}
+							{isRunning ? <span fg="#5599ff"> running…</span> : null}
 						</text>
 					</ListItem>
 				);

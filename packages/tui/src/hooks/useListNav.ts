@@ -1,7 +1,10 @@
 import { useKeyboard } from "@opentui/react";
 import { useEffect, useState } from "react";
 
-export function useListNav(listLength: number, active = true): {
+export function useListNav(
+	listLength: number,
+	active = true,
+): {
 	selectedIndex: number;
 	setSelectedIndex: (i: number) => void;
 	scrollOffset: number;

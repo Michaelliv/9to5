@@ -1,6 +1,6 @@
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from "fs";
-import { homedir } from "os";
-import { join } from "path";
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { homedir } from "node:os";
+import { join } from "node:path";
 import type { Command } from "commander";
 
 const INSTRUCTIONS = `
@@ -59,10 +59,10 @@ export function registerOnboard(program: Command): void {
 			}
 
 			if (existingContent) {
-				const newContent = existingContent.trimEnd() + "\n\n" + INSTRUCTIONS + "\n";
+				const newContent = `${existingContent.trimEnd()}\n\n${INSTRUCTIONS}\n`;
 				writeFileSync(claudeMd, newContent);
 			} else {
-				writeFileSync(claudeMd, INSTRUCTIONS + "\n");
+				writeFileSync(claudeMd, `${INSTRUCTIONS}\n`);
 			}
 
 			console.log(`✓ Added 9to5 instructions to ${claudeMd}`);

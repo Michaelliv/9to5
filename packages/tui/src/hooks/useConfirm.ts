@@ -3,10 +3,7 @@ import { useCallback, useRef } from "react";
 
 const DEBOUNCE_MS = 400;
 
-export function useDoubleTap(
-	targetKey: string,
-	onDoubleTap: () => void,
-): void {
+export function useDoubleTap(targetKey: string, onDoubleTap: () => void): void {
 	const lastTapRef = useRef(0);
 
 	useKeyboard(

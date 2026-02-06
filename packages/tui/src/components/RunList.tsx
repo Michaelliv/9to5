@@ -96,14 +96,35 @@ export function RunList({
 			lines.push(`Run: ${selected.id}`);
 			lines.push(`Status: ${selected.status}`);
 			if (selected.session_id) lines.push(`Session: ${selected.session_id}`);
-			if (selected.started_at) lines.push(`Started: ${new Date(selected.started_at).toLocaleString()}`);
-			if (selected.completed_at) lines.push(`Completed: ${new Date(selected.completed_at).toLocaleString()}`);
-			if (selected.cost_usd != null) lines.push(`Cost: $${selected.cost_usd.toFixed(4)}`);
-			if (selected.duration_ms != null) lines.push(`Duration: ${selected.duration_ms}ms`);
-			if (selected.num_turns != null) lines.push(`Turns: ${selected.num_turns}`);
-			if (selected.result) { lines.push(""); lines.push("--- Result ---"); lines.push(selected.result); }
-			if (selected.output) { lines.push(""); lines.push("--- Output ---"); lines.push(selected.output); }
-			if (selected.error) { lines.push(""); lines.push("--- Error ---"); lines.push(selected.error); }
+			if (selected.started_at)
+				lines.push(
+					`Started: ${new Date(selected.started_at).toLocaleString()}`,
+				);
+			if (selected.completed_at)
+				lines.push(
+					`Completed: ${new Date(selected.completed_at).toLocaleString()}`,
+				);
+			if (selected.cost_usd != null)
+				lines.push(`Cost: $${selected.cost_usd.toFixed(4)}`);
+			if (selected.duration_ms != null)
+				lines.push(`Duration: ${selected.duration_ms}ms`);
+			if (selected.num_turns != null)
+				lines.push(`Turns: ${selected.num_turns}`);
+			if (selected.result) {
+				lines.push("");
+				lines.push("--- Result ---");
+				lines.push(selected.result);
+			}
+			if (selected.output) {
+				lines.push("");
+				lines.push("--- Output ---");
+				lines.push(selected.output);
+			}
+			if (selected.error) {
+				lines.push("");
+				lines.push("--- Error ---");
+				lines.push(selected.error);
+			}
 			const content = lines.join("\n");
 			Bun.spawn(["pbcopy"], { stdin: new Blob([content]) });
 			onNotify("Copied run details to clipboard");
@@ -133,9 +154,10 @@ export function RunList({
 	return (
 		<box flexDirection="column">
 			{rows.map((r, i) => {
-				const st = r.status === "running"
-					? { symbol: spinnerFrame, color: "#5599ff" }
-					: (STATUS_STYLE[r.status] ?? STATUS_STYLE.pending);
+				const st =
+					r.status === "running"
+						? { symbol: spinnerFrame, color: "#5599ff" }
+						: (STATUS_STYLE[r.status] ?? STATUS_STYLE.pending);
 				const sel = i === selectedIndex;
 				const unread = r.inbox_id != null && r.inbox_read_at == null;
 				const nameColor = sel
@@ -147,7 +169,11 @@ export function RunList({
 							: "#aaa";
 
 				return (
-					<ListItem key={r.id} selected={sel} onClick={() => setSelectedIndex(i)}>
+					<ListItem
+						key={r.id}
+						selected={sel}
+						onClick={() => setSelectedIndex(i)}
+					>
 						<text>
 							<span fg={sel ? "cyan" : "#333"}>{sel ? "▸ " : "  "}</span>
 							<span fg={st.color}>{st.symbol} </span>

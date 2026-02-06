@@ -4,6 +4,7 @@ export {
 	PID_FILE,
 	DAEMON_POLL_INTERVAL_MS,
 	ensureDataDir,
+	isDaemonRunning,
 } from "./config.ts";
 export type {
 	Automation,

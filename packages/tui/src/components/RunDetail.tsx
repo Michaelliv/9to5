@@ -30,9 +30,10 @@ export function RunDetail({
 	automationName,
 }: { run: Run; automationName?: string }) {
 	const spinnerFrame = useSpinner(run.status === "running");
-	const st = run.status === "running"
-		? { symbol: spinnerFrame, color: "#5599ff" }
-		: (STATUS_STYLE[run.status] ?? STATUS_STYLE.pending);
+	const st =
+		run.status === "running"
+			? { symbol: spinnerFrame, color: "#5599ff" }
+			: (STATUS_STYLE[run.status] ?? STATUS_STYLE.pending);
 
 	return (
 		<scrollbox flexGrow={1}>
@@ -51,9 +52,7 @@ export function RunDetail({
 					<Field
 						label="Started"
 						value={
-							run.started_at
-								? new Date(run.started_at).toLocaleString()
-								: null
+							run.started_at ? new Date(run.started_at).toLocaleString() : null
 						}
 					/>
 					<Field
@@ -67,14 +66,12 @@ export function RunDetail({
 				</Section>
 
 				{/* Stats */}
-				{(run.cost_usd != null || run.duration_ms != null) ? (
+				{run.cost_usd != null || run.duration_ms != null ? (
 					<Section title="Stats">
 						<Field
 							label="Cost"
 							value={
-								run.cost_usd != null
-									? `$${run.cost_usd.toFixed(4)}`
-									: null
+								run.cost_usd != null ? `$${run.cost_usd.toFixed(4)}` : null
 							}
 						/>
 						<Field label="Duration" value={formatDuration(run.duration_ms)} />

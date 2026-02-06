@@ -26,9 +26,7 @@ function formatDuration(ms: number | null): string {
 	return `${Math.floor(ms / 60000)}m ${Math.round((ms % 60000) / 1000)}s`;
 }
 
-export function AutomationDetail({
-	automation,
-}: { automation: Automation }) {
+export function AutomationDetail({ automation }: { automation: Automation }) {
 	const a = automation;
 	const db = getDb();
 
@@ -68,24 +66,18 @@ export function AutomationDetail({
 					<Field label="Schedule" value={a.rrule} />
 					<Field
 						label="Budget"
-						value={
-							a.max_budget_usd != null ? `$${a.max_budget_usd}` : null
-						}
+						value={a.max_budget_usd != null ? `$${a.max_budget_usd}` : null}
 					/>
 					<Field
 						label="Next Run"
 						value={
-							a.next_run_at
-								? new Date(a.next_run_at).toLocaleString()
-								: null
+							a.next_run_at ? new Date(a.next_run_at).toLocaleString() : null
 						}
 					/>
 					<Field
 						label="Last Run"
 						value={
-							a.last_run_at
-								? new Date(a.last_run_at).toLocaleString()
-								: null
+							a.last_run_at ? new Date(a.last_run_at).toLocaleString() : null
 						}
 					/>
 				</Section>
@@ -113,12 +105,16 @@ export function AutomationDetail({
 				{recentRuns.length > 0 ? (
 					<Section title="Recent Runs">
 						{recentRuns.map((run) => {
-							const st = run.status === "running"
-							? { symbol: spinnerFrame, color: "#5599ff" }
-							: (STATUS_STYLE[run.status] ?? STATUS_STYLE.pending);
+							const st =
+								run.status === "running"
+									? { symbol: spinnerFrame, color: "#5599ff" }
+									: (STATUS_STYLE[run.status] ?? STATUS_STYLE.pending);
 							const duration = formatDuration(run.duration_ms);
-							const cost = run.cost_usd != null ? `$${run.cost_usd.toFixed(4)}` : "";
-							const parts = [timeAgo(run.created_at), duration, cost].filter(Boolean).join(" · ");
+							const cost =
+								run.cost_usd != null ? `$${run.cost_usd.toFixed(4)}` : "";
+							const parts = [timeAgo(run.created_at), duration, cost]
+								.filter(Boolean)
+								.join(" · ");
 
 							return (
 								<text key={run.id}>

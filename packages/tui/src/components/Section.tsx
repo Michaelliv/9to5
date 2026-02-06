@@ -11,7 +11,9 @@ export function Section({
 					<strong>{title}</strong>
 				</span>
 			</text>
-			<box flexDirection="column" paddingLeft={1}>{children}</box>
+			<box flexDirection="column" paddingLeft={1}>
+				{children}
+			</box>
 		</box>
 	);
 }

@@ -10,17 +10,20 @@ export function registerEdit(program: Command): void {
 		.option("--cwd <dir>", "Update working directory")
 		.option("--rrule <rule>", "Update recurrence rule")
 		.option("--model <model>", "Update model (sonnet, opus, haiku)")
-		.option("--max-budget-usd <amount>", "Update max budget in USD", Number.parseFloat)
-		.option("--allowed-tools <tools>", "Update allowed tools (comma-separated)")
 		.option(
-			"--system-prompt <prompt>",
-			"Update system prompt",
+			"--max-budget-usd <amount>",
+			"Update max budget in USD",
+			Number.parseFloat,
 		)
+		.option("--allowed-tools <tools>", "Update allowed tools (comma-separated)")
+		.option("--system-prompt <prompt>", "Update system prompt")
 		.option("--status <status>", "Set status (active, paused)")
 		.action((id: string, opts) => {
 			const db = getDb();
 
-			const row = db.query("SELECT * FROM automations WHERE id = ?").get(id) as Automation | null;
+			const row = db
+				.query("SELECT * FROM automations WHERE id = ?")
+				.get(id) as Automation | null;
 			if (!row) {
 				console.error(`Automation ${id} not found.`);
 				process.exit(1);
@@ -66,7 +69,9 @@ export function registerEdit(program: Command): void {
 			if (opts.allowedTools != null) {
 				sets.push("allowed_tools = ?");
 				values.push(
-					JSON.stringify(opts.allowedTools.split(",").map((t: string) => t.trim())),
+					JSON.stringify(
+						opts.allowedTools.split(",").map((t: string) => t.trim()),
+					),
 				);
 			}
 
@@ -82,10 +87,21 @@ export function registerEdit(program: Command): void {
 				}
 				sets.push("status = ?");
 				values.push(opts.status);
+
+				// Recalculate next_run_at when resuming an automation with an rrule
+				const rrule = opts.rrule ?? row.rrule;
+				if (opts.status === "active" && rrule) {
+					const rule = RRule.fromString(`RRULE:${rrule}`);
+					const next = rule.after(new Date());
+					sets.push("next_run_at = ?");
+					values.push(next ? next.getTime() : null);
+				}
 			}
 
 			if (sets.length === 0) {
-				console.error("No fields to update. Use --name, --prompt, --model, etc.");
+				console.error(
+					"No fields to update. Use --name, --prompt, --model, etc.",
+				);
 				process.exit(1);
 			}
 
@@ -93,10 +109,7 @@ export function registerEdit(program: Command): void {
 			values.push(Date.now());
 			values.push(id);
 
-			db.run(
-				`UPDATE automations SET ${sets.join(", ")} WHERE id = ?`,
-				values,
-			);
+			db.run(`UPDATE automations SET ${sets.join(", ")} WHERE id = ?`, values);
 
 			console.log(`Updated automation ${id} (${opts.name ?? row.name})`);
 		});
