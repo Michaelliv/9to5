@@ -20,6 +20,14 @@ export function registerAdd(program: Command): void {
 			const now = Date.now();
 			const id = generateId();
 
+			const existing = db
+				.query("SELECT id FROM automations WHERE name = ?")
+				.get(name);
+			if (existing) {
+				console.error(`Automation named "${name}" already exists.`);
+				process.exit(1);
+			}
+
 			let nextRunAt: number | null = null;
 			if (opts.rrule) {
 				const rule = RRule.fromString(`RRULE:${opts.rrule}`);

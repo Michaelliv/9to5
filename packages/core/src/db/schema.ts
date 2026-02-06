@@ -50,6 +50,9 @@ export function initSchema(db: Database): void {
 	migrate("ALTER TABLE runs ADD COLUMN duration_ms INTEGER");
 	migrate("ALTER TABLE runs ADD COLUMN num_turns INTEGER");
 	migrate("ALTER TABLE runs ADD COLUMN result TEXT");
+	migrate(
+		"CREATE UNIQUE INDEX IF NOT EXISTS idx_automations_name ON automations(name)",
+	);
 
 	db.run(`
     CREATE TABLE IF NOT EXISTS inbox (

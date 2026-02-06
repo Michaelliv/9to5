@@ -31,6 +31,16 @@ The \`--rrule\` flag uses RFC 5545 recurrence rules:
 - Mondays at 9 AM: \`FREQ=WEEKLY;BYDAY=MO;BYHOUR=9\`
 
 Without \`--rrule\`, automations are manual-only (\`9to5 run <id>\`).
+
+### Editing via file
+
+\`\`\`bash
+9to5 export <id> > automation.json
+# edit the JSON file
+9to5 import automation.json --update
+\`\`\`
+
+\`--update\` matches by name and applies changed fields.
 `.trim();
 
 const MARKER = "## Task Scheduling (9to5)";

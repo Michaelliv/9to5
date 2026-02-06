@@ -1,6 +1,6 @@
 {
 	"name": "9to5",
-	"version": "0.1.5",
+	"version": "0.1.6",
 	"description": "Cron for Claude Code — schedule and automate Claude Code tasks",
 	"license": "MIT",
 	"repository": {
