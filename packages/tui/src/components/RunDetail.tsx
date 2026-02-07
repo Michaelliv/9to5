@@ -1,6 +1,7 @@
 import type { Run } from "@9to5/core";
 import { useSpinner } from "../hooks/useSpinner.ts";
 import { Field } from "./Field.tsx";
+import { LinkedText } from "./LinkedText.tsx";
 import { Section } from "./Section.tsx";
 
 const STATUS_STYLE: Record<string, { symbol: string; color: string }> = {
@@ -85,18 +86,18 @@ export function RunDetail({
 				{/* Result or Output */}
 				{run.result ? (
 					<Section title="Result">
-						<text>{prettyText(run.result)}</text>
+						<LinkedText>{prettyText(run.result)}</LinkedText>
 					</Section>
 				) : run.output ? (
 					<Section title="Output">
-						<text>{prettyText(run.output)}</text>
+						<LinkedText>{prettyText(run.output)}</LinkedText>
 					</Section>
 				) : null}
 
 				{/* Error */}
 				{run.error ? (
 					<Section title="Error">
-						<text fg="red">{run.error}</text>
+						<LinkedText fg="red">{run.error}</LinkedText>
 					</Section>
 				) : null}
 

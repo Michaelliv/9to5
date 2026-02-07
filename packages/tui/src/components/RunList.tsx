@@ -1,6 +1,6 @@
 import type { Run } from "@9to5/core";
 import { getDb } from "@9to5/core";
-import { useKeyboard } from "@opentui/react";
+import { useKeyboard, type useRenderer } from "@opentui/react";
 import { useCallback, useEffect } from "react";
 import { useDoubleTap } from "../hooks/useConfirm.ts";
 import { useDbQuery } from "../hooks/useDbQuery.ts";
@@ -29,12 +29,16 @@ type RunRow = Run & {
 
 export function RunList({
 	automationId,
+	automationCwd,
+	renderer,
 	focused,
 	onSelect,
 	onNotify,
 	onBack,
 }: {
 	automationId: string;
+	automationCwd: string;
+	renderer: ReturnType<typeof useRenderer>;
 	focused: boolean;
 	onSelect: (run: Run) => void;
 	onNotify: (message: string) => void;
@@ -131,13 +135,26 @@ export function RunList({
 			return;
 		}
 
-		if (key.name === "m" && selected.inbox_id) {
+		if (key.name === "return" && selected.inbox_id) {
 			const newReadAt = selected.inbox_read_at ? null : Date.now();
 			db.run("UPDATE inbox SET read_at = ? WHERE id = ?", [
 				newReadAt,
 				selected.inbox_id,
 			]);
 			refresh();
+		}
+
+		if (key.name === "s") {
+			if (!selected.session_id) {
+				onNotify("No session to resume");
+				return;
+			}
+			renderer.destroy();
+			const proc = Bun.spawnSync(["claude", "-r", selected.session_id], {
+				cwd: automationCwd,
+				stdio: ["inherit", "inherit", "inherit"],
+			});
+			process.exit(proc.exitCode ?? 0);
 		}
 	});
 

@@ -5,6 +5,7 @@ import { App } from "./app.tsx";
 
 const renderer = await createCliRenderer({
 	exitOnCtrlC: true,
+	useMouse: true,
 });
 
 createRoot(renderer).render(<App />);

@@ -3,6 +3,7 @@ import { getDb } from "@9to5/core";
 import { useDbQuery } from "../hooks/useDbQuery.ts";
 import { useSpinner } from "../hooks/useSpinner.ts";
 import { Field } from "./Field.tsx";
+import { LinkedText } from "./LinkedText.tsx";
 import { Section } from "./Section.tsx";
 
 const STATUS_STYLE: Record<string, { symbol: string; color: string }> = {
@@ -84,20 +85,20 @@ export function AutomationDetail({ automation }: { automation: Automation }) {
 
 				{/* Prompt */}
 				<Section title="Prompt">
-					<text>{a.prompt}</text>
+					<LinkedText>{a.prompt}</LinkedText>
 				</Section>
 
 				{/* System Prompt */}
 				{a.system_prompt ? (
 					<Section title="System Prompt">
-						<text>{a.system_prompt}</text>
+						<LinkedText>{a.system_prompt}</LinkedText>
 					</Section>
 				) : null}
 
 				{/* Allowed Tools */}
 				{a.allowed_tools ? (
 					<Section title="Allowed Tools">
-						<text>{a.allowed_tools}</text>
+						<LinkedText>{a.allowed_tools}</LinkedText>
 					</Section>
 				) : null}
 

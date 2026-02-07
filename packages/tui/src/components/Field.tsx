@@ -1,3 +1,5 @@
+import { LinkedText } from "./LinkedText.tsx";
+
 const LABEL_WIDTH = 14;
 
 export function Field({
@@ -10,7 +12,7 @@ export function Field({
 			<text>
 				<span fg="#666">{padded}</span>
 			</text>
-			<text>{value ?? "—"}</text>
+			{value ? <LinkedText>{value}</LinkedText> : <text>{"—"}</text>}
 		</box>
 	);
 }

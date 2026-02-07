@@ -1,7 +1,7 @@
 import type { Automation, Run } from "@9to5/core";
 import { getDb, isDaemonRunning } from "@9to5/core";
 import { useKeyboard, useRenderer } from "@opentui/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { AutomationDetail } from "./components/AutomationDetail.tsx";
 import { AutomationList } from "./components/AutomationList.tsx";
 import { RunDetail } from "./components/RunDetail.tsx";
@@ -25,8 +25,9 @@ function formatCountdown(ts: number | null): string | null {
 const RUNS_HINTS = [
 	{ k: "←", label: "back" },
 	{ k: "↑↓", label: "navigate" },
+	{ k: "s", label: "resume" },
 	{ k: "c", label: "copy output" },
-	{ k: "m", label: "toggle read" },
+	{ k: "⏎", label: "toggle read" },
 	{ k: "dd", label: "delete" },
 ];
 
@@ -71,6 +72,20 @@ export function App() {
 	useKeyboard((key) => {
 		if (key.name === "q") renderer.destroy();
 	});
+
+	useEffect(() => {
+		const onSelection = (sel: { getSelectedText: () => string }) => {
+			const text = sel.getSelectedText();
+			if (!text || text.length === 0) return;
+			renderer.copyToClipboardOSC52(text);
+			Bun.spawn(["pbcopy"], { stdin: new Blob([text]) });
+			notify("Copied to clipboard");
+		};
+		renderer.on("selection", onSelection);
+		return () => {
+			renderer.off("selection", onSelection);
+		};
+	}, [renderer, notify]);
 
 	const handleDrillDown = () => {
 		if (selectedAutomation) {
@@ -148,6 +163,8 @@ export function App() {
 							<RunList
 								key={selectedAutomation.id}
 								automationId={selectedAutomation.id}
+								automationCwd={selectedAutomation.cwd}
+								renderer={renderer}
 								focused={true}
 								onSelect={setSelectedRun}
 								onNotify={notify}
