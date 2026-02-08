@@ -8,7 +8,9 @@ const INSTRUCTIONS = `
 
 Use **9to5** to schedule and manage recurring Claude Code tasks. Run \`9to5 --help\` or \`9to5 <command> --help\` for full usage.
 
-Key commands: \`add\`, \`list\`, \`run\`, \`runs\`, \`inbox\`, \`edit\`, \`remove\`, \`start\`, \`stop\`, \`export\`, \`import\`, \`ui\`.
+Key commands: \`add\`, \`list\`, \`run\`, \`runs\`, \`inbox\`, \`edit\`, \`remove\`, \`restore\`, \`start\`, \`stop\`, \`export\`, \`import\`, \`ui\`.
+
+\`remove\` soft-deletes (recoverable). Use \`remove --force\` to permanently delete. \`restore <id>\` brings back a soft-deleted automation. \`list --deleted\` shows soft-deleted automations.
 
 ### Options for \`add\` and \`edit\`
 

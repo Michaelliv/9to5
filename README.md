@@ -88,7 +88,9 @@ You could. 9to5 adds what you'd end up building yourself:
 | `9to5 runs [id]` | View run history |
 | `9to5 resume <run-id>` | Resume the Claude Code session from a previous run |
 | `9to5 inbox` | View notifications from completed runs |
-| `9to5 remove <id>` | Delete an automation |
+| `9to5 remove <id>` | Soft-delete an automation (`--force` to permanently delete) |
+| `9to5 restore <id>` | Restore a soft-deleted automation |
+| `9to5 list --deleted` | List soft-deleted automations |
 | `9to5 export [id]` | Export automation(s) as JSON |
 | `9to5 import <file>` | Import automation(s) from JSON |
 | `9to5 start` | Start the background daemon |
@@ -106,7 +108,7 @@ Launch with `9to5 ui` for a two-panel terminal dashboard:
 
 - **Automations** - browse, run, pause, and delete with a detail panel showing prompt, schedule, and config
 - **Runs** - drill into an automation to see execution history with status, duration, cost, and structured output
-- **Hotkeys** - `r` run, `p` pause/resume, `dd` delete, `c` copy output, `m` toggle read, `q` quit
+- **Hotkeys** - `r` run, `p` pause/resume, `dd` delete (with `u` to undo), `c` copy output, `m` toggle read, `q` quit
 
 ## Webhooks
 

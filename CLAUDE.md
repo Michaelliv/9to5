@@ -29,6 +29,10 @@ Bun monorepo with three workspace packages:
 
 `add` command → row in `automations` table → daemon checks `next_run_at` → `executeRun` spawns `claude -p --output-format json` → parses JSON response → updates `runs` table + inserts into `inbox`.
 
+### Soft-delete
+
+`remove` sets `deleted_at` on the automation row rather than deleting it. All queries filter `WHERE deleted_at IS NULL`. `restore` clears `deleted_at` and sets status to `paused`. The unique name index only enforces uniqueness for non-deleted rows. Use `remove --force` for permanent hard-delete.
+
 ### Webhook triggers
 
 Automations can also be triggered externally via webhooks. Enabled with `9to5 webhook enable`, which generates a shared HMAC secret in `~/.9to5/webhook.secret`. When the daemon starts and a secret exists, it spins up two listeners alongside the cron poll loop:
