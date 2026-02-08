@@ -20,9 +20,7 @@ export function Footer() {
 						Blog
 					</a>
 				</div>
-				<p className="text-center text-xs text-text-faint">
-					MIT License
-				</p>
+				<p className="text-center text-xs text-text-faint">MIT License</p>
 			</div>
 		</footer>
 	);

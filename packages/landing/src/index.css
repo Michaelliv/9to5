@@ -23,7 +23,8 @@
 	--color-border-bright: rgba(255, 255, 255, 0.2);
 
 	--font-mono: "JetBrains Mono", "Fira Code", ui-monospace, monospace;
-	--font-body: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+	--font-body: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI",
+		sans-serif;
 }
 
 :root {
@@ -73,9 +74,7 @@ body {
 .scroll-fade-in {
 	opacity: 0;
 	transform: translateY(20px);
-	transition:
-		opacity 0.6s ease-out,
-		transform 0.6s ease-out;
+	transition: opacity 0.6s ease-out, transform 0.6s ease-out;
 }
 
 .scroll-fade-in.visible {
@@ -87,9 +86,7 @@ body {
 .stagger-children > * {
 	opacity: 0;
 	transform: translateY(16px);
-	transition:
-		opacity 0.4s ease-out,
-		transform 0.4s ease-out;
+	transition: opacity 0.4s ease-out, transform 0.4s ease-out;
 }
 
 .stagger-children.visible > * {
@@ -97,26 +94,52 @@ body {
 	transform: translateY(0);
 }
 
-.stagger-children.visible > *:nth-child(1) { transition-delay: 0ms; }
-.stagger-children.visible > *:nth-child(2) { transition-delay: 60ms; }
-.stagger-children.visible > *:nth-child(3) { transition-delay: 120ms; }
-.stagger-children.visible > *:nth-child(4) { transition-delay: 180ms; }
-.stagger-children.visible > *:nth-child(5) { transition-delay: 240ms; }
-.stagger-children.visible > *:nth-child(6) { transition-delay: 300ms; }
-.stagger-children.visible > *:nth-child(7) { transition-delay: 360ms; }
-.stagger-children.visible > *:nth-child(8) { transition-delay: 420ms; }
-.stagger-children.visible > *:nth-child(9) { transition-delay: 480ms; }
-.stagger-children.visible > *:nth-child(10) { transition-delay: 540ms; }
-.stagger-children.visible > *:nth-child(11) { transition-delay: 600ms; }
-.stagger-children.visible > *:nth-child(12) { transition-delay: 660ms; }
-.stagger-children.visible > *:nth-child(13) { transition-delay: 720ms; }
-.stagger-children.visible > *:nth-child(14) { transition-delay: 780ms; }
+.stagger-children.visible > *:nth-child(1) {
+	transition-delay: 0ms;
+}
+.stagger-children.visible > *:nth-child(2) {
+	transition-delay: 60ms;
+}
+.stagger-children.visible > *:nth-child(3) {
+	transition-delay: 120ms;
+}
+.stagger-children.visible > *:nth-child(4) {
+	transition-delay: 180ms;
+}
+.stagger-children.visible > *:nth-child(5) {
+	transition-delay: 240ms;
+}
+.stagger-children.visible > *:nth-child(6) {
+	transition-delay: 300ms;
+}
+.stagger-children.visible > *:nth-child(7) {
+	transition-delay: 360ms;
+}
+.stagger-children.visible > *:nth-child(8) {
+	transition-delay: 420ms;
+}
+.stagger-children.visible > *:nth-child(9) {
+	transition-delay: 480ms;
+}
+.stagger-children.visible > *:nth-child(10) {
+	transition-delay: 540ms;
+}
+.stagger-children.visible > *:nth-child(11) {
+	transition-delay: 600ms;
+}
+.stagger-children.visible > *:nth-child(12) {
+	transition-delay: 660ms;
+}
+.stagger-children.visible > *:nth-child(13) {
+	transition-delay: 720ms;
+}
+.stagger-children.visible > *:nth-child(14) {
+	transition-delay: 780ms;
+}
 
 /* Card hover */
 .card-hover {
-	transition:
-		border-color 0.2s ease-out,
-		background-color 0.2s ease-out;
+	transition: border-color 0.2s ease-out, background-color 0.2s ease-out;
 }
 
 .card-hover:hover {

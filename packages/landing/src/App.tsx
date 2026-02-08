@@ -1,4 +1,4 @@
-import { Hero, WhyNot, Examples, QuickStart, Footer } from "./components";
+import { Examples, Footer, Hero, QuickStart, WhyNot } from "./components";
 
 export default function App() {
 	return (

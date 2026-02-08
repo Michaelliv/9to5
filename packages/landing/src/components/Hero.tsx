@@ -1,5 +1,5 @@
-import { useState, useEffect, useRef } from "react";
 import anime from "animejs";
+import { useEffect, useRef, useState } from "react";
 
 export function Hero() {
 	const [copied, setCopied] = useState(false);
@@ -69,7 +69,10 @@ export function Hero() {
 					duration, and structured output.
 				</p>
 
-				<div ref={ctaRef} className="opacity-0 flex flex-col items-center gap-4">
+				<div
+					ref={ctaRef}
+					className="opacity-0 flex flex-col items-center gap-4"
+				>
 					<button
 						type="button"
 						onClick={() => handleCopy("npm install -g 9to5")}
@@ -86,6 +89,7 @@ export function Hero() {
 								viewBox="0 0 24 24"
 								stroke="currentColor"
 							>
+								<title>Copy</title>
 								<path
 									strokeLinecap="round"
 									strokeLinejoin="round"

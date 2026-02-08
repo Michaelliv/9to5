@@ -61,9 +61,7 @@ export function WhyNot() {
 						>
 							<span className="text-green mt-0.5 shrink-0">&#10003;</span>
 							<div>
-								<span className="font-medium text-text-primary">
-									{r.title}
-								</span>
+								<span className="font-medium text-text-primary">{r.title}</span>
 								<span className="text-text-muted"> — {r.desc}</span>
 							</div>
 						</div>

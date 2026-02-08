@@ -45,9 +45,7 @@ export function QuickStart() {
 	useEffect(() => {
 		if (!isVisible || hasStarted) return;
 		if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-			setDisplayedLines(
-				LINES.map((l) => ({ ...l, typing: false })),
-			);
+			setDisplayedLines(LINES.map((l) => ({ ...l, typing: false })));
 			return;
 		}
 		setHasStarted(true);
@@ -183,21 +181,17 @@ export function QuickStart() {
 
 					{/* Content */}
 					<div className="p-4 font-mono text-sm bg-bg-deep min-h-[280px] overflow-x-auto">
-						{displayedLines.map((line, i) => (
-							<div key={i} className="mb-1.5">
+						{displayedLines.map((line) => (
+							<div key={line.text} className="mb-1.5">
 								{line.type === "comment" ? (
 									<div className="text-text-faint">{line.text}</div>
 								) : (
 									<>
 										<div className="flex items-start gap-2">
-											<span className="text-green select-none shrink-0">
-												$
-											</span>
+											<span className="text-green select-none shrink-0">$</span>
 											<span className="text-text-primary break-all">
 												{line.text}
-												{line.typing && (
-													<span className="cursor-blink" />
-												)}
+												{line.typing && <span className="cursor-blink" />}
 											</span>
 										</div>
 										{line.output && (
