@@ -73,6 +73,9 @@ jobs:
 
       - run: bun install
 
+      - name: Build for npm
+        run: bun run build:publish
+
       - uses: actions/setup-node@v4
         with:
           node-version: 22
