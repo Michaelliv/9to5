@@ -6,12 +6,13 @@ import { useDoubleTap } from "../hooks/useConfirm.ts";
 import { useDbQuery } from "../hooks/useDbQuery.ts";
 import { useListNav } from "../hooks/useListNav.ts";
 import { useSpinner } from "../hooks/useSpinner.ts";
+import { t } from "../theme.ts";
 import { ListItem } from "./ListItem.tsx";
 
 const STATUS_STYLE: Record<string, { symbol: string; color: string }> = {
-	pending: { symbol: "◦", color: "yellow" },
-	completed: { symbol: "✓", color: "green" },
-	failed: { symbol: "✗", color: "red" },
+	pending: { symbol: "◦", color: t.warning },
+	completed: { symbol: "✓", color: t.success },
+	failed: { symbol: "✗", color: t.error },
 };
 
 function timeAgo(ts: number): string {
@@ -162,7 +163,7 @@ export function RunList({
 		return (
 			<box flexDirection="column" padding={1}>
 				<text>
-					<span fg="#555">No runs yet.</span>
+					<span fg={t.textMuted}>No runs yet.</span>
 				</text>
 			</box>
 		);
@@ -173,17 +174,17 @@ export function RunList({
 			{rows.map((r, i) => {
 				const st =
 					r.status === "running"
-						? { symbol: spinnerFrame, color: "#5599ff" }
+						? { symbol: spinnerFrame, color: t.running }
 						: (STATUS_STYLE[r.status] ?? STATUS_STYLE.pending);
 				const sel = i === selectedIndex;
 				const unread = r.inbox_id != null && r.inbox_read_at == null;
 				const nameColor = sel
-					? "cyan"
+					? t.accent
 					: r.status === "failed"
-						? "#c55"
+						? t.errorDim
 						: unread
-							? "#ddd"
-							: "#aaa";
+							? t.text
+							: t.textSecondary;
 
 				return (
 					<ListItem
@@ -192,9 +193,9 @@ export function RunList({
 						onClick={() => setSelectedIndex(i)}
 					>
 						<text>
-							<span fg={sel ? "cyan" : "#333"}>{sel ? "▸ " : "  "}</span>
+							<span fg={sel ? t.accent : t.border}>{sel ? "▸ " : "  "}</span>
 							<span fg={st.color}>{st.symbol} </span>
-							{unread ? <span fg="cyan">{"● "}</span> : null}
+							{unread ? <span fg={t.accent}>{"● "}</span> : null}
 							<span fg={nameColor}>{timeAgo(r.created_at)}</span>
 						</text>
 					</ListItem>

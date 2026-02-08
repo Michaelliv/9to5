@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { t } from "../theme.ts";
 
 export function Section({
 	title,
@@ -7,7 +8,7 @@ export function Section({
 	return (
 		<box flexDirection="column" marginTop={1}>
 			<text>
-				<span fg="cyan">
+				<span fg={t.accent}>
 					<strong>{title}</strong>
 				</span>
 			</text>

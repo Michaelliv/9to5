@@ -1,5 +1,7 @@
 import type { ReactNode } from "react";
+import { t } from "../theme.ts";
 
+const MD_LINK_RE = /\[([^\]\n]+)\]\((https?:\/\/[^\s)]+)\)/g;
 const URL_RE = /https?:\/\/[^\s)>\]"']+/g;
 const PATH_RE = /(?:^|(?<=\s))((?:\/|~\/)[^\s:)>\]"']+)/g;
 
@@ -15,10 +17,24 @@ function parseSegments(text: string): Segment[] {
 		value: string;
 	}[] = [];
 
-	for (const m of text.matchAll(URL_RE)) {
+	for (const m of text.matchAll(MD_LINK_RE)) {
 		matches.push({
 			start: m.index,
 			end: m.index + m[0].length,
+			href: m[2],
+			value: m[1],
+		});
+	}
+
+	for (const m of text.matchAll(URL_RE)) {
+		const start = m.index;
+		const end = m.index + m[0].length;
+		const overlaps = matches.some((x) => start < x.end && end > x.start);
+		if (overlaps) continue;
+
+		matches.push({
+			start,
+			end,
 			href: m[0],
 			value: m[0],
 		});
@@ -80,7 +96,7 @@ export function LinkedText({
 		if (seg.type === "link") {
 			return (
 				<a key={seg.href + seg.value} href={seg.href}>
-					<span fg="#5599ff">
+					<span fg={t.accent}>
 						<u>{seg.value}</u>
 					</span>
 				</a>

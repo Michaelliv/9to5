@@ -11,11 +11,13 @@ import { useDoubleTap } from "../hooks/useConfirm.ts";
 import { useDbQuery } from "../hooks/useDbQuery.ts";
 import { useListNav } from "../hooks/useListNav.ts";
 import { useSpinner } from "../hooks/useSpinner.ts";
+import { t } from "../theme.ts";
 import { ListItem } from "./ListItem.tsx";
+import { ShimmerText } from "./ShimmerText.tsx";
 
 const STATUS_ICON: Record<string, { symbol: string; color: string }> = {
-	active: { symbol: "●", color: "green" },
-	paused: { symbol: "◦", color: "#666" },
+	active: { symbol: "●", color: t.success },
+	paused: { symbol: "◦", color: t.textMuted },
 };
 
 const MAX_NAME_LEN = 20;
@@ -153,14 +155,14 @@ export function AutomationList({
 		return (
 			<box flexDirection="column" padding={1} gap={1}>
 				<text>
-					<span fg="#555">No automations yet.</span>
+					<span fg={t.textMuted}>No automations yet.</span>
 				</text>
 				<text>
-					<span fg="#555">{"Run "}</span>
-					<span fg="cyan">
+					<span fg={t.textMuted}>{"Run "}</span>
+					<span fg={t.accent}>
 						<strong>9to5 add</strong>
 					</span>
-					<span fg="#555">{" to create one."}</span>
+					<span fg={t.textMuted}>{" to create one."}</span>
 				</text>
 			</box>
 		);
@@ -172,20 +174,20 @@ export function AutomationList({
 				const isRunning = a.running_count > 0;
 				const isPaused = a.status === "paused";
 				const s = isRunning
-					? { symbol: spinnerFrame, color: "#5599ff" }
+					? { symbol: spinnerFrame, color: t.running }
 					: (STATUS_ICON[a.status] ?? STATUS_ICON.active);
 				const sel = i === selectedIndex;
 				const nameColor = sel
-					? "cyan"
+					? t.accent
 					: isRunning
-						? "#ccc"
+						? t.text
 						: isPaused
-							? "#777"
-							: "#ddd";
+							? t.textMuted
+							: t.text;
 				const suffixLen =
-					(a.unread_count > 0 ? ` (${a.unread_count})`.length : 0) +
-					(isRunning ? " running…".length : 0);
+					a.unread_count > 0 ? ` (${a.unread_count})`.length : 0;
 				const nameMax = MAX_NAME_LEN - suffixLen;
+				const displayName = truncate(a.name, nameMax);
 
 				return (
 					<ListItem
@@ -194,15 +196,24 @@ export function AutomationList({
 						onClick={() => setSelectedIndex(i)}
 					>
 						<text>
-							<span fg={sel ? "cyan" : "#333"}>{sel ? "▸ " : "  "}</span>
+							<span fg={sel ? t.accent : t.border}>{sel ? "▸ " : "  "}</span>
 							<span fg={s.color}>{s.symbol} </span>
-							<span fg={nameColor}>
-								<strong>{truncate(a.name, nameMax)}</strong>
-							</span>
+							{isRunning ? (
+								<ShimmerText
+									text={displayName}
+									dim={t.accentDim}
+									bright={t.running}
+									active
+									bold
+								/>
+							) : (
+								<span fg={nameColor}>
+									<strong>{displayName}</strong>
+								</span>
+							)}
 							{a.unread_count > 0 ? (
-								<span fg="cyan">{` (${a.unread_count})`}</span>
+								<span fg={t.accent}>{` (${a.unread_count})`}</span>
 							) : null}
-							{isRunning ? <span fg="#5599ff"> running…</span> : null}
 						</text>
 					</ListItem>
 				);

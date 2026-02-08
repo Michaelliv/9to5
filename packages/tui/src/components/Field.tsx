@@ -1,3 +1,4 @@
+import { t } from "../theme.ts";
 import { LinkedText } from "./LinkedText.tsx";
 
 const LABEL_WIDTH = 14;
@@ -10,7 +11,7 @@ export function Field({
 	return (
 		<box flexDirection="row">
 			<text>
-				<span fg="#666">{padded}</span>
+				<span fg={t.textMuted}>{padded}</span>
 			</text>
 			{value ? <LinkedText>{value}</LinkedText> : <text>{"—"}</text>}
 		</box>

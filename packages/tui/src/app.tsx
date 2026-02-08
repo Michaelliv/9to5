@@ -9,6 +9,7 @@ import { RunList } from "./components/RunList.tsx";
 import { StatusBar } from "./components/StatusBar.tsx";
 import { useDbQuery } from "./hooks/useDbQuery.ts";
 import { useNotification } from "./hooks/useNotification.ts";
+import { t } from "./theme.ts";
 
 type View = "automations" | "runs";
 
@@ -123,7 +124,7 @@ export function App() {
 					overflow="hidden"
 					border
 					borderStyle="rounded"
-					borderColor="#888"
+					borderColor={t.border}
 					title={leftTitle}
 				>
 					{view === "automations" ? (
@@ -154,7 +155,7 @@ export function App() {
 					flexGrow={1}
 					border
 					borderStyle="rounded"
-					borderColor="#888"
+					borderColor={t.border}
 					title={detailTitle}
 					paddingLeft={1}
 				>
@@ -171,7 +172,7 @@ export function App() {
 					) : (
 						<box flexGrow={1} justifyContent="center" alignItems="center">
 							<text>
-								<span fg="#666">Select an item to view details</span>
+								<span fg={t.textMuted}>Select an item to view details</span>
 							</text>
 						</box>
 					)}
@@ -184,7 +185,7 @@ export function App() {
 				flexDirection="column"
 				border
 				borderStyle="rounded"
-				borderColor="#888"
+				borderColor={t.border}
 				title="9to5"
 				paddingLeft={1}
 				paddingRight={1}
@@ -212,9 +213,9 @@ export function App() {
 				{/* Row 2: Status + Notification */}
 				<box height={1} flexDirection="row">
 					<text>
-						<span fg="green">{"◆"}</span>
+						<span fg={t.dot}>{"◆"}</span>
 						{statParts.length > 0 ? (
-							<span fg="#666">
+							<span fg={t.textMuted}>
 								{" · "}
 								{statParts.join(" · ")}
 							</span>
@@ -223,7 +224,7 @@ export function App() {
 					<box flexGrow={1} />
 					{notification ? (
 						<text>
-							<span fg="#ccc">{notification}</span>
+							<span fg={t.text}>{notification}</span>
 						</text>
 					) : null}
 				</box>

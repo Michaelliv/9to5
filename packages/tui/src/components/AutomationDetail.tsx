@@ -2,14 +2,15 @@ import type { Automation, Run } from "@9to5/core";
 import { getDb } from "@9to5/core";
 import { useDbQuery } from "../hooks/useDbQuery.ts";
 import { useSpinner } from "../hooks/useSpinner.ts";
+import { getMdStyle, t } from "../theme.ts";
 import { Field } from "./Field.tsx";
 import { LinkedText } from "./LinkedText.tsx";
 import { Section } from "./Section.tsx";
 
 const STATUS_STYLE: Record<string, { symbol: string; color: string }> = {
-	pending: { symbol: "◦", color: "yellow" },
-	completed: { symbol: "✓", color: "green" },
-	failed: { symbol: "✗", color: "red" },
+	pending: { symbol: "◦", color: t.warning },
+	completed: { symbol: "✓", color: t.success },
+	failed: { symbol: "✗", color: t.error },
 };
 
 function timeAgo(ts: number): string {
@@ -46,7 +47,7 @@ export function AutomationDetail({ automation }: { automation: Automation }) {
 	const hasRunning = recentRuns.some((r) => r.status === "running");
 	const spinnerFrame = useSpinner(hasRunning);
 
-	const statusColor = a.status === "active" ? "green" : "yellow";
+	const statusColor = a.status === "active" ? t.success : t.warning;
 	const statusSymbol = a.status === "active" ? "●" : "○";
 
 	return (
@@ -56,7 +57,7 @@ export function AutomationDetail({ automation }: { automation: Automation }) {
 				<text>
 					<span fg={statusColor}>{statusSymbol} </span>
 					<strong>{a.name}</strong>
-					<span fg="#666"> ({a.status})</span>
+					<span fg={t.textMuted}> ({a.status})</span>
 				</text>
 
 				{/* Config */}
@@ -85,13 +86,17 @@ export function AutomationDetail({ automation }: { automation: Automation }) {
 
 				{/* Prompt */}
 				<Section title="Prompt">
-					<LinkedText>{a.prompt}</LinkedText>
+					<markdown content={a.prompt} syntaxStyle={getMdStyle()} conceal />
 				</Section>
 
 				{/* System Prompt */}
 				{a.system_prompt ? (
 					<Section title="System Prompt">
-						<LinkedText>{a.system_prompt}</LinkedText>
+						<markdown
+							content={a.system_prompt}
+							syntaxStyle={getMdStyle()}
+							conceal
+						/>
 					</Section>
 				) : null}
 
@@ -108,7 +113,7 @@ export function AutomationDetail({ automation }: { automation: Automation }) {
 						{recentRuns.map((run) => {
 							const st =
 								run.status === "running"
-									? { symbol: spinnerFrame, color: "#5599ff" }
+									? { symbol: spinnerFrame, color: t.running }
 									: (STATUS_STYLE[run.status] ?? STATUS_STYLE.pending);
 							const duration = formatDuration(run.duration_ms);
 							const cost =
@@ -120,7 +125,7 @@ export function AutomationDetail({ automation }: { automation: Automation }) {
 							return (
 								<text key={run.id}>
 									<span fg={st.color}>{st.symbol} </span>
-									<span fg="#aaa">{parts}</span>
+									<span fg={t.textSecondary}>{parts}</span>
 								</text>
 							);
 						})}

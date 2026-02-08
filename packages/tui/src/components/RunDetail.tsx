@@ -1,22 +1,27 @@
 import type { Run } from "@9to5/core";
 import { useSpinner } from "../hooks/useSpinner.ts";
+import { getMdStyle, t } from "../theme.ts";
 import { Field } from "./Field.tsx";
 import { LinkedText } from "./LinkedText.tsx";
 import { Section } from "./Section.tsx";
 
 const STATUS_STYLE: Record<string, { symbol: string; color: string }> = {
-	pending: { symbol: "◦", color: "yellow" },
-	completed: { symbol: "✓", color: "green" },
-	failed: { symbol: "✗", color: "red" },
+	pending: { symbol: "◦", color: t.warning },
+	completed: { symbol: "✓", color: t.success },
+	failed: { symbol: "✗", color: t.error },
 };
 
-function prettyText(raw: string): string {
+function isJson(raw: string): boolean {
 	try {
-		const parsed = JSON.parse(raw);
-		return JSON.stringify(parsed, null, 2);
+		JSON.parse(raw);
+		return true;
 	} catch {
-		return raw;
+		return false;
 	}
+}
+
+function prettyJson(raw: string): string {
+	return JSON.stringify(JSON.parse(raw), null, 2);
 }
 
 function formatDuration(ms: number | null): string {
@@ -33,7 +38,7 @@ export function RunDetail({
 	const spinnerFrame = useSpinner(run.status === "running");
 	const st =
 		run.status === "running"
-			? { symbol: spinnerFrame, color: "#5599ff" }
+			? { symbol: spinnerFrame, color: t.running }
 			: (STATUS_STYLE[run.status] ?? STATUS_STYLE.pending);
 
 	return (
@@ -43,7 +48,7 @@ export function RunDetail({
 				<text>
 					<span fg={st.color}>{st.symbol} </span>
 					<strong>{automationName ?? run.automation_id}</strong>
-					<span fg="#666"> ({run.status})</span>
+					<span fg={t.textMuted}> ({run.status})</span>
 				</text>
 
 				{/* Metadata */}
@@ -86,25 +91,41 @@ export function RunDetail({
 				{/* Result or Output */}
 				{run.result ? (
 					<Section title="Result">
-						<LinkedText>{prettyText(run.result)}</LinkedText>
+						{isJson(run.result) ? (
+							<LinkedText>{prettyJson(run.result)}</LinkedText>
+						) : (
+							<markdown
+								content={run.result}
+								syntaxStyle={getMdStyle()}
+								conceal
+							/>
+						)}
 					</Section>
 				) : run.output ? (
 					<Section title="Output">
-						<LinkedText>{prettyText(run.output)}</LinkedText>
+						{isJson(run.output) ? (
+							<LinkedText>{prettyJson(run.output)}</LinkedText>
+						) : (
+							<markdown
+								content={run.output}
+								syntaxStyle={getMdStyle()}
+								conceal
+							/>
+						)}
 					</Section>
 				) : null}
 
 				{/* Error */}
 				{run.error ? (
 					<Section title="Error">
-						<LinkedText fg="red">{run.error}</LinkedText>
+						<LinkedText fg={t.error}>{run.error}</LinkedText>
 					</Section>
 				) : null}
 
 				{!run.output && !run.error ? (
 					<box marginTop={1}>
 						<text>
-							<span fg="#666">No output yet.</span>
+							<span fg={t.textMuted}>No output yet.</span>
 						</text>
 					</box>
 				) : null}
