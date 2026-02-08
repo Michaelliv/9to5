@@ -79,6 +79,18 @@ function shutdown() {
 process.on("SIGTERM", shutdown);
 process.on("SIGINT", shutdown);
 
+// --- Clear stale runs from previous daemon lifecycle ---
+const staleRuns = db
+	.query(
+		"UPDATE runs SET status = 'failed', error = 'Stale run cleared on daemon restart', completed_at = ? WHERE status = 'running' RETURNING id",
+	)
+	.all(Date.now()) as { id: string }[];
+if (staleRuns.length > 0) {
+	console.log(
+		`Cleared ${staleRuns.length} stale run(s): ${staleRuns.map((r) => r.id).join(", ")}`,
+	);
+}
+
 // --- Start poll loop ---
 console.log("9to5 daemon started");
 tick();
