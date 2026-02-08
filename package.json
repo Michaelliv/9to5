@@ -1,6 +1,6 @@
 {
 	"name": "9to5",
-	"version": "0.2.0",
+	"version": "0.2.1",
 	"description": "Cron for Claude Code — schedule and automate Claude Code tasks",
 	"license": "MIT",
 	"repository": {
@@ -16,13 +16,21 @@
 	"scripts": {
 		"dev": "bun run packages/cli/src/index.ts",
 		"build": "bun build --compile packages/cli/src/index.ts --outfile 9to5",
-		"build:publish": "bun build packages/cli/src/index.ts --outfile dist/cli.js --target bun && bun build packages/tui/src/index.tsx --outdir dist/tui --target bun",
+		"build:publish": "bun build packages/cli/src/index.ts --outfile dist/cli.js --target bun && bun build packages/tui/src/index.tsx --outdir dist/tui --target bun --external @opentui/core-darwin-arm64 --external @opentui/core-darwin-x64 --external @opentui/core-linux-x64 --external @opentui/core-linux-arm64 --external @opentui/core-win32-x64 --external @opentui/core-win32-arm64",
 		"prepublishOnly": "bun run build:publish",
 		"check": "bunx biome check .",
 		"test": "bun test",
 		"landing:dev": "cd packages/landing && bun run dev",
 		"landing:build": "cd packages/landing && bun run build",
 		"landing:preview": "cd packages/landing && bun run preview"
+	},
+	"optionalDependencies": {
+		"@opentui/core-darwin-arm64": "0.1.77",
+		"@opentui/core-darwin-x64": "0.1.77",
+		"@opentui/core-linux-x64": "0.1.77",
+		"@opentui/core-linux-arm64": "0.1.77",
+		"@opentui/core-win32-x64": "0.1.77",
+		"@opentui/core-win32-arm64": "0.1.77"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "^1.9.0",
