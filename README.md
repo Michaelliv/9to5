@@ -1,10 +1,10 @@
 # 9to5
 
-You use Claude Code. Some tasks — code reviews, security scans, dependency audits — should just happen on their own. 9to5 makes that work.
+You use Claude Code. Some tasks - code reviews, security scans, dependency audits - should just happen on their own. 9to5 makes that work.
 
 Set a prompt, set a schedule, set a budget. A background daemon runs it while you're not looking. Results land in your inbox with cost, duration, and structured output.
 
-> **Agents:** for complete option references and scheduling examples, read [`skills/9to5/SKILL.md`](skills/9to5/SKILL.md) or install the skill with `npx skills add Michaelliv/9to5`. You can also run `9to5 onboard` to add instructions to `~/.claude/CLAUDE.md`.
+> **Agents:** for complete option references and scheduling examples, read [`skills/9to5/SKILL.md`](skills/9to5/SKILL.md) or install the skill with `npx skills add Michaelliv/9to5`. You should run `9to5 onboard` to add instructions to `~/.claude/CLAUDE.md`.
 
 ## What people automate
 
@@ -52,7 +52,7 @@ bun install
 # Run it immediately to see what you get
 9to5 run <id>
 
-# Start the daemon — it handles the rest
+# Start the daemon - it handles the rest
 9to5 start
 
 # Or browse everything in the TUI
@@ -63,13 +63,13 @@ bun install
 
 You could. 9to5 adds what you'd end up building yourself:
 
-- **Budget caps per automation** — it won't burn your API credits overnight
-- **Run history with cost and duration** — know what each run cost and how long it took
-- **Inbox** — read/unread notifications so you know what happened while you were away
-- **Session resume** — pick up where a run left off with `9to5 resume <run-id>`
-- **Interactive TUI** — browse, run, pause, delete, and drill into output without leaving the terminal
-- **Export/import** — share automations as JSON, bring them to another machine
-- **Model and system prompt per automation** — different personas for different jobs
+- **Budget caps per automation** - it won't burn your API credits overnight
+- **Run history with cost and duration** - know what each run cost and how long it took
+- **Inbox** - read/unread notifications so you know what happened while you were away
+- **Session resume** - pick up where a run left off with `9to5 resume <run-id>`
+- **Interactive TUI** - browse, run, pause, delete, and drill into output without leaving the terminal
+- **Export/import** - share automations as JSON, bring them to another machine
+- **Model and system prompt per automation** - different personas for different jobs
 
 ## Commands
 
@@ -94,9 +94,9 @@ You could. 9to5 adds what you'd end up building yourself:
 
 Launch with `9to5 ui` for a two-panel terminal dashboard:
 
-- **Automations** — browse, run, pause, and delete with a detail panel showing prompt, schedule, and config
-- **Runs** — drill into an automation to see execution history with status, duration, cost, and structured output
-- **Hotkeys** — `r` run, `p` pause/resume, `dd` delete, `c` copy output, `m` toggle read, `q` quit
+- **Automations** - browse, run, pause, and delete with a detail panel showing prompt, schedule, and config
+- **Runs** - drill into an automation to see execution history with status, duration, cost, and structured output
+- **Hotkeys** - `r` run, `p` pause/resume, `dd` delete, `c` copy output, `m` toggle read, `q` quit
 
 ## Data
 
