@@ -64,8 +64,8 @@ export function Hero() {
 					ref={subtitleRef}
 					className="opacity-0 text-lg md:text-xl text-text-secondary mb-10 max-w-2xl mx-auto leading-relaxed"
 				>
-					Set a prompt, set a schedule, set a budget. A background daemon runs
-					it while you're not looking. Results land in your inbox with cost,
+					Set a prompt, set a schedule, set a budget. It runs in the background
+					while you're not looking. Results land in your inbox with cost,
 					duration, and structured output.
 				</p>
 

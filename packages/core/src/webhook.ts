@@ -5,6 +5,7 @@ import { DATA_DIR, ensureDataDir } from "./config.ts";
 
 export const WEBHOOK_SECRET_FILE = join(DATA_DIR, "webhook.secret");
 export const WEBHOOK_PORT_FILE = join(DATA_DIR, "webhook.port");
+export const WEBHOOK_DISABLED_FILE = join(DATA_DIR, "webhook.disabled");
 export const DEFAULT_WEBHOOK_PORT = 9505;
 export const TIMESTAMP_MAX_AGE_MS = 5 * 60 * 1000;
 
@@ -44,8 +45,13 @@ export function getWebhookConfig(): WebhookConfig | null {
 	}
 }
 
+export function isWebhookDisabled(): boolean {
+	return existsSync(WEBHOOK_DISABLED_FILE);
+}
+
 export function enableWebhook(port?: number): WebhookConfig {
 	ensureDataDir();
+	if (existsSync(WEBHOOK_DISABLED_FILE)) unlinkSync(WEBHOOK_DISABLED_FILE);
 	const secret = randomBytes(32).toString("hex");
 	writeFileSync(WEBHOOK_SECRET_FILE, secret, { mode: 0o600 });
 	const actualPort = port ?? DEFAULT_WEBHOOK_PORT;
@@ -56,6 +62,8 @@ export function enableWebhook(port?: number): WebhookConfig {
 }
 
 export function disableWebhook(): void {
+	ensureDataDir();
+	writeFileSync(WEBHOOK_DISABLED_FILE, "", { mode: 0o600 });
 	if (existsSync(WEBHOOK_SECRET_FILE)) unlinkSync(WEBHOOK_SECRET_FILE);
 	if (existsSync(WEBHOOK_PORT_FILE)) unlinkSync(WEBHOOK_PORT_FILE);
 }

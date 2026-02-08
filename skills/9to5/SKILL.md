@@ -63,9 +63,10 @@ bun run build
 | `9to5 stop` | Stop the background daemon |
 | `9to5 onboard` | Add 9to5 instructions to ~/.claude/CLAUDE.md |
 | `9to5 ui` | Launch the interactive TUI dashboard |
-| `9to5 webhook enable` | Enable webhook triggers (generates secret + URLs) |
+| `9to5 webhook info` | Show webhook configuration and URLs |
+| `9to5 webhook refresh` | Regenerate the webhook secret |
+| `9to5 webhook enable` | Enable webhook triggers |
 | `9to5 webhook disable` | Disable webhook triggers |
-| `9to5 webhook status` | Show webhook status and URLs |
 | `9to5 webhook url <id>` | Print ready-to-use trigger commands for an automation |
 
 ## Options for `add` and `edit`
@@ -120,33 +121,32 @@ Navigation: arrow keys or `j`/`k`, `q` to quit.
 
 Trigger automations from GitHub Actions, CI pipelines, or scripts on other machines. Two paths — local HTTP and remote via ntfy.sh — both secured with HMAC-SHA256 signing. No infrastructure to host, no accounts needed.
 
+Webhooks are enabled by default — the daemon auto-generates a secret on first start. Use `9to5 webhook disable` to turn them off.
+
 ```bash
-# Enable webhooks (generates secret, prints local + remote URLs)
-9to5 webhook enable
+# View webhook config and URLs
+9to5 webhook info
 
 # Get ready-to-use curl commands for a specific automation
 9to5 webhook url <automation-id>
 
-# Restart daemon to pick up config
-9to5 stop && 9to5 start
+# Regenerate the secret (breaks existing integrations)
+9to5 webhook refresh
 ```
 
 **Local trigger** — `POST http://localhost:9505/trigger/<id>` with signed body and `X-Signature` header. For same-machine or local network scripts.
 
-**Remote trigger** — `POST` to the ntfy.sh URL. Works from anywhere. The daemon subscribes via SSE.
+**Remote trigger** — `POST` to the ntfy.sh URL shown by `webhook info`. Works from anywhere. The daemon subscribes via SSE.
 
 Both verify signatures and reject messages older than 5 minutes.
-
-| Option | Description | Default |
-|--------|-------------|---------|
-| `--port <n>` | Local webhook server port (on `enable`) | `9505` |
 
 ## Data storage
 
 All data lives in `~/.9to5/`:
 - `db.sqlite` — SQLite database (WAL mode) with automations, runs, and inbox tables
 - `daemon.pid` — PID file for the background daemon
-- `webhook.secret` — HMAC secret for webhook triggers (created by `webhook enable`)
+- `webhook.secret` — HMAC secret for webhook triggers (auto-generated on first daemon start)
+- `webhook.disabled` — Marker file indicating webhooks are explicitly disabled
 
 ## Example
 

@@ -48,8 +48,10 @@ program
 		const sourceTui = new URL("../../tui/src/index.tsx", import.meta.url)
 			.pathname;
 		const tui = existsSync(bundledTui) ? bundledTui : sourceTui;
+		const daemonScript = new URL("./daemon/index.ts", import.meta.url).pathname;
 		spawnSync(["bun", "run", tui], {
 			stdio: ["inherit", "inherit", "inherit"],
+			env: { ...process.env, NINE_TO_FIVE_DAEMON_SCRIPT: daemonScript },
 		});
 	});
 

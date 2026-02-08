@@ -33,6 +33,8 @@ export async function executeRun(
 			stderr: "pipe",
 		});
 
+		db.run("UPDATE runs SET pid = ? WHERE id = ?", [proc.pid, runId]);
+
 		const output = await new Response(proc.stdout).text();
 		const exitCode = await proc.exited;
 

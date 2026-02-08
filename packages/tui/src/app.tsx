@@ -1,5 +1,5 @@
 import type { Automation, Run } from "@9to5/core";
-import { getDb, isDaemonRunning } from "@9to5/core";
+import { getDb, isDaemonRunning, startDaemon } from "@9to5/core";
 import { useKeyboard, useRenderer } from "@opentui/react";
 import { useEffect, useState } from "react";
 import { AutomationDetail } from "./components/AutomationDetail.tsx";
@@ -58,12 +58,13 @@ export function App() {
 				"SELECT MIN(next_run_at) as next FROM automations WHERE status = 'active' AND deleted_at IS NULL AND next_run_at IS NOT NULL AND next_run_at > ?",
 			)
 			.get(Date.now()) as { next: number | null };
-		const daemonUp = isDaemonRunning();
-		return { running, failed, nextRunAt, daemonUp };
+		if (!isDaemonRunning()) {
+			startDaemon();
+		}
+		return { running, failed, nextRunAt };
 	});
 
 	const statParts: string[] = [];
-	if (!stats.daemonUp) statParts.push("daemon stopped");
 	if (stats.running > 0) statParts.push(`${stats.running} running`);
 	if (stats.failed > 0) statParts.push(`${stats.failed} failed`);
 	const nextIn = formatCountdown(stats.nextRunAt);
@@ -158,7 +159,10 @@ export function App() {
 					paddingLeft={1}
 				>
 					{view === "automations" && selectedAutomation ? (
-						<AutomationDetail automation={selectedAutomation} />
+						<AutomationDetail
+							key={selectedAutomation.id}
+							automation={selectedAutomation}
+						/>
 					) : view === "runs" && selectedRun ? (
 						<RunDetail
 							run={selectedRun}
@@ -208,15 +212,11 @@ export function App() {
 				{/* Row 2: Status + Notification */}
 				<box height={1} flexDirection="row">
 					<text>
-						{!stats.daemonUp ? (
-							<span fg="yellow">{"daemon stopped"}</span>
-						) : (
-							<span fg="green">{"◆ daemon"}</span>
-						)}
+						<span fg="green">{"◆"}</span>
 						{statParts.length > 0 ? (
 							<span fg="#666">
 								{" · "}
-								{(stats.daemonUp ? statParts : statParts.slice(1)).join(" · ")}
+								{statParts.join(" · ")}
 							</span>
 						) : null}
 					</text>

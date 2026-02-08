@@ -58,10 +58,7 @@ npx 9to5 <command>
 # Run it immediately to see what you get
 9to5 run <id>
 
-# Start the daemon - it handles the rest
-9to5 start
-
-# Or browse everything in the TUI
+# Browse everything in the TUI
 9to5 ui
 ```
 
@@ -73,7 +70,7 @@ You could. 9to5 adds what you'd end up building yourself:
 - **Run history with cost and duration** - know what each run cost and how long it took
 - **Inbox** - read/unread notifications so you know what happened while you were away
 - **Session resume** - pick up where a run left off with `9to5 resume <run-id>`
-- **Interactive TUI** - browse, run, pause, delete, and drill into output without leaving the terminal
+- **Interactive TUI** - browse, run, pause, delete, and drill into output without leaving the terminal. The daemon auto-starts and self-heals.
 - **Export/import** - share automations as JSON, bring them to another machine
 - **Model and system prompt per automation** - different personas for different jobs
 
@@ -97,9 +94,10 @@ You could. 9to5 adds what you'd end up building yourself:
 | `9to5 stop` | Stop the background daemon |
 | `9to5 onboard` | Add 9to5 instructions to `~/.claude/CLAUDE.md` |
 | `9to5 ui` | Launch the interactive TUI dashboard |
-| `9to5 webhook enable` | Enable webhook triggers (local + remote) |
+| `9to5 webhook info` | Show webhook configuration and URLs |
+| `9to5 webhook refresh` | Regenerate the webhook secret |
+| `9to5 webhook enable` | Enable webhook triggers |
 | `9to5 webhook disable` | Disable webhook triggers |
-| `9to5 webhook status` | Show webhook status and URLs |
 | `9to5 webhook url <id>` | Print trigger commands for an automation |
 
 ## TUI dashboard
@@ -108,26 +106,28 @@ Launch with `9to5 ui` for a two-panel terminal dashboard:
 
 - **Automations** - browse, run, pause, and delete with a detail panel showing prompt, schedule, and config
 - **Runs** - drill into an automation to see execution history with status, duration, cost, and structured output
-- **Hotkeys** - `r` run, `p` pause/resume, `dd` delete (with `u` to undo), `c` copy output, `m` toggle read, `q` quit
+- **Hotkeys** - `r` run, `p` pause/resume, `dd` delete (with `u` to undo), `c` copy output, `⏎` toggle read, `q` quit
 
 ## Webhooks
 
 Trigger automations from GitHub Actions, CI, Zapier, or any script. Two trigger paths — local HTTP and remote via [ntfy.sh](https://ntfy.sh) — both secured with HMAC-SHA256 signing. No infrastructure, no dependencies, completely free.
 
+Webhooks are enabled by default — the daemon auto-generates a secret on first start. Use `9to5 webhook disable` to turn them off.
+
 ```bash
-# Enable webhooks (generates secret, prints URLs)
-9to5 webhook enable
+# View webhook config and URLs
+9to5 webhook info
 
 # Get ready-to-use curl commands for an automation
 9to5 webhook url <automation-id>
 
-# Restart daemon to pick up webhook config
-9to5 stop && 9to5 start
+# Regenerate the secret (breaks existing integrations)
+9to5 webhook refresh
 ```
 
 **Local trigger** — POST to `http://localhost:9505/trigger/<id>` with a signed body and `X-Signature` header. Works for scripts on the same machine or in your local network.
 
-**Remote trigger** — POST to the ntfy.sh URL printed by `webhook enable`. The daemon subscribes via SSE. Works from anywhere — CI, GitHub Actions, other machines.
+**Remote trigger** — POST to the ntfy.sh URL shown by `webhook info`. The daemon subscribes via SSE. Works from anywhere — CI, GitHub Actions, other machines.
 
 Both paths verify HMAC-SHA256 signatures and reject messages older than 5 minutes.
 

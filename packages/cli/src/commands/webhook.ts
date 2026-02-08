@@ -1,12 +1,12 @@
 import {
 	type Automation,
-	DEFAULT_WEBHOOK_PORT,
 	disableWebhook,
 	enableWebhook,
 	getDb,
 	getNtfyUrl,
 	getWebhookConfig,
 	isDaemonRunning,
+	isWebhookDisabled,
 	signPayload,
 } from "@9to5/core";
 import type { Command } from "commander";
@@ -19,20 +19,8 @@ export function registerWebhook(program: Command): void {
 	webhook
 		.command("enable")
 		.description("Enable webhook triggers")
-		.option(
-			"-p, --port <port>",
-			"Local webhook server port",
-			String(DEFAULT_WEBHOOK_PORT),
-		)
-		.action((opts: { port: string }) => {
-			const port = Number.parseInt(opts.port, 10);
-			if (Number.isNaN(port) || port < 1 || port > 65535) {
-				console.error("Invalid port number.");
-				process.exit(1);
-			}
-			const config = enableWebhook(
-				port !== DEFAULT_WEBHOOK_PORT ? port : undefined,
-			);
+		.action(() => {
+			const config = enableWebhook();
 			console.log("Webhook triggers enabled.\n");
 			console.log(`Secret:    ${config.secret}`);
 			console.log(
@@ -60,20 +48,49 @@ export function registerWebhook(program: Command): void {
 		});
 
 	webhook
-		.command("status")
-		.description("Show webhook trigger status")
+		.command("info")
+		.description("Show webhook configuration")
 		.action(() => {
 			const config = getWebhookConfig();
 			if (!config) {
-				console.log("Webhooks: disabled");
-				console.log("\nRun `9to5 webhook enable` to set up webhook triggers.");
+				if (isWebhookDisabled()) {
+					console.log("Webhooks: disabled");
+					console.log("\nRun `9to5 webhook enable` to re-enable.");
+				} else {
+					console.log("No webhook secret found.");
+					console.log(
+						"\nThe daemon auto-generates a secret on first start. Run `9to5 start` to initialize.",
+					);
+				}
 				return;
 			}
-			console.log("Webhooks: enabled");
+			console.log(`Secret:    ${config.secret}`);
 			console.log(
 				`Local URL: http://localhost:${config.port}/trigger/<automation-id>`,
 			);
 			console.log(`Ntfy URL:  ${getNtfyUrl(config.secret)}`);
+		});
+
+	webhook
+		.command("refresh")
+		.description("Regenerate the webhook secret")
+		.action(() => {
+			disableWebhook();
+			const config = enableWebhook();
+			console.log("Webhook secret regenerated.\n");
+			console.log(`Secret:    ${config.secret}`);
+			console.log(
+				`Local URL: http://localhost:${config.port}/trigger/<automation-id>`,
+			);
+			console.log(`Ntfy URL:  ${getNtfyUrl(config.secret)}`);
+			console.log(
+				"\nExisting integrations will need to be updated with the new secret.",
+			);
+			if (isDaemonRunning()) {
+				console.log(
+					"Restart the daemon for changes to take effect: 9to5 stop && 9to5 start",
+				);
+			}
 		});
 
 	webhook
@@ -82,7 +99,9 @@ export function registerWebhook(program: Command): void {
 		.action((automationId: string) => {
 			const config = getWebhookConfig();
 			if (!config) {
-				console.error("Webhooks not enabled. Run `9to5 webhook enable` first.");
+				console.error(
+					"No webhook secret found. Start the daemon first: 9to5 start",
+				);
 				process.exit(1);
 			}
 

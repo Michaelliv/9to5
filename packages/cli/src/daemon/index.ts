@@ -4,10 +4,12 @@ import {
 	DAEMON_POLL_INTERVAL_MS,
 	PID_FILE,
 	RRule,
+	enableWebhook,
 	executeRun,
 	generateId,
 	getDb,
 	getWebhookConfig,
+	isWebhookDisabled,
 } from "@9to5/core";
 import { type NtfyListener, startNtfyListener } from "./ntfy-listener.ts";
 import { type WebhookServer, startWebhookServer } from "./webhook-server.ts";
@@ -42,7 +44,33 @@ async function runAutomation(automation: Automation): Promise<void> {
 	);
 }
 
+function isProcessAlive(pid: number): boolean {
+	try {
+		process.kill(pid, 0);
+		return true;
+	} catch {
+		return false;
+	}
+}
+
+function reapStaleRuns(): void {
+	const running = db
+		.query("SELECT id, pid FROM runs WHERE status = 'running'")
+		.all() as { id: string; pid: number | null }[];
+
+	for (const run of running) {
+		if (run.pid != null && isProcessAlive(run.pid)) continue;
+		db.run(
+			"UPDATE runs SET status = 'failed', error = 'Process exited unexpectedly', completed_at = ? WHERE id = ?",
+			[Date.now(), run.id],
+		);
+		console.log(`Reaped stale run ${run.id}`);
+	}
+}
+
 async function tick(): Promise<void> {
+	reapStaleRuns();
+
 	const now = Date.now();
 	const due = db
 		.query(
@@ -55,7 +83,13 @@ async function tick(): Promise<void> {
 	}
 }
 
-// --- Start webhook triggers if enabled ---
+// --- Auto-generate webhook secret if missing and not explicitly disabled ---
+if (!getWebhookConfig() && !isWebhookDisabled()) {
+	enableWebhook();
+	console.log("Webhook secret auto-generated.");
+}
+
+// --- Start webhook triggers ---
 let webhookServer: WebhookServer | null = null;
 let ntfyListener: NtfyListener | null = null;
 
@@ -78,18 +112,6 @@ function shutdown() {
 
 process.on("SIGTERM", shutdown);
 process.on("SIGINT", shutdown);
-
-// --- Clear stale runs from previous daemon lifecycle ---
-const staleRuns = db
-	.query(
-		"UPDATE runs SET status = 'failed', error = 'Stale run cleared on daemon restart', completed_at = ? WHERE status = 'running' RETURNING id",
-	)
-	.all(Date.now()) as { id: string }[];
-if (staleRuns.length > 0) {
-	console.log(
-		`Cleared ${staleRuns.length} stale run(s): ${staleRuns.map((r) => r.id).join(", ")}`,
-	);
-}
 
 // --- Start poll loop ---
 console.log("9to5 daemon started");

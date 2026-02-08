@@ -5,6 +5,8 @@ export {
 	DAEMON_POLL_INTERVAL_MS,
 	ensureDataDir,
 	isDaemonRunning,
+	stopDaemon,
+	startDaemon,
 } from "./config.ts";
 export type {
 	Automation,
@@ -28,6 +30,7 @@ export {
 	deriveTopic,
 	getNtfyUrl,
 	getWebhookConfig,
+	isWebhookDisabled,
 	enableWebhook,
 	disableWebhook,
 	signPayload,

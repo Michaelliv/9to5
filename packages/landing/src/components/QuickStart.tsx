@@ -20,13 +20,7 @@ const LINES: TerminalLine[] = [
 		text: "9to5 run 1",
 		output: "Run completed — $0.12, 34s",
 	},
-	{ type: "comment", text: "# Start the daemon — it handles the rest" },
-	{
-		type: "command",
-		text: "9to5 start",
-		output: "Daemon started (pid: 48291)",
-	},
-	{ type: "comment", text: "# Or browse everything in the TUI" },
+	{ type: "comment", text: "# Browse everything in the TUI" },
 	{ type: "command", text: "9to5 ui" },
 ];
 
@@ -138,7 +132,7 @@ export function QuickStart() {
 						Quick Start
 					</p>
 					<h2 className="text-2xl md:text-3xl font-semibold mb-4">
-						Up and running in four commands
+						Up and running in three commands
 					</h2>
 					<p className="text-text-secondary text-sm">
 						Requires{" "}

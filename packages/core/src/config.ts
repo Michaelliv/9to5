@@ -1,4 +1,4 @@
-import { existsSync, mkdirSync, readFileSync } from "node:fs";
+import { existsSync, mkdirSync, readFileSync, unlinkSync } from "node:fs";
 import { homedir } from "node:os";
 import { join } from "node:path";
 
@@ -21,4 +21,28 @@ export function isDaemonRunning(): boolean {
 	} catch {
 		return false;
 	}
+}
+
+export function stopDaemon(): boolean {
+	if (!existsSync(PID_FILE)) return false;
+	const pid = Number.parseInt(readFileSync(PID_FILE, "utf-8").trim(), 10);
+	try {
+		process.kill(pid, "SIGTERM");
+	} catch {
+		// process already gone
+	}
+	unlinkSync(PID_FILE);
+	return true;
+}
+
+export function startDaemon(): number {
+	const daemonScript = process.env.NINE_TO_FIVE_DAEMON_SCRIPT;
+	if (!daemonScript) throw new Error("NINE_TO_FIVE_DAEMON_SCRIPT not set");
+	ensureDataDir();
+	const child = Bun.spawn(["bun", "run", daemonScript], {
+		stdio: ["ignore", "ignore", "ignore"],
+	});
+	child.unref();
+	Bun.write(PID_FILE, String(child.pid));
+	return child.pid;
 }
