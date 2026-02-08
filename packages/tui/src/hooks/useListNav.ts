@@ -4,13 +4,14 @@ import { useEffect, useState } from "react";
 export function useListNav(
 	listLength: number,
 	active = true,
+	initialIndex = 0,
 ): {
 	selectedIndex: number;
 	setSelectedIndex: (i: number) => void;
 	scrollOffset: number;
 	getVisibleRange: (viewportHeight: number) => { start: number; end: number };
 } {
-	const [selectedIndex, setSelectedIndex] = useState(0);
+	const [selectedIndex, setSelectedIndex] = useState(initialIndex);
 	const [scrollOffset, setScrollOffset] = useState(0);
 
 	// Clamp when list shrinks

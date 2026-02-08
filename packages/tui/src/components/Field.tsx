@@ -13,7 +13,7 @@ export function Field({
 			<text>
 				<span fg={t.textMuted}>{padded}</span>
 			</text>
-			{value ? <LinkedText>{value}</LinkedText> : <text>{"—"}</text>}
+			{value ? <LinkedText truncate>{value}</LinkedText> : <text>{"—"}</text>}
 		</box>
 	);
 }

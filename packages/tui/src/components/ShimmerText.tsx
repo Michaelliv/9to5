@@ -44,12 +44,12 @@ export function ShimmerText({
 		);
 	}
 
-	// biome-ignore lint/suspicious/noArrayIndexKey: stable character list, index is the only meaningful key
 	const chars = [...text].map((ch, i) => {
 		const dist = Math.abs(i - pos);
 		const fade = dist < SHIMMER_WIDTH ? 1 - dist / SHIMMER_WIDTH : 0;
 		const color = fade > 0 ? lerpHex(dim, bright, fade) : dim;
 		return (
+			// biome-ignore lint/suspicious/noArrayIndexKey: stable character list, index is the only meaningful key
 			<span key={`${ch}-${i}`} fg={color}>
 				{ch}
 			</span>

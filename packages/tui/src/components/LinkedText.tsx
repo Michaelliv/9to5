@@ -79,14 +79,16 @@ function parseSegments(text: string): Segment[] {
 export function LinkedText({
 	children,
 	fg: fgColor,
+	truncate,
 }: {
 	children: string;
 	fg?: string;
+	truncate?: boolean;
 }) {
 	const segments = parseSegments(children);
 	if (segments.length === 1 && segments[0].type === "text") {
 		return (
-			<text selectable fg={fgColor}>
+			<text selectable fg={fgColor} truncate={truncate}>
 				{children}
 			</text>
 		);
@@ -106,7 +108,7 @@ export function LinkedText({
 	});
 
 	return (
-		<text selectable fg={fgColor}>
+		<text selectable fg={fgColor} truncate={truncate}>
 			{nodes}
 		</text>
 	);

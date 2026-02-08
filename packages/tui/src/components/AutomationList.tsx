@@ -34,13 +34,15 @@ type AutomationRow = Automation & {
 
 export function AutomationList({
 	focused,
+	initialIndex = 0,
 	onSelect,
 	onNotify,
 	onDismissNotify,
 	onDrillDown,
 }: {
 	focused: boolean;
-	onSelect: (automation: Automation) => void;
+	initialIndex?: number;
+	onSelect: (automation: Automation, index: number) => void;
 	onNotify: (message: string, durationMs?: number) => void;
 	onDismissNotify: () => void;
 	onDrillDown: () => void;
@@ -65,6 +67,7 @@ export function AutomationList({
 	const { selectedIndex, setSelectedIndex } = useListNav(
 		automations.length,
 		focused,
+		initialIndex,
 	);
 	const hasRunning = automations.some((a) => a.running_count > 0);
 	const spinnerFrame = useSpinner(hasRunning);
@@ -74,9 +77,9 @@ export function AutomationList({
 	// Notify parent about selected item for detail panel
 	useEffect(() => {
 		if (selected) {
-			onSelect(selected);
+			onSelect(selected, selectedIndex);
 		}
-	}, [selected, onSelect]);
+	}, [selected, selectedIndex, onSelect]);
 
 	useKeyboard((key) => {
 		if (!focused) return;

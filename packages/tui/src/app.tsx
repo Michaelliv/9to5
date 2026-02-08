@@ -38,6 +38,7 @@ export function App() {
 	const [view, setView] = useState<View>("automations");
 	const [selectedAutomation, setSelectedAutomation] =
 		useState<Automation | null>(null);
+	const [selectedAutomationIndex, setSelectedAutomationIndex] = useState(0);
 	const [selectedRun, setSelectedRun] = useState<Run | null>(null);
 	const { message: notification, notify, dismiss } = useNotification();
 
@@ -89,6 +90,11 @@ export function App() {
 		};
 	}, [renderer, notify]);
 
+	const handleSelectAutomation = (automation: Automation, index: number) => {
+		setSelectedAutomation(automation);
+		setSelectedAutomationIndex(index);
+	};
+
 	const handleDrillDown = () => {
 		if (selectedAutomation) {
 			setSelectedRun(null);
@@ -130,7 +136,8 @@ export function App() {
 					{view === "automations" ? (
 						<AutomationList
 							focused={true}
-							onSelect={setSelectedAutomation}
+							initialIndex={selectedAutomationIndex}
+							onSelect={handleSelectAutomation}
 							onNotify={notify}
 							onDismissNotify={dismiss}
 							onDrillDown={handleDrillDown}
