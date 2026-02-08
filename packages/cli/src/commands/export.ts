@@ -9,8 +9,16 @@ export function registerExport(program: Command): void {
 			const db = getDb();
 
 			const rows = id
-				? db.query("SELECT * FROM automations WHERE id = ?").all(id)
-				: db.query("SELECT * FROM automations ORDER BY created_at DESC").all();
+				? db
+						.query(
+							"SELECT * FROM automations WHERE id = ? AND deleted_at IS NULL",
+						)
+						.all(id)
+				: db
+						.query(
+							"SELECT * FROM automations WHERE deleted_at IS NULL ORDER BY created_at DESC",
+						)
+						.all();
 
 			if (rows.length === 0) {
 				console.error(id ? `Automation ${id} not found.` : "No automations.");

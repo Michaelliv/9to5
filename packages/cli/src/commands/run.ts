@@ -8,7 +8,7 @@ export function registerRun(program: Command): void {
 		.action(async (id: string) => {
 			const db = getDb();
 			const automation = db
-				.query("SELECT * FROM automations WHERE id = ?")
+				.query("SELECT * FROM automations WHERE id = ? AND deleted_at IS NULL")
 				.get(id) as Automation | null;
 
 			if (!automation) {

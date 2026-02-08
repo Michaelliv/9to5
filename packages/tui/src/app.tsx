@@ -38,7 +38,7 @@ export function App() {
 	const [selectedAutomation, setSelectedAutomation] =
 		useState<Automation | null>(null);
 	const [selectedRun, setSelectedRun] = useState<Run | null>(null);
-	const { message: notification, notify } = useNotification();
+	const { message: notification, notify, dismiss } = useNotification();
 
 	const { data: stats } = useDbQuery(() => {
 		const { count: running } = db
@@ -55,7 +55,7 @@ export function App() {
 			.get() as { count: number };
 		const { next: nextRunAt } = db
 			.query(
-				"SELECT MIN(next_run_at) as next FROM automations WHERE status = 'active' AND next_run_at IS NOT NULL AND next_run_at > ?",
+				"SELECT MIN(next_run_at) as next FROM automations WHERE status = 'active' AND deleted_at IS NULL AND next_run_at IS NOT NULL AND next_run_at > ?",
 			)
 			.get(Date.now()) as { next: number | null };
 		const daemonUp = isDaemonRunning();
@@ -100,102 +100,92 @@ export function App() {
 	};
 
 	const leftTitle =
-		view === "automations" ? (
-			<span fg="cyan">
-				<strong>Automations</strong>
-			</span>
-		) : (
-			<>
-				<span fg="cyan">{"← "}</span>
-				<span fg="cyan">
-					<strong>{selectedAutomation?.name ?? ""}</strong>
-				</span>
-			</>
-		);
+		view === "automations"
+			? "Automations"
+			: `← ${selectedAutomation?.name ?? ""}`;
+
+	const detailTitle =
+		view === "automations"
+			? "Details"
+			: selectedRun
+				? `Run ${selectedRun.id.slice(0, 8)}`
+				: "Details";
 
 	return (
-		<box flexDirection="column" width="100%" height="100%" position="relative">
-			<box
-				flexDirection="column"
-				flexGrow={1}
-				border
-				borderStyle="rounded"
-				borderColor="#444"
-			>
-				{/* Header */}
-				<box height={1} flexDirection="row" paddingLeft={1} paddingRight={1}>
-					<text>
-						<span fg="#c084fc">
-							<strong>{"◆ 9to5"}</strong>
-						</span>
-					</text>
-					<box flexGrow={1} />
-					{statParts.length > 0 ? (
-						<text>
-							{!stats.daemonUp ? (
-								<span fg="yellow">{"daemon stopped"}</span>
-							) : null}
-							{!stats.daemonUp && statParts.length > 1 ? (
-								<span fg="#666">{" · "}</span>
-							) : null}
-							<span fg="#666">
-								{(stats.daemonUp ? statParts : statParts.slice(1)).join(" · ")}
-							</span>
-						</text>
+		<box flexDirection="column" width="100%" height="100%">
+			{/* 2-Column Content */}
+			<box flexDirection="row" flexGrow={1}>
+				{/* Left Panel */}
+				<box
+					flexDirection="column"
+					width={28}
+					overflow="hidden"
+					border
+					borderStyle="rounded"
+					borderColor="#888"
+					title={leftTitle}
+				>
+					{view === "automations" ? (
+						<AutomationList
+							focused={true}
+							onSelect={setSelectedAutomation}
+							onNotify={notify}
+							onDismissNotify={dismiss}
+							onDrillDown={handleDrillDown}
+						/>
+					) : selectedAutomation ? (
+						<RunList
+							key={selectedAutomation.id}
+							automationId={selectedAutomation.id}
+							automationCwd={selectedAutomation.cwd}
+							renderer={renderer}
+							focused={true}
+							onSelect={setSelectedRun}
+							onNotify={notify}
+							onBack={handleBack}
+						/>
 					) : null}
 				</box>
 
-				{/* 2-Column Content */}
-				<box flexDirection="row" flexGrow={1}>
-					{/* Left Panel */}
-					<box flexDirection="column" width={28} overflow="hidden">
-						<box height={1} paddingLeft={1}>
-							<text>{leftTitle}</text>
+				{/* Right Panel - Detail */}
+				<box
+					flexDirection="column"
+					flexGrow={1}
+					border
+					borderStyle="rounded"
+					borderColor="#888"
+					title={detailTitle}
+					paddingLeft={1}
+				>
+					{view === "automations" && selectedAutomation ? (
+						<AutomationDetail automation={selectedAutomation} />
+					) : view === "runs" && selectedRun ? (
+						<RunDetail
+							run={selectedRun}
+							automationName={selectedAutomation?.name}
+						/>
+					) : (
+						<box flexGrow={1} justifyContent="center" alignItems="center">
+							<text>
+								<span fg="#666">Select an item to view details</span>
+							</text>
 						</box>
-						{view === "automations" ? (
-							<AutomationList
-								focused={true}
-								onSelect={setSelectedAutomation}
-								onNotify={notify}
-								onDrillDown={handleDrillDown}
-							/>
-						) : selectedAutomation ? (
-							<RunList
-								key={selectedAutomation.id}
-								automationId={selectedAutomation.id}
-								automationCwd={selectedAutomation.cwd}
-								renderer={renderer}
-								focused={true}
-								onSelect={setSelectedRun}
-								onNotify={notify}
-								onBack={handleBack}
-							/>
-						) : null}
-					</box>
-
-					{/* Separator */}
-					<box width={1} backgroundColor="#444" />
-
-					{/* Right Panel - Detail */}
-					<box flexDirection="column" flexGrow={1} paddingLeft={1}>
-						{view === "automations" && selectedAutomation ? (
-							<AutomationDetail automation={selectedAutomation} />
-						) : view === "runs" && selectedRun ? (
-							<RunDetail
-								run={selectedRun}
-								automationName={selectedAutomation?.name}
-							/>
-						) : (
-							<box flexGrow={1} justifyContent="center" alignItems="center">
-								<text>
-									<span fg="#666">Select an item to view details</span>
-								</text>
-							</box>
-						)}
-					</box>
+					)}
 				</box>
+			</box>
 
-				{/* Status Bar */}
+			{/* Status Bar */}
+			<box
+				height={4}
+				flexDirection="column"
+				border
+				borderStyle="rounded"
+				borderColor="#888"
+				title="9to5"
+				paddingLeft={1}
+				paddingRight={1}
+			>
+				{/* Row 1: Shortcuts */}
 				<StatusBar
 					hints={
 						view === "runs"
@@ -214,8 +204,29 @@ export function App() {
 									{ k: "dd", label: "delete" },
 								]
 					}
-					notification={notification}
 				/>
+				{/* Row 2: Status + Notification */}
+				<box height={1} flexDirection="row">
+					<text>
+						{!stats.daemonUp ? (
+							<span fg="yellow">{"daemon stopped"}</span>
+						) : (
+							<span fg="green">{"◆ daemon"}</span>
+						)}
+						{statParts.length > 0 ? (
+							<span fg="#666">
+								{" · "}
+								{(stats.daemonUp ? statParts : statParts.slice(1)).join(" · ")}
+							</span>
+						) : null}
+					</text>
+					<box flexGrow={1} />
+					{notification ? (
+						<text>
+							<span fg="#ccc">{notification}</span>
+						</text>
+					) : null}
+				</box>
 			</box>
 		</box>
 	);

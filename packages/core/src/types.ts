@@ -14,6 +14,7 @@ export interface Automation {
 	max_budget_usd: number | null;
 	allowed_tools: string | null;
 	system_prompt: string | null;
+	deleted_at: number | null;
 	created_at: number;
 	updated_at: number;
 }

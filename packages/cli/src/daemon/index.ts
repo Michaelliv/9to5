@@ -46,7 +46,7 @@ async function tick(): Promise<void> {
 	const now = Date.now();
 	const due = db
 		.query(
-			"SELECT * FROM automations WHERE status = 'active' AND next_run_at IS NOT NULL AND next_run_at <= ?",
+			"SELECT * FROM automations WHERE status = 'active' AND deleted_at IS NULL AND next_run_at IS NOT NULL AND next_run_at <= ?",
 		)
 		.all(now) as Automation[];
 

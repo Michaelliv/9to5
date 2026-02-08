@@ -21,7 +21,9 @@ export function registerAdd(program: Command): void {
 			const id = generateId();
 
 			const existing = db
-				.query("SELECT id FROM automations WHERE name = ?")
+				.query(
+					"SELECT id FROM automations WHERE name = ? AND deleted_at IS NULL",
+				)
 				.get(name);
 			if (existing) {
 				console.error(`Automation named "${name}" already exists.`);

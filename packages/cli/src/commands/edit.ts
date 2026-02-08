@@ -22,7 +22,7 @@ export function registerEdit(program: Command): void {
 			const db = getDb();
 
 			const row = db
-				.query("SELECT * FROM automations WHERE id = ?")
+				.query("SELECT * FROM automations WHERE id = ? AND deleted_at IS NULL")
 				.get(id) as Automation | null;
 			if (!row) {
 				console.error(`Automation ${id} not found.`);

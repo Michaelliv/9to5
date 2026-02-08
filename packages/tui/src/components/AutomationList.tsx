@@ -6,7 +6,7 @@ import {
 	getDb,
 } from "@9to5/core";
 import { useKeyboard } from "@opentui/react";
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import { useDoubleTap } from "../hooks/useConfirm.ts";
 import { useDbQuery } from "../hooks/useDbQuery.ts";
 import { useListNav } from "../hooks/useListNav.ts";
@@ -19,6 +19,7 @@ const STATUS_ICON: Record<string, { symbol: string; color: string }> = {
 };
 
 const MAX_NAME_LEN = 20;
+const UNDO_DURATION_MS = 15_000;
 
 function truncate(str: string, max: number): string {
 	return str.length > max ? `${str.slice(0, max - 1)}…` : str;
@@ -33,14 +34,17 @@ export function AutomationList({
 	focused,
 	onSelect,
 	onNotify,
+	onDismissNotify,
 	onDrillDown,
 }: {
 	focused: boolean;
 	onSelect: (automation: Automation) => void;
-	onNotify: (message: string) => void;
+	onNotify: (message: string, durationMs?: number) => void;
+	onDismissNotify: () => void;
 	onDrillDown: () => void;
 }) {
 	const db = getDb();
+	const lastDeletedRef = useRef<{ id: string; name: string } | null>(null);
 
 	const { data: automations, refresh } = useDbQuery<AutomationRow[]>(
 		() =>
@@ -51,7 +55,7 @@ export function AutomationList({
 						 AND r.status IN ('running','pending')) as running_count,
 						(SELECT COUNT(*) FROM inbox i JOIN runs r ON i.run_id = r.id
 						 WHERE r.automation_id = a.id AND i.read_at IS NULL) as unread_count
-					 FROM automations a ORDER BY created_at DESC`,
+					 FROM automations a WHERE a.deleted_at IS NULL ORDER BY created_at DESC`,
 				)
 				.all() as AutomationRow[],
 	);
@@ -73,7 +77,22 @@ export function AutomationList({
 	}, [selected, onSelect]);
 
 	useKeyboard((key) => {
-		if (!focused || !selected) return;
+		if (!focused) return;
+
+		if (key.name === "u" && lastDeletedRef.current) {
+			const { id, name } = lastDeletedRef.current;
+			db.run(
+				"UPDATE automations SET deleted_at = NULL, status = 'paused', updated_at = ? WHERE id = ?",
+				[Date.now(), id],
+			);
+			lastDeletedRef.current = null;
+			refresh();
+			onDismissNotify();
+			onNotify(`Restored "${name}" as paused`);
+			return;
+		}
+
+		if (!selected) return;
 
 		if (key.name === "return" || key.name === "right") {
 			onDrillDown();
@@ -116,15 +135,17 @@ export function AutomationList({
 		"d",
 		useCallback(() => {
 			if (!focused || !selected) return;
-			const name = selected.name;
+			const { id, name } = selected;
 			db.run(
-				"DELETE FROM inbox WHERE run_id IN (SELECT id FROM runs WHERE automation_id = ?)",
-				[selected.id],
+				"UPDATE automations SET deleted_at = ?, updated_at = ? WHERE id = ?",
+				[Date.now(), Date.now(), id],
 			);
-			db.run("DELETE FROM runs WHERE automation_id = ?", [selected.id]);
-			db.run("DELETE FROM automations WHERE id = ?", [selected.id]);
+			lastDeletedRef.current = { id, name };
 			refresh();
-			onNotify(`Deleted "${name}"`);
+			onNotify(
+				`Deleted "${name}" · u to undo · 9to5 restore ${id}`,
+				UNDO_DURATION_MS,
+			);
 		}, [focused, selected, db, refresh, onNotify]),
 	);
 

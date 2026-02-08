@@ -88,7 +88,7 @@ export function registerWebhook(program: Command): void {
 
 			const db = getDb();
 			const automation = db
-				.query("SELECT * FROM automations WHERE id = ?")
+				.query("SELECT * FROM automations WHERE id = ? AND deleted_at IS NULL")
 				.get(automationId) as Automation | null;
 
 			if (!automation) {

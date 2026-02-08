@@ -53,7 +53,7 @@ function updateOne(def: AutomationDef, cwdOverride?: string): boolean {
 	const db = getDb();
 
 	const row = db
-		.query("SELECT * FROM automations WHERE name = ?")
+		.query("SELECT * FROM automations WHERE name = ? AND deleted_at IS NULL")
 		.get(def.name) as Automation | null;
 
 	if (!row) {

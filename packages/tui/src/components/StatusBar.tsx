@@ -1,15 +1,8 @@
 export function StatusBar({
 	hints,
-	notification,
-}: { hints: { k: string; label: string }[]; notification?: string | null }) {
+}: { hints: { k: string; label: string }[] }) {
 	return (
-		<box
-			height={1}
-			flexDirection="row"
-			paddingLeft={1}
-			paddingRight={1}
-			gap={2}
-		>
+		<box height={1} flexDirection="row" gap={2}>
 			{hints.map((h) => (
 				<text key={h.k}>
 					<span fg="cyan">
@@ -24,15 +17,6 @@ export function StatusBar({
 				</span>
 				<span fg="#666"> quit</span>
 			</text>
-			{notification ? (
-				<>
-					<box flexGrow={1} />
-					<text>
-						<span fg="#888">{"› "}</span>
-						<span fg="#ccc">{notification}</span>
-					</text>
-				</>
-			) : null}
 		</box>
 	);
 }
