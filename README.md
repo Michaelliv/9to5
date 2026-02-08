@@ -1,29 +1,37 @@
-<p align="center">
-  <img src="docs/public/images/logo-v2.svg" width="400" alt="9to5 — Cron for Claude Code" />
-</p>
+# 9to5
 
-<p align="center">
-  A CLI tool to create and manage scheduled automations that run <a href="https://docs.anthropic.com/en/docs/claude-code">Claude Code</a> sessions on a timer.
-</p> Claude Code does the actual work — reading files, running commands, opening PRs, writing code. 9to5 handles the when, how much, and keeps track of what happened.
+You use Claude Code. Some tasks — code reviews, security scans, dependency audits — should just happen on their own. 9to5 makes that work.
 
-<p align="center">
-  <img src="docs/public/images/tui-automations.png" width="49%" alt="Automations view" />
-  <img src="docs/public/images/tui-runs.png" width="49%" alt="Runs view with structured output" />
-</p>
+Set a prompt, set a schedule, set a budget. A background daemon runs it while you're not looking. Results land in your inbox with cost, duration, and structured output.
 
-## Features
+> **Agents:** for complete option references and scheduling examples, read [`skills/9to5/SKILL.md`](skills/9to5/SKILL.md) or install the skill with `npx skills add Michaelliv/9to5`. You can also run `9to5 onboard` to add instructions to `~/.claude/CLAUDE.md`.
 
-- **rrule scheduling** — RFC 5545 recurrence rules (daily, weekly, every 4 hours, etc.)
-- **Per-automation budget caps** — set a max USD spend per run
-- **Custom system prompts** — different personas for different tasks
-- **Model selection** — choose sonnet, opus, or haiku per automation
-- **Structured run output** — JSON parsing with cost, duration, and turn tracking
-- **Inbox** — read/unread tracking for run results
-- **Interactive TUI** — LazyGit-style dashboard with list + detail panels
-- **Export/import** — share automations as JSON files
-- **Background daemon** — polls and triggers runs on schedule
+## What people automate
 
-## Installation
+The [`examples/`](examples/) directory has ready-to-import automations:
+
+```bash
+9to5 import examples/morning-briefing.json
+```
+
+| Example | Schedule | What it does |
+|---------|----------|-------------|
+| [Morning briefing](examples/morning-briefing.json) | Daily 7am | Summarize last 24h of commits, PRs, issues, CI status |
+| [Security scan](examples/security-scan.json) | Daily | Check recent commits for hardcoded secrets and vulnerability patterns |
+| [Test gap finder](examples/test-gap-finder.json) | Nightly | Find untested code in recent commits, suggest test skeletons |
+| [API contract watchdog](examples/api-contract-watchdog.json) | Every 2h | Hit API endpoints, compare responses to spec, flag drift |
+| [Project health check](examples/project-health-check.json) | Every 6h | Run tests, measure build times, track repo metrics over time |
+| [Ecosystem watch](examples/ecosystem-watch.json) | Every 12h | Check for new releases of dependencies and breaking changes |
+| [Reddit trend scout](examples/reddit-trend-scout.json) | Every 4h | Scout trending posts and draft blog content |
+| [TODO tracker](examples/todo-tracker.json) | Weekly | Inventory TODO/FIXME comments, track additions and removals |
+| [Stale branch archaeologist](examples/stale-branch-archaeologist.json) | Weekly | Assess old branches and recommend which are safe to delete |
+| [Dependency deep audit](examples/dependency-deep-audit.json) | Weekly | Analyze actual usage of deps, flag unmaintained or replaceable ones |
+| [Refactor spotter](examples/refactor-spotter.json) | Weekly | Find emerging code patterns worth extracting |
+| [License compliance](examples/license-compliance-checker.json) | Weekly | Scan dependency tree for copyleft or problematic licenses |
+| [Drift detector](examples/drift-detector.json) | Daily | Compare IaC config against actual running state |
+| [Competitor comparison](examples/competitor-comparison-pages.json) | Weekly | Research competitors and generate comparison docs via worktree PR |
+
+## Quick start
 
 Requires [Bun](https://bun.sh) (v1.1+) and [Claude Code](https://docs.anthropic.com/en/docs/claude-code) installed and authenticated.
 
@@ -33,8 +41,6 @@ cd 9to5
 bun install
 ```
 
-## Quick start
-
 ```bash
 # Create an automation that runs daily at 9am
 9to5 add "morning-review" \
@@ -43,15 +49,27 @@ bun install
   --model sonnet \
   --max-budget-usd 0.25
 
-# Run it immediately
+# Run it immediately to see what you get
 9to5 run <id>
 
-# Start the daemon for scheduled runs
+# Start the daemon — it handles the rest
 9to5 start
 
-# Launch the TUI dashboard
+# Or browse everything in the TUI
 9to5 ui
 ```
+
+## Why not just cron + `claude -p`?
+
+You could. 9to5 adds what you'd end up building yourself:
+
+- **Budget caps per automation** — it won't burn your API credits overnight
+- **Run history with cost and duration** — know what each run cost and how long it took
+- **Inbox** — read/unread notifications so you know what happened while you were away
+- **Session resume** — pick up where a run left off with `9to5 resume <run-id>`
+- **Interactive TUI** — browse, run, pause, delete, and drill into output without leaving the terminal
+- **Export/import** — share automations as JSON, bring them to another machine
+- **Model and system prompt per automation** — different personas for different jobs
 
 ## Commands
 
@@ -60,49 +78,25 @@ bun install
 | `9to5 add <name>` | Create a new automation |
 | `9to5 edit <id>` | Edit an existing automation |
 | `9to5 list` | List all automations |
-| `9to5 remove <id>` | Delete an automation |
 | `9to5 run <id>` | Trigger an automation immediately |
 | `9to5 runs [id]` | View run history |
+| `9to5 resume <run-id>` | Resume the Claude Code session from a previous run |
 | `9to5 inbox` | View notifications from completed runs |
+| `9to5 remove <id>` | Delete an automation |
 | `9to5 export [id]` | Export automation(s) as JSON |
 | `9to5 import <file>` | Import automation(s) from JSON |
 | `9to5 start` | Start the background daemon |
 | `9to5 stop` | Stop the background daemon |
+| `9to5 onboard` | Add 9to5 instructions to `~/.claude/CLAUDE.md` |
 | `9to5 ui` | Launch the interactive TUI dashboard |
 
 ## TUI dashboard
 
-Launch with `9to5 ui` for an interactive terminal dashboard:
+Launch with `9to5 ui` for a two-panel terminal dashboard:
 
-- **Automations** — browse, run, pause, and delete automations with a detail panel showing prompt, schedule, and config
+- **Automations** — browse, run, pause, and delete with a detail panel showing prompt, schedule, and config
 - **Runs** — drill into an automation to see execution history with status, duration, cost, and structured output
 - **Hotkeys** — `r` run, `p` pause/resume, `dd` delete, `c` copy output, `m` toggle read, `q` quit
-
-## Example automations
-
-The [`examples/`](examples/) directory includes ready-to-import automations:
-
-```bash
-# Import any example
-9to5 import examples/morning-briefing.json
-```
-
-| Example | Schedule | What it does |
-|---------|----------|-------------|
-| [Morning briefing](examples/morning-briefing.json) | Daily 7am | Summarize last 24h of commits, PRs, issues, CI status |
-| [Test gap finder](examples/test-gap-finder.json) | Nightly | Find untested code in recent commits, suggest test skeletons |
-| [Security scan](examples/security-scan.json) | Daily | Check recent commits for hardcoded secrets and vulnerability patterns |
-| [TODO tracker](examples/todo-tracker.json) | Weekly | Inventory TODO/FIXME comments, track additions and removals |
-| [Stale branch archaeologist](examples/stale-branch-archaeologist.json) | Weekly | Assess old branches and recommend which are safe to delete |
-| [Dependency deep audit](examples/dependency-deep-audit.json) | Weekly | Analyze actual usage of deps, flag unmaintained or replaceable ones |
-| [Refactor spotter](examples/refactor-spotter.json) | Weekly | Find emerging code patterns worth extracting |
-| [API contract watchdog](examples/api-contract-watchdog.json) | Every 2h | Hit API endpoints, compare responses to spec, flag drift |
-| [Ecosystem watch](examples/ecosystem-watch.json) | Every 12h | Check for new releases of dependencies and breaking changes |
-| [Project health check](examples/project-health-check.json) | Every 6h | Run tests, measure build times, track repo metrics over time |
-| [License compliance](examples/license-compliance-checker.json) | Weekly | Scan dependency tree for copyleft or problematic licenses |
-| [Drift detector](examples/drift-detector.json) | Daily | Compare IaC config against actual running state |
-| [Competitor comparison](examples/competitor-comparison-pages.json) | Weekly | Research competitors and generate comparison docs via worktree PR |
-| [Reddit trend scout](examples/reddit-trend-scout.json) | Every 4h | Scout trending posts and draft blog content |
 
 ## Data
 

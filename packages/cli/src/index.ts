@@ -39,7 +39,10 @@ program
 	.description("Launch interactive TUI dashboard")
 	.action(async () => {
 		const { spawnSync } = await import("bun");
-		const tui = new URL("../../tui/src/index.tsx", import.meta.url).pathname;
+		const { existsSync } = await import("node:fs");
+		const bundledTui = new URL("./tui/index.js", import.meta.url).pathname;
+		const sourceTui = new URL("../../tui/src/index.tsx", import.meta.url).pathname;
+		const tui = existsSync(bundledTui) ? bundledTui : sourceTui;
 		spawnSync(["bun", "run", tui], {
 			stdio: ["inherit", "inherit", "inherit"],
 		});

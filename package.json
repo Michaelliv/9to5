@@ -10,12 +10,14 @@
 	"homepage": "https://michaelliv.github.io/9to5/",
 	"workspaces": ["packages/*"],
 	"bin": {
-		"9to5": "./packages/cli/src/index.ts"
+		"9to5": "dist/cli.js"
 	},
-	"files": ["packages/cli/src", "packages/core/src", "packages/tui/src"],
+	"files": ["dist"],
 	"scripts": {
 		"dev": "bun run packages/cli/src/index.ts",
 		"build": "bun build --compile packages/cli/src/index.ts --outfile 9to5",
+		"build:publish": "bun build packages/cli/src/index.ts --outfile dist/cli.js --target bun && bun build packages/tui/src/index.tsx --outdir dist/tui --target bun --external react-devtools-core",
+		"prepublishOnly": "bun run build:publish",
 		"check": "bunx biome check .",
 		"test": "bun test",
 		"docs:dev": "vitepress dev docs",

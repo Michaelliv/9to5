@@ -3,5 +3,8 @@ dist/
 *.sqlite
 *.sqlite-journal
 *.pid
+*.tgz
+*.bun-build
+/9to5
 docs/.vitepress/cache/
 .DS_Store
