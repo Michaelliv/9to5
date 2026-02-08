@@ -8,3 +8,4 @@ dist/
 /9to5
 docs/.vitepress/cache/
 .DS_Store
+.claude/
