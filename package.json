@@ -20,13 +20,12 @@
 		"prepublishOnly": "bun run build:publish",
 		"check": "bunx biome check .",
 		"test": "bun test",
-		"docs:dev": "vitepress dev docs",
-		"docs:build": "vitepress build docs",
-		"docs:preview": "vitepress preview docs"
+		"landing:dev": "cd packages/landing && bun run dev",
+		"landing:build": "cd packages/landing && bun run build",
+		"landing:preview": "cd packages/landing && bun run preview"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "^1.9.0",
-		"@types/bun": "^1.1.0",
-		"vitepress": "^1.6.4"
+		"@types/bun": "^1.1.0"
 	}
 }

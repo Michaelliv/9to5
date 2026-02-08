@@ -104,7 +104,7 @@ All data is stored locally in `~/.9to5/` (SQLite database and daemon PID file).
 
 ## Docs
 
-Full documentation at [michaelliv.github.io/9to5](https://michaelliv.github.io/9to5/).
+Landing page at [michaelliv.github.io/9to5](https://michaelliv.github.io/9to5/). For agent-friendly option references and scheduling examples, see [`skills/9to5/SKILL.md`](skills/9to5/SKILL.md).
 
 ## License
 

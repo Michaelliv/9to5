@@ -1,4 +1,4 @@
-name: Deploy Docs
+name: Deploy Landing
 
 on:
   push:
@@ -34,8 +34,8 @@ jobs:
       - name: Install dependencies
         run: bun install
 
-      - name: Build docs
-        run: bun run docs:build
+      - name: Build landing
+        run: bun run landing:build
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
@@ -43,7 +43,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: docs/.vitepress/dist
+          path: packages/landing/dist
 
   deploy:
     environment:
