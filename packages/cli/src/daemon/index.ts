@@ -1,3 +1,4 @@
+import { unlinkSync } from "node:fs";
 import {
 	type Automation,
 	DAEMON_POLL_INTERVAL_MS,
@@ -6,7 +7,10 @@ import {
 	executeRun,
 	generateId,
 	getDb,
+	getWebhookConfig,
 } from "@9to5/core";
+import { type NtfyListener, startNtfyListener } from "./ntfy-listener.ts";
+import { type WebhookServer, startWebhookServer } from "./webhook-server.ts";
 
 // Write PID file for this daemon process
 Bun.write(PID_FILE, String(process.pid));
@@ -51,6 +55,31 @@ async function tick(): Promise<void> {
 	}
 }
 
+// --- Start webhook triggers if enabled ---
+let webhookServer: WebhookServer | null = null;
+let ntfyListener: NtfyListener | null = null;
+
+const webhookConfig = getWebhookConfig();
+if (webhookConfig) {
+	webhookServer = startWebhookServer(webhookConfig, db, runAutomation);
+	ntfyListener = startNtfyListener(webhookConfig, db, runAutomation);
+}
+
+// --- Graceful shutdown ---
+function shutdown() {
+	console.log("9to5 daemon stopping...");
+	if (webhookServer) webhookServer.stop();
+	if (ntfyListener) ntfyListener.stop();
+	try {
+		unlinkSync(PID_FILE);
+	} catch {}
+	process.exit(0);
+}
+
+process.on("SIGTERM", shutdown);
+process.on("SIGINT", shutdown);
+
+// --- Start poll loop ---
 console.log("9to5 daemon started");
 tick();
 setInterval(tick, DAEMON_POLL_INTERVAL_MS);

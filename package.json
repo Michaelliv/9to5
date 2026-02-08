@@ -1,6 +1,6 @@
 {
 	"name": "9to5",
-	"version": "0.1.8",
+	"version": "0.2.0",
 	"description": "Cron for Claude Code — schedule and automate Claude Code tasks",
 	"license": "MIT",
 	"repository": {
@@ -16,7 +16,7 @@
 	"scripts": {
 		"dev": "bun run packages/cli/src/index.ts",
 		"build": "bun build --compile packages/cli/src/index.ts --outfile 9to5",
-		"build:publish": "bun build packages/cli/src/index.ts --outfile dist/cli.js --target bun && bun build packages/tui/src/index.tsx --outdir dist/tui --target bun --external react-devtools-core",
+		"build:publish": "bun build packages/cli/src/index.ts --outfile dist/cli.js --target bun && bun build packages/tui/src/index.tsx --outdir dist/tui --target bun",
 		"prepublishOnly": "bun run build:publish",
 		"check": "bunx biome check .",
 		"test": "bun test",

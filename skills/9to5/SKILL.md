@@ -1,11 +1,11 @@
 ---
 name: 9to5
-description: Schedule and automate Claude Code tasks with 9to5. Use when the user wants to create scheduled automations, manage recurring AI agent runs, view run history, check their inbox, start/stop the background daemon, or use the 9to5 TUI dashboard. Keywords: schedule, cron, automation, recurring tasks, daemon, background jobs.
+description: Schedule and automate Claude Code tasks with 9to5. Use when the user wants to create scheduled automations, manage recurring AI agent runs, view run history, check their inbox, start/stop the background daemon, trigger automations via webhooks, or use the 9to5 TUI dashboard. Keywords: schedule, cron, automation, recurring tasks, daemon, background jobs, webhook, trigger, CI, GitHub Actions.
 license: MIT
 compatibility: Requires Bun runtime (v1.1+) and Claude Code CLI installed and authenticated
 metadata:
   author: Michaelliv
-  version: "0.1.7"
+  version: "0.2.0"
   homepage: "https://michaelliv.github.io/9to5/"
   repository: "https://github.com/Michaelliv/9to5"
 ---
@@ -20,6 +20,7 @@ Use this skill when the user wants to:
 - Schedule Claude Code to run automatically on a recurring basis
 - Create, edit, list, pause, or remove automations
 - Trigger an automation manually or resume a previous run's session
+- Trigger automations from external sources (GitHub Actions, CI, scripts) via webhooks
 - View run history and execution results
 - Check inbox notifications from completed runs
 - Start or stop the background daemon
@@ -62,6 +63,10 @@ bun run build
 | `9to5 stop` | Stop the background daemon |
 | `9to5 onboard` | Add 9to5 instructions to ~/.claude/CLAUDE.md |
 | `9to5 ui` | Launch the interactive TUI dashboard |
+| `9to5 webhook enable` | Enable webhook triggers (generates secret + URLs) |
+| `9to5 webhook disable` | Disable webhook triggers |
+| `9to5 webhook status` | Show webhook status and URLs |
+| `9to5 webhook url <id>` | Print ready-to-use trigger commands for an automation |
 
 ## Options for `add` and `edit`
 
@@ -111,11 +116,37 @@ Navigation: arrow keys or `j`/`k`, `q` to quit.
 
 `--update` matches by name and applies changed fields.
 
+## Webhooks
+
+Trigger automations from GitHub Actions, CI pipelines, or scripts on other machines. Two paths — local HTTP and remote via ntfy.sh — both secured with HMAC-SHA256 signing. No infrastructure to host, no accounts needed.
+
+```bash
+# Enable webhooks (generates secret, prints local + remote URLs)
+9to5 webhook enable
+
+# Get ready-to-use curl commands for a specific automation
+9to5 webhook url <automation-id>
+
+# Restart daemon to pick up config
+9to5 stop && 9to5 start
+```
+
+**Local trigger** — `POST http://localhost:9505/trigger/<id>` with signed body and `X-Signature` header. For same-machine or local network scripts.
+
+**Remote trigger** — `POST` to the ntfy.sh URL. Works from anywhere. The daemon subscribes via SSE.
+
+Both verify signatures and reject messages older than 5 minutes.
+
+| Option | Description | Default |
+|--------|-------------|---------|
+| `--port <n>` | Local webhook server port (on `enable`) | `9505` |
+
 ## Data storage
 
 All data lives in `~/.9to5/`:
 - `db.sqlite` — SQLite database (WAL mode) with automations, runs, and inbox tables
 - `daemon.pid` — PID file for the background daemon
+- `webhook.secret` — HMAC secret for webhook triggers (created by `webhook enable`)
 
 ## Example
 

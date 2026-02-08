@@ -29,6 +29,15 @@ Bun monorepo with three workspace packages:
 
 `add` command → row in `automations` table → daemon checks `next_run_at` → `executeRun` spawns `claude -p --output-format json` → parses JSON response → updates `runs` table + inserts into `inbox`.
 
+### Webhook triggers
+
+Automations can also be triggered externally via webhooks. Enabled with `9to5 webhook enable`, which generates a shared HMAC secret in `~/.9to5/webhook.secret`. When the daemon starts and a secret exists, it spins up two listeners alongside the cron poll loop:
+
+- **Local HTTP** (`daemon/webhook-server.ts`) — `Bun.serve()` on `localhost:9505`. Receives `POST /trigger/:id` with `X-Signature` header.
+- **Remote SSE** (`daemon/ntfy-listener.ts`) — Connects to `ntfy.sh/9to5-{topic}/sse` (topic derived from secret). Signature is embedded in the message body since ntfy doesn't forward headers to SSE subscribers.
+
+Both verify HMAC-SHA256 signatures, validate timestamps (5-min window), and call the same `runAutomation()` function the cron poller uses. Webhook config is file-based (`~/.9to5/webhook.secret`, `~/.9to5/webhook.port`), not in the database. Core utilities live in `packages/core/src/webhook.ts`.
+
 ### Adding a CLI command
 
 1. Create `packages/cli/src/commands/<name>.ts` exporting `registerX(program: Command)`
@@ -44,4 +53,4 @@ Bun monorepo with three workspace packages:
 
 ## Docs site
 
-VitePress site in `docs/`. Run `bun run docs:dev` to preview. Examples in `docs/examples/` each have a CLI command + importable JSON block.
+Landing page in `packages/landing/`. Examples in `examples/` each have a CLI command + importable JSON block.

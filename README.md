@@ -31,15 +31,21 @@ The [`examples/`](examples/) directory has ready-to-import automations:
 | [Drift detector](examples/drift-detector.json) | Daily | Compare IaC config against actual running state |
 | [Competitor comparison](examples/competitor-comparison-pages.json) | Weekly | Research competitors and generate comparison docs via worktree PR |
 
-## Quick start
+## Install
 
-Requires [Bun](https://bun.sh) (v1.1+) and [Claude Code](https://docs.anthropic.com/en/docs/claude-code) installed and authenticated.
+Requires [Claude Code](https://docs.anthropic.com/en/docs/claude-code) installed and authenticated.
 
 ```bash
-git clone https://github.com/Michaelliv/9to5.git
-cd 9to5
-bun install
+npm install -g 9to5
 ```
+
+Or run without installing:
+
+```bash
+npx 9to5 <command>
+```
+
+## Quick start
 
 ```bash
 # Create an automation that runs daily at 9am
@@ -89,6 +95,10 @@ You could. 9to5 adds what you'd end up building yourself:
 | `9to5 stop` | Stop the background daemon |
 | `9to5 onboard` | Add 9to5 instructions to `~/.claude/CLAUDE.md` |
 | `9to5 ui` | Launch the interactive TUI dashboard |
+| `9to5 webhook enable` | Enable webhook triggers (local + remote) |
+| `9to5 webhook disable` | Disable webhook triggers |
+| `9to5 webhook status` | Show webhook status and URLs |
+| `9to5 webhook url <id>` | Print trigger commands for an automation |
 
 ## TUI dashboard
 
@@ -98,9 +108,48 @@ Launch with `9to5 ui` for a two-panel terminal dashboard:
 - **Runs** - drill into an automation to see execution history with status, duration, cost, and structured output
 - **Hotkeys** - `r` run, `p` pause/resume, `dd` delete, `c` copy output, `m` toggle read, `q` quit
 
+## Webhooks
+
+Trigger automations from GitHub Actions, CI, Zapier, or any script. Two trigger paths — local HTTP and remote via [ntfy.sh](https://ntfy.sh) — both secured with HMAC-SHA256 signing. No infrastructure, no dependencies, completely free.
+
+```bash
+# Enable webhooks (generates secret, prints URLs)
+9to5 webhook enable
+
+# Get ready-to-use curl commands for an automation
+9to5 webhook url <automation-id>
+
+# Restart daemon to pick up webhook config
+9to5 stop && 9to5 start
+```
+
+**Local trigger** — POST to `http://localhost:9505/trigger/<id>` with a signed body and `X-Signature` header. Works for scripts on the same machine or in your local network.
+
+**Remote trigger** — POST to the ntfy.sh URL printed by `webhook enable`. The daemon subscribes via SSE. Works from anywhere — CI, GitHub Actions, other machines.
+
+Both paths verify HMAC-SHA256 signatures and reject messages older than 5 minutes.
+
+```bash
+# Example: trigger from a script
+SECRET='<your-webhook-secret>'
+BODY='{"automation_id":"<id>","ts":'$(date +%s000)'}'
+SIG=$(echo -n "$BODY" | openssl dgst -sha256 -hmac "$SECRET" | sed 's/^.* //')
+
+# Local
+curl -X POST http://localhost:9505/trigger/<id> \
+  -H "Content-Type: application/json" \
+  -H "X-Signature: $SIG" \
+  -d "$BODY"
+
+# Remote (ntfy)
+curl -X POST <ntfy-url> \
+  -H "Content-Type: application/json" \
+  -d '{"payload":"'"$BODY"'","sig":"'"$SIG"'"}'
+```
+
 ## Data
 
-All data is stored locally in `~/.9to5/` (SQLite database and daemon PID file).
+All data is stored locally in `~/.9to5/` (SQLite database, daemon PID file, and webhook secret).
 
 ## Docs
 

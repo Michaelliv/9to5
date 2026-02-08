@@ -14,6 +14,7 @@ import { registerRun } from "./commands/run.ts";
 import { registerRuns } from "./commands/runs.ts";
 import { registerStart } from "./commands/start.ts";
 import { registerStop } from "./commands/stop.ts";
+import { registerWebhook } from "./commands/webhook.ts";
 
 const program = new Command()
 	.name("9to5")
@@ -33,6 +34,7 @@ registerRuns(program);
 registerInbox(program);
 registerStart(program);
 registerStop(program);
+registerWebhook(program);
 
 program
 	.command("ui")
@@ -41,7 +43,8 @@ program
 		const { spawnSync } = await import("bun");
 		const { existsSync } = await import("node:fs");
 		const bundledTui = new URL("./tui/index.js", import.meta.url).pathname;
-		const sourceTui = new URL("../../tui/src/index.tsx", import.meta.url).pathname;
+		const sourceTui = new URL("../../tui/src/index.tsx", import.meta.url)
+			.pathname;
 		const tui = existsSync(bundledTui) ? bundledTui : sourceTui;
 		spawnSync(["bun", "run", tui], {
 			stdio: ["inherit", "inherit", "inherit"],
