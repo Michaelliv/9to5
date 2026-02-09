@@ -167,7 +167,7 @@ export function Examples() {
 						What people automate
 					</h2>
 					<p className="text-text-secondary max-w-xl mx-auto">
-						Ready-to-import automations. Pick one, tweak the prompt, done.
+						Ready-to-import agents. Pick one, tweak the prompt, done.
 					</p>
 				</div>
 

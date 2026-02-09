@@ -14,7 +14,7 @@ import type { Command } from "commander";
 export function registerWebhook(program: Command): void {
 	const webhook = program
 		.command("webhook")
-		.description("Manage webhook triggers for automations");
+		.description("Manage webhook triggers");
 
 	webhook
 		.command("enable")
@@ -24,7 +24,7 @@ export function registerWebhook(program: Command): void {
 			console.log("Webhook triggers enabled.\n");
 			console.log(`Secret:    ${config.secret}`);
 			console.log(
-				`Local URL: http://localhost:${config.port}/trigger/<automation-id>`,
+				`Local URL: http://localhost:${config.port}/trigger/<agent-id>`,
 			);
 			console.log(`Ntfy URL:  ${getNtfyUrl(config.secret)}`);
 			if (isDaemonRunning()) {
@@ -66,7 +66,7 @@ export function registerWebhook(program: Command): void {
 			}
 			console.log(`Secret:    ${config.secret}`);
 			console.log(
-				`Local URL: http://localhost:${config.port}/trigger/<automation-id>`,
+				`Local URL: http://localhost:${config.port}/trigger/<agent-id>`,
 			);
 			console.log(`Ntfy URL:  ${getNtfyUrl(config.secret)}`);
 		});
@@ -80,7 +80,7 @@ export function registerWebhook(program: Command): void {
 			console.log("Webhook secret regenerated.\n");
 			console.log(`Secret:    ${config.secret}`);
 			console.log(
-				`Local URL: http://localhost:${config.port}/trigger/<automation-id>`,
+				`Local URL: http://localhost:${config.port}/trigger/<agent-id>`,
 			);
 			console.log(`Ntfy URL:  ${getNtfyUrl(config.secret)}`);
 			console.log(
@@ -94,8 +94,8 @@ export function registerWebhook(program: Command): void {
 		});
 
 	webhook
-		.command("url <automation-id>")
-		.description("Print trigger commands for an automation")
+		.command("url <agent-id>")
+		.description("Print trigger commands for an agent")
 		.action((automationId: string) => {
 			const config = getWebhookConfig();
 			if (!config) {
@@ -111,7 +111,7 @@ export function registerWebhook(program: Command): void {
 				.get(automationId) as Automation | null;
 
 			if (!automation) {
-				console.error(`Automation ${automationId} not found.`);
+				console.error(`Agent ${automationId} not found.`);
 				process.exit(1);
 			}
 
@@ -124,7 +124,7 @@ export function registerWebhook(program: Command): void {
 			});
 			const sig = signPayload(config.secret, payload);
 
-			console.log(`Automation: ${automation.name} (${automationId})\n`);
+			console.log(`Agent: ${automation.name} (${automationId})\n`);
 
 			console.log("--- Local trigger ---");
 			console.log(`BODY='${payload}'`);

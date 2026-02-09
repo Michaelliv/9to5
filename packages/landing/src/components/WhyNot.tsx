@@ -2,12 +2,12 @@ import { useScrollAnimation } from "../hooks/useScrollAnimation";
 
 const REASONS = [
 	{
-		title: "Budget caps per automation",
+		title: "Budget caps per agent",
 		desc: "It won't burn your API credits overnight",
 	},
 	{
 		title: "Run history with cost and duration",
-		desc: "Know what each run cost and how long it took",
+		desc: "See what each agent cost and how long it worked",
 	},
 	{
 		title: "Inbox",
@@ -15,7 +15,7 @@ const REASONS = [
 	},
 	{
 		title: "Session resume",
-		desc: "Pick up where a run left off with 9to5 resume <run-id>",
+		desc: "Pick up where an agent left off with 9to5 resume <run-id>",
 	},
 	{
 		title: "Interactive TUI",
@@ -23,10 +23,10 @@ const REASONS = [
 	},
 	{
 		title: "Export/import",
-		desc: "Share automations as JSON, bring them to another machine",
+		desc: "Share agents as JSON, bring them to another machine",
 	},
 	{
-		title: "Model and system prompt per automation",
+		title: "Model and system prompt per agent",
 		desc: "Different personas for different jobs",
 	},
 ];
@@ -39,7 +39,7 @@ export function WhyNot() {
 			<div className="max-w-3xl mx-auto">
 				<div className="text-center mb-12">
 					<p className="text-sm uppercase tracking-widest text-text-muted mb-2 font-mono">
-						Why 9to5
+						Why not just cron
 					</p>
 					<h2 className="text-2xl md:text-3xl font-semibold mb-4">
 						You could just use cron +{" "}

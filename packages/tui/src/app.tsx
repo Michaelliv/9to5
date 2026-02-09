@@ -125,7 +125,7 @@ export function App() {
 
 	const leftTitle =
 		view === "automations"
-			? "Automations"
+			? "Agents"
 			: `← ${selectedAutomation?.name ?? ""}`;
 
 	const detailTitle =

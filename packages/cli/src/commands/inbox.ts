@@ -4,7 +4,7 @@ import type { Command } from "commander";
 export function registerInbox(program: Command): void {
 	program
 		.command("inbox")
-		.description("View inbox items")
+		.description("Check your inbox")
 		.action(() => {
 			const db = getDb();
 			const rows = db

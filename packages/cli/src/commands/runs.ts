@@ -31,7 +31,7 @@ export function registerRuns(program: Command): void {
 					? new Date(row.started_at).toISOString()
 					: "—";
 				console.log(
-					`[${row.status}] ${row.id}  automation=${row.automation_id}  started=${started}`,
+					`[${row.status}] ${row.id}  agent=${row.automation_id}  started=${started}`,
 				);
 			}
 		});

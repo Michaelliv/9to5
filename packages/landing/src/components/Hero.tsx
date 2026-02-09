@@ -57,16 +57,15 @@ export function Hero() {
 					ref={titleRef}
 					className="opacity-0 font-mono text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-6 text-text-primary"
 				>
-					Cron for Claude Code
+					Automated agents for Claude Code
 				</h1>
 
 				<p
 					ref={subtitleRef}
 					className="opacity-0 text-lg md:text-xl text-text-secondary mb-10 max-w-2xl mx-auto leading-relaxed"
 				>
-					Set a prompt, set a schedule, set a budget. It runs in the background
-					while you're not looking. Results land in your inbox with cost,
-					duration, and structured output.
+					Agents that run on your schedule, from a webhook, or on demand. They
+					stay under budget and report back to your inbox.
 				</p>
 
 				<div

@@ -4,7 +4,7 @@ import type { Command } from "commander";
 export function registerHide(program: Command): void {
 	program
 		.command("hide <id>")
-		.description("Hide an automation from list and TUI views")
+		.description("Hide an agent from list and TUI views")
 		.action((id: string) => {
 			const db = getDb();
 
@@ -14,12 +14,12 @@ export function registerHide(program: Command): void {
 			);
 
 			if (result.changes === 0) {
-				console.error(`Automation ${id} not found or already hidden.`);
+				console.error(`Agent ${id} not found or already hidden.`);
 				process.exit(1);
 			}
 
 			console.log(
-				`Hidden automation ${id} (use 9to5 unhide ${id} to show again)`,
+				`Hidden agent ${id} (use 9to5 unhide ${id} to show again)`,
 			);
 		});
 }

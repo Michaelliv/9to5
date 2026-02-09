@@ -59,7 +59,7 @@ export function startWebhookServer(
 				.get(automationId) as Automation | null;
 
 			if (!automation) {
-				return new Response("Automation not found", { status: 404 });
+				return new Response("Agent not found", { status: 404 });
 			}
 
 			runAutomation(automation).catch((err) => {

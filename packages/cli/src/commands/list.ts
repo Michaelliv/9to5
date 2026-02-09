@@ -4,9 +4,9 @@ import type { Command } from "commander";
 export function registerList(program: Command): void {
 	program
 		.command("list")
-		.description("List all automations")
-		.option("--deleted", "Show only soft-deleted automations")
-		.option("--hidden", "Show only hidden automations")
+		.description("List your agents")
+		.option("--deleted", "Show only deleted agents")
+		.option("--hidden", "Show only hidden agents")
 		.action((opts: { deleted?: boolean; hidden?: boolean }) => {
 			const db = getDb();
 
@@ -34,10 +34,10 @@ export function registerList(program: Command): void {
 			if (rows.length === 0) {
 				console.log(
 					opts.deleted
-						? "No deleted automations."
+						? "No deleted agents."
 						: opts.hidden
-							? "No hidden automations."
-							: "No automations found.",
+							? "No hidden agents."
+							: "No agents found.",
 				);
 			} else {
 				for (const row of rows) {

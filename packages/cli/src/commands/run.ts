@@ -4,7 +4,7 @@ import type { Command } from "commander";
 export function registerRun(program: Command): void {
 	program
 		.command("run <id>")
-		.description("Trigger an automation immediately")
+		.description("Run an agent now")
 		.action(async (id: string) => {
 			const db = getDb();
 			const automation = db
@@ -12,7 +12,7 @@ export function registerRun(program: Command): void {
 				.get(id) as Automation | null;
 
 			if (!automation) {
-				console.error(`Automation ${id} not found.`);
+				console.error(`Agent ${id} not found.`);
 				process.exit(1);
 			}
 

@@ -4,7 +4,7 @@ import type { Command } from "commander";
 export function registerExport(program: Command): void {
 	program
 		.command("export [id]")
-		.description("Export automation(s) as JSON (pipe to file to save)")
+		.description("Export agent(s) as JSON (pipe to file to save)")
 		.action((id?: string) => {
 			const db = getDb();
 
@@ -21,7 +21,7 @@ export function registerExport(program: Command): void {
 						.all();
 
 			if (rows.length === 0) {
-				console.error(id ? `Automation ${id} not found.` : "No automations.");
+				console.error(id ? `Agent ${id} not found.` : "No agents.");
 				process.exit(1);
 			}
 

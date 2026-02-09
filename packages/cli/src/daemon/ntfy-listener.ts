@@ -129,7 +129,7 @@ function handleEvent(
 			.get(automationId) as Automation | null;
 
 		if (!automation) {
-			console.error(`Ntfy: automation ${automationId} not found`);
+			console.error(`Ntfy: agent ${automationId} not found`);
 			return;
 		}
 

@@ -1,14 +1,14 @@
 # 9to5
 
-You use Claude Code. Some tasks - code reviews, security scans, dependency audits - should just happen on their own. 9to5 makes that work.
+Automated agents for Claude Code.
 
-Set a prompt, set a schedule, set a budget. A background daemon runs it while you're not looking. Results land in your inbox with cost, duration, and structured output.
+Agents that run on your schedule, from a webhook, or on demand. They stay under budget and report back to your inbox.
 
 > **Agents:** for complete option references and scheduling examples, read [`skills/9to5/SKILL.md`](skills/9to5/SKILL.md) or install the skill with `npx skills add Michaelliv/9to5`. You should run `9to5 onboard` to add instructions to `~/.claude/CLAUDE.md`.
 
 ## What people automate
 
-The [`examples/`](examples/) directory has ready-to-import automations:
+The [`examples/`](examples/) directory has ready-to-import agents:
 
 ```bash
 9to5 import examples/morning-briefing.json
@@ -48,14 +48,14 @@ npx 9to5 <command>
 ## Quick start
 
 ```bash
-# Create an automation that runs daily at 9am
+# Create an agent that runs daily at 9am
 9to5 add "morning-review" \
   --prompt "Review yesterday's commits and summarize changes" \
   --rrule "FREQ=DAILY;BYHOUR=9" \
   --model sonnet \
   --max-budget-usd 0.25
 
-# Run it immediately to see what you get
+# Run it now to see what you get
 9to5 run <id>
 
 # Browse everything in the TUI
@@ -66,30 +66,30 @@ npx 9to5 <command>
 
 You could. 9to5 adds what you'd end up building yourself:
 
-- **Budget caps per automation** - it won't burn your API credits overnight
-- **Run history with cost and duration** - know what each run cost and how long it took
+- **Budget caps per agent** - it won't burn your API credits overnight
+- **Run history with cost and duration** - see what each agent cost and how long it worked
 - **Inbox** - read/unread notifications so you know what happened while you were away
-- **Session resume** - pick up where a run left off with `9to5 resume <run-id>`
+- **Session resume** - pick up where an agent left off with `9to5 resume <run-id>`
 - **Interactive TUI** - browse, run, pause, delete, and drill into output without leaving the terminal. The daemon auto-starts and self-heals.
-- **Export/import** - share automations as JSON, bring them to another machine
-- **Model and system prompt per automation** - different personas for different jobs
+- **Export/import** - share agents as JSON, bring them to another machine
+- **Model and system prompt per agent** - different personas for different jobs
 
 ## Commands
 
 | Command | Description |
 |---------|-------------|
-| `9to5 add <name>` | Create a new automation |
-| `9to5 edit <id>` | Edit an existing automation |
-| `9to5 list` | List all automations |
-| `9to5 run <id>` | Trigger an automation immediately |
+| `9to5 add <name>` | Create a new agent |
+| `9to5 edit <id>` | Edit an existing agent |
+| `9to5 list` | List your agents |
+| `9to5 run <id>` | Run an agent now |
 | `9to5 runs [id]` | View run history |
 | `9to5 resume <run-id>` | Resume the Claude Code session from a previous run |
-| `9to5 inbox` | View notifications from completed runs |
-| `9to5 remove <id>` | Soft-delete an automation (`--force` to permanently delete) |
-| `9to5 restore <id>` | Restore a soft-deleted automation |
-| `9to5 list --deleted` | List soft-deleted automations |
-| `9to5 export [id]` | Export automation(s) as JSON |
-| `9to5 import <file>` | Import automation(s) from JSON |
+| `9to5 inbox` | Check your inbox |
+| `9to5 remove <id>` | Remove an agent (`--force` to permanently delete) |
+| `9to5 restore <id>` | Restore a deleted agent |
+| `9to5 list --deleted` | List deleted agents |
+| `9to5 export [id]` | Export agent(s) as JSON |
+| `9to5 import <file>` | Import agent(s) from JSON |
 | `9to5 start` | Start the background daemon |
 | `9to5 stop` | Stop the background daemon |
 | `9to5 onboard` | Add 9to5 instructions to `~/.claude/CLAUDE.md` |
@@ -98,19 +98,19 @@ You could. 9to5 adds what you'd end up building yourself:
 | `9to5 webhook refresh` | Regenerate the webhook secret |
 | `9to5 webhook enable` | Enable webhook triggers |
 | `9to5 webhook disable` | Disable webhook triggers |
-| `9to5 webhook url <id>` | Print trigger commands for an automation |
+| `9to5 webhook url <id>` | Print trigger commands for an agent |
 
 ## TUI dashboard
 
 Launch with `9to5 ui` for a two-panel terminal dashboard:
 
-- **Automations** - browse, run, pause, and delete with a detail panel showing prompt, schedule, and config
-- **Runs** - drill into an automation to see execution history with status, duration, cost, and structured output
+- **Agents** - browse, run, pause, and delete with a detail panel showing prompt, schedule, and config
+- **Runs** - drill into an agent to see execution history with status, duration, cost, and structured output
 - **Hotkeys** - `r` run, `p` pause/resume, `dd` delete (with `u` to undo), `c` copy output, `⏎` toggle read, `q` quit
 
 ## Webhooks
 
-Trigger automations from GitHub Actions, CI, Zapier, or any script. Two trigger paths — local HTTP and remote via [ntfy.sh](https://ntfy.sh) — both secured with HMAC-SHA256 signing. No infrastructure, no dependencies, completely free.
+Trigger agents from GitHub Actions, CI, Zapier, or any script. Two trigger paths — local HTTP and remote via [ntfy.sh](https://ntfy.sh) — both secured with HMAC-SHA256 signing. No infrastructure, no dependencies, completely free.
 
 Webhooks are enabled by default — the daemon auto-generates a secret on first start. Use `9to5 webhook disable` to turn them off.
 
@@ -118,8 +118,8 @@ Webhooks are enabled by default — the daemon auto-generates a secret on first 
 # View webhook config and URLs
 9to5 webhook info
 
-# Get ready-to-use curl commands for an automation
-9to5 webhook url <automation-id>
+# Get ready-to-use curl commands for an agent
+9to5 webhook url <agent-id>
 
 # Regenerate the secret (breaks existing integrations)
 9to5 webhook refresh

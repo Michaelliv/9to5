@@ -4,7 +4,7 @@ import type { Command } from "commander";
 export function registerUnhide(program: Command): void {
 	program
 		.command("unhide <id>")
-		.description("Unhide a hidden automation")
+		.description("Unhide a hidden agent")
 		.action((id: string) => {
 			const db = getDb();
 
@@ -14,10 +14,10 @@ export function registerUnhide(program: Command): void {
 			);
 
 			if (result.changes === 0) {
-				console.error(`Hidden automation ${id} not found.`);
+				console.error(`Hidden agent ${id} not found.`);
 				process.exit(1);
 			}
 
-			console.log(`Unhidden automation ${id}`);
+			console.log(`Unhidden agent ${id}`);
 		});
 }

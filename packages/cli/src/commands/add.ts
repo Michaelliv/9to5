@@ -4,7 +4,7 @@ import type { Command } from "commander";
 export function registerAdd(program: Command): void {
 	program
 		.command("add <name>")
-		.description("Add a new automation")
+		.description("Create a new agent")
 		.requiredOption("--prompt <prompt>", "Prompt to send to Claude")
 		.option("--cwd <dir>", "Working directory", process.cwd())
 		.option("--rrule <rule>", "RFC 5545 recurrence rule (e.g. FREQ=DAILY)")
@@ -26,7 +26,7 @@ export function registerAdd(program: Command): void {
 				)
 				.get(name);
 			if (existing) {
-				console.error(`Automation named "${name}" already exists.`);
+				console.error(`Agent named "${name}" already exists.`);
 				process.exit(1);
 			}
 
@@ -62,6 +62,6 @@ export function registerAdd(program: Command): void {
 				],
 			);
 
-			console.log(`Created automation ${id} (${name})`);
+			console.log(`Created agent ${id} (${name})`);
 		});
 }

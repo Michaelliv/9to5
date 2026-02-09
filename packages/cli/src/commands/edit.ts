@@ -4,8 +4,8 @@ import type { Command } from "commander";
 export function registerEdit(program: Command): void {
 	program
 		.command("edit <id>")
-		.description("Edit an existing automation")
-		.option("--name <name>", "Rename the automation")
+		.description("Edit an existing agent")
+		.option("--name <name>", "Rename the agent")
 		.option("--prompt <prompt>", "Update the prompt")
 		.option("--cwd <dir>", "Update working directory")
 		.option("--rrule <rule>", "Update recurrence rule")
@@ -25,7 +25,7 @@ export function registerEdit(program: Command): void {
 				.query("SELECT * FROM automations WHERE id = ? AND deleted_at IS NULL")
 				.get(id) as Automation | null;
 			if (!row) {
-				console.error(`Automation ${id} not found.`);
+				console.error(`Agent ${id} not found.`);
 				process.exit(1);
 			}
 
@@ -111,6 +111,6 @@ export function registerEdit(program: Command): void {
 
 			db.run(`UPDATE automations SET ${sets.join(", ")} WHERE id = ?`, values);
 
-			console.log(`Updated automation ${id} (${opts.name ?? row.name})`);
+			console.log(`Updated agent ${id} (${opts.name ?? row.name})`);
 		});
 }

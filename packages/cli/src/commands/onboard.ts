@@ -6,11 +6,11 @@ import type { Command } from "commander";
 const INSTRUCTIONS = `
 ## Task Scheduling (9to5)
 
-Use **9to5** to schedule and manage recurring Claude Code tasks. Run \`9to5 --help\` or \`9to5 <command> --help\` for full usage.
+Use **9to5** to create and manage automated Claude Code agents. Run \`9to5 --help\` or \`9to5 <command> --help\` for full usage.
 
 Key commands: \`add\`, \`list\`, \`run\`, \`runs\`, \`inbox\`, \`edit\`, \`remove\`, \`restore\`, \`start\`, \`stop\`, \`export\`, \`import\`, \`ui\`, \`webhook\`.
 
-\`remove\` soft-deletes (recoverable). Use \`remove --force\` to permanently delete. \`restore <id>\` brings back a soft-deleted automation. \`list --deleted\` shows soft-deleted automations.
+\`remove\` soft-deletes (recoverable). Use \`remove --force\` to permanently delete. \`restore <id>\` brings back a deleted agent. \`list --deleted\` shows deleted agents.
 
 ### Options for \`add\` and \`edit\`
 
@@ -32,14 +32,14 @@ The \`--rrule\` flag uses RFC 5545 recurrence rules:
 - Weekdays at 10 AM: \`FREQ=DAILY;BYDAY=MO,TU,WE,TH,FR;BYHOUR=10\`
 - Mondays at 9 AM: \`FREQ=WEEKLY;BYDAY=MO;BYHOUR=9\`
 
-Without \`--rrule\`, automations are manual-only (\`9to5 run <id>\`).
+Without \`--rrule\`, agents are manual-only (\`9to5 run <id>\`) or webhook-triggered.
 
 ### Editing via file
 
 \`\`\`bash
-9to5 export <id> > automation.json
+9to5 export <id> > agent.json
 # edit the JSON file
-9to5 import automation.json --update
+9to5 import agent.json --update
 \`\`\`
 
 \`--update\` matches by name and applies changed fields.

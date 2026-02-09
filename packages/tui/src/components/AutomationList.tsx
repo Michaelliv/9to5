@@ -159,7 +159,7 @@ export function AutomationList({
 			<box flexDirection="column">
 				<box padding={1} gap={1} flexDirection="column">
 					<text>
-						<span fg={t.textMuted}>No automations yet.</span>
+						<span fg={t.textMuted}>No agents yet.</span>
 					</text>
 					<text>
 						<span fg={t.textMuted}>{"Run "}</span>

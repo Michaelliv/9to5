@@ -1,6 +1,6 @@
 ---
 name: 9to5
-description: Schedule and automate Claude Code tasks with 9to5. Use when the user wants to create scheduled automations, manage recurring AI agent runs, view run history, check their inbox, start/stop the background daemon, trigger automations via webhooks, or use the 9to5 TUI dashboard. Keywords: schedule, cron, automation, recurring tasks, daemon, background jobs, webhook, trigger, CI, GitHub Actions.
+description: Automated agents for Claude Code. Use when the user wants to create agents, manage recurring AI agent runs, view run history, check their inbox, start/stop the background daemon, trigger agents via webhooks, or use the 9to5 TUI dashboard. Keywords: agents, schedule, cron, automation, recurring tasks, daemon, background jobs, webhook, trigger, CI, GitHub Actions.
 license: MIT
 compatibility: Requires Bun runtime (v1.1+) and Claude Code CLI installed and authenticated
 metadata:
@@ -10,21 +10,21 @@ metadata:
   repository: "https://github.com/Michaelliv/9to5"
 ---
 
-# 9to5 — Cron for Claude Code
+# 9to5 — Automated agents for Claude Code
 
-9to5 is a CLI + TUI that schedules Claude Code to run on a timer. Create automations with prompts, schedules, budget caps, and system prompts. A background daemon triggers them automatically. Results land in an inbox with cost and duration tracking.
+9to5 is a CLI + TUI for creating automated Claude Code agents. Define an agent with a prompt, schedule, budget cap, and system prompt. Trigger it on a schedule, from a webhook, or on demand. A background daemon runs them automatically. Results land in an inbox with cost and duration tracking.
 
 ## When to use this skill
 
 Use this skill when the user wants to:
-- Schedule Claude Code to run automatically on a recurring basis
-- Create, edit, list, pause, or remove automations
-- Trigger an automation manually or resume a previous run's session
-- Trigger automations from external sources (GitHub Actions, CI, scripts) via webhooks
+- Create automated Claude Code agents that run on a schedule or via webhook
+- Create, edit, list, pause, or remove agents
+- Trigger an agent manually or resume a previous run's session
+- Trigger agents from external sources (GitHub Actions, CI, scripts) via webhooks
 - View run history and execution results
 - Check inbox notifications from completed runs
 - Start or stop the background daemon
-- Export or import automation configurations
+- Export or import agent configurations
 - Launch the interactive TUI dashboard
 
 ## Installation
@@ -49,16 +49,16 @@ bun run build
 
 | Command | Description |
 |---------|-------------|
-| `9to5 add <name>` | Create a new automation (interactive prompts for config) |
-| `9to5 edit <id>` | Edit an existing automation's fields |
-| `9to5 list` | List all automations with status and next run time |
-| `9to5 run <id>` | Trigger an automation immediately |
-| `9to5 runs [id]` | View run history (all or filtered by automation) |
+| `9to5 add <name>` | Create a new agent |
+| `9to5 edit <id>` | Edit an existing agent |
+| `9to5 list` | List your agents with status and next run time |
+| `9to5 run <id>` | Run an agent now |
+| `9to5 runs [id]` | View run history (all or filtered by agent) |
 | `9to5 resume <run-id>` | Resume the Claude Code session from a previous run |
-| `9to5 inbox` | View notifications from completed runs |
-| `9to5 remove <id>` | Delete an automation and its runs/inbox items |
-| `9to5 export [id]` | Export automation(s) as JSON |
-| `9to5 import <file>` | Import automations from JSON (`--update` to merge by name) |
+| `9to5 inbox` | Check your inbox |
+| `9to5 remove <id>` | Remove an agent and its runs/inbox items |
+| `9to5 export [id]` | Export agent(s) as JSON |
+| `9to5 import <file>` | Import agents from JSON (`--update` to merge by name) |
 | `9to5 start` | Start the background daemon |
 | `9to5 stop` | Stop the background daemon |
 | `9to5 onboard` | Add 9to5 instructions to ~/.claude/CLAUDE.md |
@@ -67,7 +67,7 @@ bun run build
 | `9to5 webhook refresh` | Regenerate the webhook secret |
 | `9to5 webhook enable` | Enable webhook triggers |
 | `9to5 webhook disable` | Disable webhook triggers |
-| `9to5 webhook url <id>` | Print ready-to-use trigger commands for an automation |
+| `9to5 webhook url <id>` | Print ready-to-use trigger commands for an agent |
 
 ## Options for `add` and `edit`
 
@@ -94,7 +94,7 @@ Schedules use RFC 5545 recurrence rules. Examples:
 | `FREQ=WEEKLY;BYDAY=MO;BYHOUR=9` | Mondays at 9 AM |
 | `FREQ=MINUTELY;INTERVAL=30` | Every 30 minutes |
 
-Without `--rrule`, automations are manual-only (`9to5 run <id>`).
+Without `--rrule`, agents are manual-only (`9to5 run <id>`) or webhook-triggered.
 
 ## TUI dashboard
 
@@ -102,7 +102,7 @@ Launch with `9to5 ui`. Two-column layout: list on the left, detail on the right.
 
 | View | Hotkeys |
 |------|---------|
-| Automations | `r` run, `p` pause/resume, `dd` delete, `Enter` drill into runs |
+| Agents | `r` run, `p` pause/resume, `dd` delete, `Enter` drill into runs |
 | Runs | `c` copy output, `Enter` view detail, `Esc` back |
 
 Navigation: arrow keys or `j`/`k`, `q` to quit.
@@ -110,16 +110,16 @@ Navigation: arrow keys or `j`/`k`, `q` to quit.
 ## Editing via file
 
 ```bash
-9to5 export <id> > automation.json
+9to5 export <id> > agent.json
 # edit the JSON
-9to5 import automation.json --update
+9to5 import agent.json --update
 ```
 
 `--update` matches by name and applies changed fields.
 
 ## Webhooks
 
-Trigger automations from GitHub Actions, CI pipelines, or scripts on other machines. Two paths — local HTTP and remote via ntfy.sh — both secured with HMAC-SHA256 signing. No infrastructure to host, no accounts needed.
+Trigger agents from GitHub Actions, CI pipelines, or scripts on other machines. Two paths — local HTTP and remote via ntfy.sh — both secured with HMAC-SHA256 signing. No infrastructure to host, no accounts needed.
 
 Webhooks are enabled by default — the daemon auto-generates a secret on first start. Use `9to5 webhook disable` to turn them off.
 
@@ -127,8 +127,8 @@ Webhooks are enabled by default — the daemon auto-generates a secret on first 
 # View webhook config and URLs
 9to5 webhook info
 
-# Get ready-to-use curl commands for a specific automation
-9to5 webhook url <automation-id>
+# Get ready-to-use curl commands for a specific agent
+9to5 webhook url <agent-id>
 
 # Regenerate the secret (breaks existing integrations)
 9to5 webhook refresh
@@ -143,7 +143,7 @@ Both verify signatures and reject messages older than 5 minutes.
 ## Data storage
 
 All data lives in `~/.9to5/`:
-- `db.sqlite` — SQLite database (WAL mode) with automations, runs, and inbox tables
+- `db.sqlite` — SQLite database (WAL mode) with agents, runs, and inbox tables
 - `daemon.pid` — PID file for the background daemon
 - `webhook.secret` — HMAC secret for webhook triggers (auto-generated on first daemon start)
 - `webhook.disabled` — Marker file indicating webhooks are explicitly disabled

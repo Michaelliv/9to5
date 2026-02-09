@@ -4,7 +4,7 @@ import type { Command } from "commander";
 export function registerRestore(program: Command): void {
 	program
 		.command("restore <id>")
-		.description("Restore a soft-deleted automation")
+		.description("Restore a deleted agent")
 		.action((id: string) => {
 			const db = getDb();
 
@@ -15,7 +15,7 @@ export function registerRestore(program: Command): void {
 				.get(id) as Automation | null;
 
 			if (!automation) {
-				console.error(`Deleted automation ${id} not found.`);
+				console.error(`Deleted agent ${id} not found.`);
 				process.exit(1);
 			}
 
@@ -27,7 +27,7 @@ export function registerRestore(program: Command): void {
 
 			if (conflict) {
 				console.error(
-					`Cannot restore: an automation named "${automation.name}" already exists.`,
+					`Cannot restore: an agent named "${automation.name}" already exists.`,
 				);
 				process.exit(1);
 			}
@@ -37,6 +37,6 @@ export function registerRestore(program: Command): void {
 				[Date.now(), id],
 			);
 
-			console.log(`Restored automation ${id} (${automation.name}) as paused`);
+			console.log(`Restored agent ${id} (${automation.name}) as paused`);
 		});
 }

@@ -21,7 +21,7 @@ import { registerWebhook } from "./commands/webhook.ts";
 
 const program = new Command()
 	.name("9to5")
-	.description("Schedule Claude Code tasks")
+	.description("Automated agents for Claude Code")
 	.version(pkg.version);
 
 registerAdd(program);
