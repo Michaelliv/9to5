@@ -59,7 +59,7 @@ export function AutomationList({
 						 AND r.status IN ('running','pending')) as running_count,
 						(SELECT COUNT(*) FROM inbox i JOIN runs r ON i.run_id = r.id
 						 WHERE r.automation_id = a.id AND i.read_at IS NULL) as unread_count
-					 FROM automations a WHERE a.deleted_at IS NULL AND a.hidden_at IS NULL ORDER BY created_at DESC`,
+					 FROM automations a WHERE a.deleted_at IS NULL AND a.hidden_at IS NULL ORDER BY a.name ASC`,
 				)
 				.all() as AutomationRow[],
 	);
@@ -201,7 +201,6 @@ export function AutomationList({
 						onClick={() => setSelectedIndex(i)}
 					>
 						<text>
-							<span fg={sel ? t.accent : t.border}>{sel ? "▸ " : "  "}</span>
 							<span fg={s.color}>{s.symbol} </span>
 							{isRunning ? (
 								<ShimmerText

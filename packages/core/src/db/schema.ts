@@ -1,4 +1,5 @@
 import type { Database } from "bun:sqlite";
+import { seedDefaults } from "./seeds.ts";
 
 export function initSchema(db: Database): void {
 	db.run("PRAGMA journal_mode = WAL");
@@ -72,4 +73,6 @@ export function initSchema(db: Database): void {
       created_at INTEGER NOT NULL
     )
   `);
+
+	seedDefaults(db);
 }
