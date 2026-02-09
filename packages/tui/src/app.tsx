@@ -60,10 +60,20 @@ export function App() {
 				"SELECT MIN(next_run_at) as next FROM automations WHERE status = 'active' AND deleted_at IS NULL AND next_run_at IS NOT NULL AND next_run_at > ?",
 			)
 			.get(Date.now()) as { next: number | null };
+		const { count: hidden } = db
+			.query(
+				"SELECT COUNT(*) as count FROM automations WHERE hidden_at IS NOT NULL AND deleted_at IS NULL",
+			)
+			.get() as { count: number };
+		const { count: deleted } = db
+			.query(
+				"SELECT COUNT(*) as count FROM automations WHERE deleted_at IS NOT NULL",
+			)
+			.get() as { count: number };
 		if (!isDaemonRunning()) {
 			startDaemon();
 		}
-		return { running, failed, nextRunAt };
+		return { running, failed, nextRunAt, hidden, deleted };
 	});
 
 	const statParts: string[] = [];
@@ -71,6 +81,8 @@ export function App() {
 	if (stats.failed > 0) statParts.push(`${stats.failed} failed`);
 	const nextIn = formatCountdown(stats.nextRunAt);
 	if (nextIn) statParts.push(`next in ${nextIn}`);
+	if (stats.hidden > 0) statParts.push(`${stats.hidden} hidden`);
+	if (stats.deleted > 0) statParts.push(`${stats.deleted} deleted`);
 
 	useKeyboard((key) => {
 		if (key.name === "q") renderer.destroy();

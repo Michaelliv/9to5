@@ -59,7 +59,7 @@ export function AutomationList({
 						 AND r.status IN ('running','pending')) as running_count,
 						(SELECT COUNT(*) FROM inbox i JOIN runs r ON i.run_id = r.id
 						 WHERE r.automation_id = a.id AND i.read_at IS NULL) as unread_count
-					 FROM automations a WHERE a.deleted_at IS NULL ORDER BY created_at DESC`,
+					 FROM automations a WHERE a.deleted_at IS NULL AND a.hidden_at IS NULL ORDER BY created_at DESC`,
 				)
 				.all() as AutomationRow[],
 	);
@@ -156,17 +156,19 @@ export function AutomationList({
 
 	if (automations.length === 0) {
 		return (
-			<box flexDirection="column" padding={1} gap={1}>
-				<text>
-					<span fg={t.textMuted}>No automations yet.</span>
-				</text>
-				<text>
-					<span fg={t.textMuted}>{"Run "}</span>
-					<span fg={t.accent}>
-						<strong>9to5 add</strong>
-					</span>
-					<span fg={t.textMuted}>{" to create one."}</span>
-				</text>
+			<box flexDirection="column">
+				<box padding={1} gap={1} flexDirection="column">
+					<text>
+						<span fg={t.textMuted}>No automations yet.</span>
+					</text>
+					<text>
+						<span fg={t.textMuted}>{"Run "}</span>
+						<span fg={t.accent}>
+							<strong>9to5 add</strong>
+						</span>
+						<span fg={t.textMuted}>{" to create one."}</span>
+					</text>
+				</box>
 			</box>
 		);
 	}

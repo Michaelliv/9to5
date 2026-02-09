@@ -15,6 +15,7 @@ export interface Automation {
 	allowed_tools: string | null;
 	system_prompt: string | null;
 	deleted_at: number | null;
+	hidden_at: number | null;
 	created_at: number;
 	updated_at: number;
 }

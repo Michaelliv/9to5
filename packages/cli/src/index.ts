@@ -4,6 +4,7 @@ import pkg from "../../../package.json";
 import { registerAdd } from "./commands/add.ts";
 import { registerEdit } from "./commands/edit.ts";
 import { registerExport } from "./commands/export.ts";
+import { registerHide } from "./commands/hide.ts";
 import { registerImport } from "./commands/import.ts";
 import { registerInbox } from "./commands/inbox.ts";
 import { registerList } from "./commands/list.ts";
@@ -15,6 +16,7 @@ import { registerRun } from "./commands/run.ts";
 import { registerRuns } from "./commands/runs.ts";
 import { registerStart } from "./commands/start.ts";
 import { registerStop } from "./commands/stop.ts";
+import { registerUnhide } from "./commands/unhide.ts";
 import { registerWebhook } from "./commands/webhook.ts";
 
 const program = new Command()
@@ -25,6 +27,7 @@ const program = new Command()
 registerAdd(program);
 registerEdit(program);
 registerExport(program);
+registerHide(program);
 registerImport(program);
 registerList(program);
 registerOnboard(program);
@@ -36,6 +39,7 @@ registerRuns(program);
 registerInbox(program);
 registerStart(program);
 registerStop(program);
+registerUnhide(program);
 registerWebhook(program);
 
 program

@@ -52,6 +52,7 @@ export function initSchema(db: Database): void {
 	migrate("ALTER TABLE runs ADD COLUMN result TEXT");
 	migrate("ALTER TABLE runs ADD COLUMN pid INTEGER");
 	migrate("ALTER TABLE automations ADD COLUMN deleted_at INTEGER");
+	migrate("ALTER TABLE automations ADD COLUMN hidden_at INTEGER");
 	migrate(
 		"CREATE UNIQUE INDEX IF NOT EXISTS idx_automations_name ON automations(name)",
 	);
