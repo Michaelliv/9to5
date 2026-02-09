@@ -18,8 +18,6 @@ export function registerHide(program: Command): void {
 				process.exit(1);
 			}
 
-			console.log(
-				`Hidden agent ${id} (use 9to5 unhide ${id} to show again)`,
-			);
+			console.log(`Hidden agent ${id} (use 9to5 unhide ${id} to show again)`);
 		});
 }

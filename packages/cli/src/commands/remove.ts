@@ -34,9 +34,7 @@ export function registerRemove(program: Command): void {
 					process.exit(1);
 				}
 
-				console.log(
-					`Removed agent ${id} (use --force to delete permanently)`,
-				);
+				console.log(`Removed agent ${id} (use --force to delete permanently)`);
 			}
 		});
 }

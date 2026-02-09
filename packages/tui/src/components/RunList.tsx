@@ -193,7 +193,9 @@ export function RunList({
 						onClick={() => setSelectedIndex(i)}
 					>
 						<text>
-							<span fg={sel ? t.listAccent : t.border}>{sel ? "▸ " : "  "}</span>
+							<span fg={sel ? t.listAccent : t.border}>
+								{sel ? "▸ " : "  "}
+							</span>
 							<span fg={st.color}>{st.symbol} </span>
 							{unread ? <span fg={t.listAccent}>{"● "}</span> : null}
 							<span fg={nameColor}>{timeAgo(r.created_at)}</span>

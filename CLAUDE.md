@@ -12,9 +12,13 @@ Automated agents for Claude Code. A CLI + TUI that lets users create agents (sch
 bun install                  # Install dependencies
 bun run dev -- <subcommand>  # Run CLI in dev (e.g. bun run dev -- list)
 bun run build                # Compile single binary
+bun run build:publish        # Build for npm publish
 bun run check                # Lint + format (Biome)
 bun test                     # Run tests
 bun run packages/tui/src/index.tsx  # Run TUI directly
+bun run landing:dev          # Run landing page dev server
+bun run landing:build        # Build landing page
+bun run landing:preview      # Preview built landing page
 ```
 
 ## Architecture
@@ -33,6 +37,10 @@ Bun monorepo with three workspace packages:
 
 `remove` sets `deleted_at` on the agent row rather than deleting it. All queries filter `WHERE deleted_at IS NULL`. `restore` clears `deleted_at` and sets status to `paused`. The unique name index only enforces uniqueness for non-deleted rows. Use `remove --force` for permanent hard-delete.
 
+### Hide/unhide
+
+`hide <id>` sets `hidden_at` to declutter list and TUI views without deleting. `unhide <id>` clears it. Hidden agents still run on schedule but don't appear in default views. Use `list --hidden` to see them.
+
 ### Daemon management
 
 The daemon auto-starts when the TUI launches and self-heals if it crashes (checked every 3s). CLI `start`/`stop` commands remain available. Stale runs (orphaned processes) are detected via PID tracking — the `tick()` loop checks if a run's spawned process is still alive using `process.kill(pid, 0)` and marks dead runs as failed. The daemon polls for due agents every 30s and also listens for webhook triggers.
@@ -48,6 +56,14 @@ When the daemon starts with a secret, it spins up two listeners alongside the cr
 
 Both verify HMAC-SHA256 signatures, validate timestamps (5-min window), and call the same `runAutomation()` function the cron poller uses. Webhook config is file-based (`~/.9to5/webhook.secret`, `~/.9to5/webhook.port`, `~/.9to5/webhook.disabled`), not in the database. Core utilities live in `packages/core/src/webhook.ts`.
 
+### TUI dashboard
+
+Launch with `9to5 ui` or `bun run packages/tui/src/index.tsx` in dev. Two-panel layout: left is a list (agents or runs), right is detail view. The daemon auto-starts when the TUI launches and self-heals if it crashes (checked every 3s). Hotkeys: `r` run, `p` pause/resume, `dd` delete (with `u` to undo), `c` copy output, `⏎` toggle read, `q` quit, click panels to focus.
+
+### Session resume
+
+`resume <run-id>` spawns `claude -r <session-id>` in the agent's working directory, letting you continue an agent's Claude Code session interactively. Useful for debugging or extending what an agent started.
+
 ### Adding a CLI command
 
 1. Create `packages/cli/src/commands/<name>.ts` exporting `registerX(program: Command)`
@@ -61,6 +77,14 @@ Both verify HMAC-SHA256 signatures, validate timestamps (5-min window), and call
 - Model defaults to `"sonnet"` (Claude Code alias).
 - Releases: bump version in root `package.json`, commit, push tag `v*` — GitHub Actions builds binaries + publishes to npm.
 
+## Examples
+
+Ready-to-import agents live in `examples/` (morning briefing, security scan, test gap finder, API contract watchdog, etc.). Each is a JSON file importable with `9to5 import examples/<name>.json`. See README for full table.
+
 ## Docs site
 
-Landing page in `packages/landing/`. Examples in `examples/` each have a CLI command + importable JSON block.
+Landing page in `packages/landing/`. Run `bun run landing:dev` for local preview, `bun run landing:build` to build.
+
+## Onboarding
+
+`onboard` command appends 9to5 instructions to `~/.claude/CLAUDE.md` so agents know how to use the CLI. Idempotent (checks for marker before adding).

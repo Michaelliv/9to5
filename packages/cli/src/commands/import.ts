@@ -159,10 +159,7 @@ export function registerImport(program: Command): void {
 	program
 		.command("import <file>")
 		.description("Import agent(s) from a JSON file")
-		.option(
-			"--cwd <dir>",
-			"Override working directory for imported agents",
-		)
+		.option("--cwd <dir>", "Override working directory for imported agents")
 		.option("--update", "Update existing agents matched by name")
 		.action(async (file: string, opts) => {
 			const text = await Bun.file(file).text();

@@ -124,9 +124,7 @@ export function App() {
 	};
 
 	const leftTitle =
-		view === "automations"
-			? "Agents"
-			: `← ${selectedAutomation?.name ?? ""}`;
+		view === "automations" ? "Agents" : `← ${selectedAutomation?.name ?? ""}`;
 
 	const detailTitle =
 		view === "automations"
@@ -148,7 +146,9 @@ export function App() {
 					borderStyle="rounded"
 					borderColor={focusedPanel === "left" ? t.borderFocused : t.border}
 					title={leftTitle}
-					onMouseDown={() => setFocusedPanel((p) => p === "left" ? null : "left")}
+					onMouseDown={() =>
+						setFocusedPanel((p) => (p === "left" ? null : "left"))
+					}
 				>
 					{view === "automations" ? (
 						<AutomationList
@@ -182,7 +182,9 @@ export function App() {
 					borderColor={focusedPanel === "right" ? t.borderFocused : t.border}
 					title={detailTitle}
 					paddingLeft={1}
-					onMouseDown={() => setFocusedPanel((p) => p === "right" ? null : "right")}
+					onMouseDown={() =>
+						setFocusedPanel((p) => (p === "right" ? null : "right"))
+					}
 				>
 					{view === "automations" && selectedAutomation ? (
 						<AutomationDetail
@@ -214,7 +216,9 @@ export function App() {
 				title="9to5"
 				paddingLeft={1}
 				paddingRight={1}
-				onMouseDown={() => setFocusedPanel((p) => p === "status" ? null : "status")}
+				onMouseDown={() =>
+					setFocusedPanel((p) => (p === "status" ? null : "status"))
+				}
 			>
 				{/* Row 1: Shortcuts */}
 				<StatusBar
