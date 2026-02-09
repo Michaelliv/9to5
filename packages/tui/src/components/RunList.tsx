@@ -179,7 +179,7 @@ export function RunList({
 				const sel = i === selectedIndex;
 				const unread = r.inbox_id != null && r.inbox_read_at == null;
 				const nameColor = sel
-					? t.accent
+					? t.listAccent
 					: r.status === "failed"
 						? t.errorDim
 						: unread
@@ -193,9 +193,9 @@ export function RunList({
 						onClick={() => setSelectedIndex(i)}
 					>
 						<text>
-							<span fg={sel ? t.accent : t.border}>{sel ? "▸ " : "  "}</span>
+							<span fg={sel ? t.listAccent : t.border}>{sel ? "▸ " : "  "}</span>
 							<span fg={st.color}>{st.symbol} </span>
-							{unread ? <span fg={t.accent}>{"● "}</span> : null}
+							{unread ? <span fg={t.listAccent}>{"● "}</span> : null}
 							<span fg={nameColor}>{timeAgo(r.created_at)}</span>
 						</text>
 					</ListItem>

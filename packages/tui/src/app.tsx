@@ -40,6 +40,9 @@ export function App() {
 		useState<Automation | null>(null);
 	const [selectedAutomationIndex, setSelectedAutomationIndex] = useState(0);
 	const [selectedRun, setSelectedRun] = useState<Run | null>(null);
+	const [focusedPanel, setFocusedPanel] = useState<
+		"left" | "right" | "status" | null
+	>(null);
 	const { message: notification, notify, dismiss } = useNotification();
 
 	const { data: stats } = useDbQuery(() => {
@@ -86,6 +89,7 @@ export function App() {
 
 	useKeyboard((key) => {
 		if (key.name === "q") renderer.destroy();
+		if (key.name === "up" || key.name === "down") setFocusedPanel("left");
 	});
 
 	useEffect(() => {
@@ -142,8 +146,9 @@ export function App() {
 					overflow="hidden"
 					border
 					borderStyle="rounded"
-					borderColor={t.border}
+					borderColor={focusedPanel === "left" ? t.borderFocused : t.border}
 					title={leftTitle}
+					onMouseDown={() => setFocusedPanel((p) => p === "left" ? null : "left")}
 				>
 					{view === "automations" ? (
 						<AutomationList
@@ -174,9 +179,10 @@ export function App() {
 					flexGrow={1}
 					border
 					borderStyle="rounded"
-					borderColor={t.border}
+					borderColor={focusedPanel === "right" ? t.borderFocused : t.border}
 					title={detailTitle}
 					paddingLeft={1}
+					onMouseDown={() => setFocusedPanel((p) => p === "right" ? null : "right")}
 				>
 					{view === "automations" && selectedAutomation ? (
 						<AutomationDetail
@@ -204,10 +210,11 @@ export function App() {
 				flexDirection="column"
 				border
 				borderStyle="rounded"
-				borderColor={t.border}
+				borderColor={focusedPanel === "status" ? t.borderFocused : t.border}
 				title="9to5"
 				paddingLeft={1}
 				paddingRight={1}
+				onMouseDown={() => setFocusedPanel((p) => p === "status" ? null : "status")}
 			>
 				{/* Row 1: Shortcuts */}
 				<StatusBar

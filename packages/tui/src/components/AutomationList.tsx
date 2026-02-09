@@ -163,7 +163,7 @@ export function AutomationList({
 					</text>
 					<text>
 						<span fg={t.textMuted}>{"Run "}</span>
-						<span fg={t.accent}>
+						<span fg={t.listAccent}>
 							<strong>9to5 add</strong>
 						</span>
 						<span fg={t.textMuted}>{" to create one."}</span>
@@ -183,7 +183,7 @@ export function AutomationList({
 					: (STATUS_ICON[a.status] ?? STATUS_ICON.active);
 				const sel = i === selectedIndex;
 				const nameColor = sel
-					? t.accent
+					? t.listAccent
 					: isRunning
 						? t.text
 						: isPaused
@@ -205,7 +205,7 @@ export function AutomationList({
 							{isRunning ? (
 								<ShimmerText
 									text={displayName}
-									dim={t.accentDim}
+									dim={t.listAccentDim}
 									bright={t.running}
 									active
 									bold
@@ -216,7 +216,7 @@ export function AutomationList({
 								</span>
 							)}
 							{a.unread_count > 0 ? (
-								<span fg={t.accent}>{` (${a.unread_count})`}</span>
+								<span fg={t.listAccent}>{` (${a.unread_count})`}</span>
 							) : null}
 						</text>
 					</ListItem>

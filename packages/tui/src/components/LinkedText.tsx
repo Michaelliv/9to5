@@ -98,7 +98,7 @@ export function LinkedText({
 		if (seg.type === "link") {
 			return (
 				<a key={seg.href + seg.value} href={seg.href}>
-					<span fg={t.accent}>
+					<span fg={t.detailAccent}>
 						<u>{seg.value}</u>
 					</span>
 				</a>

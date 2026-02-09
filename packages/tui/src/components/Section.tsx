@@ -8,7 +8,7 @@ export function Section({
 	return (
 		<box flexDirection="column" marginTop={1}>
 			<text>
-				<span fg={t.accent}>
+				<span fg={t.detailAccent}>
 					<strong>{title}</strong>
 				</span>
 			</text>

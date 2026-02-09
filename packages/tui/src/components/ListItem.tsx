@@ -8,7 +8,7 @@ export function ListItem({
 	return (
 		<box
 			paddingLeft={1}
-			backgroundColor={selected ? "#2a1a10" : undefined}
+			backgroundColor={selected ? "#0a2830" : undefined}
 			onMouseDown={onClick}
 		>
 			{children}
