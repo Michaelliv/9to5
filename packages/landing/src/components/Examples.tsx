@@ -184,7 +184,9 @@ export function Examples() {
 								<h3 className="font-medium text-sm text-text-primary">
 									{ex.name}
 								</h3>
-								<CopyButton text={`9to5 import examples/${ex.file}.json`} />
+								<CopyButton
+									text={`9to5 agent import examples/${ex.file}.json`}
+								/>
 							</div>
 							<span className="inline-block text-xs font-mono px-2 py-0.5 rounded bg-accent-dim text-accent mb-2">
 								{ex.schedule}

@@ -11,13 +11,13 @@ const LINES: TerminalLine[] = [
 	{ type: "comment", text: "# Create an agent that runs daily at 9am" },
 	{
 		type: "command",
-		text: '9to5 add "morning-review" --prompt "Review yesterday\'s commits and summarize changes" --rrule "FREQ=DAILY;BYHOUR=9" --max-budget-usd 0.25',
+		text: '9to5 agent add "morning-review" --prompt "Review yesterday\'s commits and summarize changes" --rrule "FREQ=DAILY;BYHOUR=9" --max-budget-usd 0.25',
 		output: "Created agent morning-review (id: 1)",
 	},
 	{ type: "comment", text: "# Run it now to see what you get" },
 	{
 		type: "command",
-		text: "9to5 run 1",
+		text: "9to5 agent run 1",
 		output: "Run completed — $0.12, 34s",
 	},
 	{ type: "comment", text: "# Browse everything in the TUI" },

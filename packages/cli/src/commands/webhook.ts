@@ -29,7 +29,7 @@ export function registerWebhook(program: Command): void {
 			console.log(`Ntfy URL:  ${getNtfyUrl(config.secret)}`);
 			if (isDaemonRunning()) {
 				console.log(
-					"\nRestart the daemon for changes to take effect: 9to5 stop && 9to5 start",
+					"\nRestart the daemon for changes to take effect: 9to5 daemon stop && 9to5 daemon start",
 				);
 			}
 		});
@@ -42,7 +42,7 @@ export function registerWebhook(program: Command): void {
 			console.log("Webhook triggers disabled.");
 			if (isDaemonRunning()) {
 				console.log(
-					"\nRestart the daemon for changes to take effect: 9to5 stop && 9to5 start",
+					"\nRestart the daemon for changes to take effect: 9to5 daemon stop && 9to5 daemon start",
 				);
 			}
 		});
@@ -59,7 +59,7 @@ export function registerWebhook(program: Command): void {
 				} else {
 					console.log("No webhook secret found.");
 					console.log(
-						"\nThe daemon auto-generates a secret on first start. Run `9to5 start` to initialize.",
+						"\nThe daemon auto-generates a secret on first start. Run `9to5 daemon start` to initialize.",
 					);
 				}
 				return;
@@ -88,7 +88,7 @@ export function registerWebhook(program: Command): void {
 			);
 			if (isDaemonRunning()) {
 				console.log(
-					"Restart the daemon for changes to take effect: 9to5 stop && 9to5 start",
+					"Restart the daemon for changes to take effect: 9to5 daemon stop && 9to5 daemon start",
 				);
 			}
 		});
@@ -100,7 +100,7 @@ export function registerWebhook(program: Command): void {
 			const config = getWebhookConfig();
 			if (!config) {
 				console.error(
-					"No webhook secret found. Start the daemon first: 9to5 start",
+					"No webhook secret found. Start the daemon first: 9to5 daemon start",
 				);
 				process.exit(1);
 			}

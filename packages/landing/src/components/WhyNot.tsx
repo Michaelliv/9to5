@@ -15,7 +15,7 @@ const REASONS = [
 	},
 	{
 		title: "Session resume",
-		desc: "Pick up where an agent left off with 9to5 resume <run-id>",
+		desc: "Pick up where an agent left off with resume <run-id>",
 	},
 	{
 		title: "Interactive TUI",

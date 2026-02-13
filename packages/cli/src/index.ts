@@ -24,23 +24,29 @@ const program = new Command()
 	.description("Automated agents for Claude Code")
 	.version(pkg.version);
 
-registerAdd(program);
-registerEdit(program);
-registerExport(program);
-registerHide(program);
-registerImport(program);
-registerList(program);
-registerOnboard(program);
-registerRemove(program);
-registerRestore(program);
-registerResume(program);
-registerRun(program);
+const agent = program.command("agent").description("Manage agents");
+registerAdd(agent);
+registerEdit(agent);
+registerExport(agent);
+registerHide(agent);
+registerImport(agent);
+registerList(agent);
+registerRemove(agent);
+registerRestore(agent);
+registerRun(agent);
+registerUnhide(agent);
+
+const daemon = program
+	.command("daemon")
+	.description("Manage the background daemon");
+registerStart(daemon);
+registerStop(daemon);
+
+registerWebhook(program);
 registerRuns(program);
 registerInbox(program);
-registerStart(program);
-registerStop(program);
-registerUnhide(program);
-registerWebhook(program);
+registerResume(program);
+registerOnboard(program);
 
 program
 	.command("ui")

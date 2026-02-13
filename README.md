@@ -11,7 +11,7 @@ Agents that run on your schedule, from a webhook, or on demand. They stay under 
 The [`examples/`](examples/) directory has ready-to-import agents:
 
 ```bash
-9to5 import examples/morning-briefing.json
+9to5 agent import examples/morning-briefing.json
 ```
 
 | Example | Schedule | What it does |
@@ -49,14 +49,14 @@ npx 9to5 <command>
 
 ```bash
 # Create an agent that runs daily at 9am
-9to5 add "morning-review" \
+9to5 agent add "morning-review" \
   --prompt "Review yesterday's commits and summarize changes" \
   --rrule "FREQ=DAILY;BYHOUR=9" \
   --model sonnet \
   --max-budget-usd 0.25
 
 # Run it now to see what you get
-9to5 run <id>
+9to5 agent run <id>
 
 # Browse everything in the TUI
 9to5 ui
@@ -69,36 +69,60 @@ You could. 9to5 adds what you'd end up building yourself:
 - **Budget caps per agent** - it won't burn your API credits overnight
 - **Run history with cost and duration** - see what each agent cost and how long it worked
 - **Inbox** - read/unread notifications so you know what happened while you were away
-- **Session resume** - pick up where an agent left off with `9to5 resume <run-id>`
+- **Session resume** - pick up where an agent left off with `resume <run-id>`
 - **Interactive TUI** - browse, run, pause, delete, and drill into output without leaving the terminal. The daemon auto-starts and self-heals.
 - **Export/import** - share agents as JSON, bring them to another machine
 - **Model and system prompt per agent** - different personas for different jobs
 
 ## Commands
 
+### Agent management (`9to5 agent`)
+
 | Command | Description |
 |---------|-------------|
-| `9to5 add <name>` | Create a new agent |
-| `9to5 edit <id>` | Edit an existing agent |
-| `9to5 list` | List your agents |
-| `9to5 run <id>` | Run an agent now |
-| `9to5 runs [id]` | View run history |
+| `9to5 agent add <name>` | Create a new agent |
+| `9to5 agent edit <id>` | Edit an existing agent |
+| `9to5 agent list` | List your agents |
+| `9to5 agent run <id>` | Run an agent now |
+| `9to5 agent remove <id>` | Remove an agent (`--force` to permanently delete) |
+| `9to5 agent restore <id>` | Restore a deleted agent |
+| `9to5 agent hide <id>` | Hide an agent from list and TUI views |
+| `9to5 agent unhide <id>` | Unhide a hidden agent |
+| `9to5 agent list --deleted` | List deleted agents |
+| `9to5 agent export [id]` | Export agent(s) as JSON |
+| `9to5 agent import <file>` | Import agent(s) from JSON |
+
+### Runs & inbox
+
+| Command | Description |
+|---------|-------------|
+| `9to5 runs [agent-id]` | View run history |
 | `9to5 resume <run-id>` | Resume the Claude Code session from a previous run |
 | `9to5 inbox` | Check your inbox |
-| `9to5 remove <id>` | Remove an agent (`--force` to permanently delete) |
-| `9to5 restore <id>` | Restore a deleted agent |
-| `9to5 list --deleted` | List deleted agents |
-| `9to5 export [id]` | Export agent(s) as JSON |
-| `9to5 import <file>` | Import agent(s) from JSON |
-| `9to5 start` | Start the background daemon |
-| `9to5 stop` | Stop the background daemon |
-| `9to5 onboard` | Add 9to5 instructions to `~/.claude/CLAUDE.md` |
-| `9to5 ui` | Launch the interactive TUI dashboard |
+
+### Daemon (`9to5 daemon`)
+
+| Command | Description |
+|---------|-------------|
+| `9to5 daemon start` | Start the background daemon |
+| `9to5 daemon stop` | Stop the background daemon |
+
+### Webhooks (`9to5 webhook`)
+
+| Command | Description |
+|---------|-------------|
 | `9to5 webhook info` | Show webhook configuration and URLs |
 | `9to5 webhook refresh` | Regenerate the webhook secret |
 | `9to5 webhook enable` | Enable webhook triggers |
 | `9to5 webhook disable` | Disable webhook triggers |
 | `9to5 webhook url <id>` | Print trigger commands for an agent |
+
+### Other
+
+| Command | Description |
+|---------|-------------|
+| `9to5 onboard` | Add 9to5 instructions to `~/.claude/CLAUDE.md` |
+| `9to5 ui` | Launch the interactive TUI dashboard |
 
 ## TUI dashboard
 
@@ -112,7 +136,7 @@ Launch with `9to5 ui` for a two-panel terminal dashboard:
 
 Trigger agents from GitHub Actions, CI, Zapier, or any script. Two trigger paths — local HTTP and remote via [ntfy.sh](https://ntfy.sh) — both secured with HMAC-SHA256 signing. No infrastructure, no dependencies, completely free.
 
-Webhooks are enabled by default — the daemon auto-generates a secret on first start. Use `9to5 webhook disable` to turn them off.
+Webhooks are enabled by default — the daemon auto-generates a secret on first start. Use `webhook disable` to turn them off.
 
 ```bash
 # View webhook config and URLs

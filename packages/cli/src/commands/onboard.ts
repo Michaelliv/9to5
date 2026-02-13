@@ -8,11 +8,11 @@ const INSTRUCTIONS = `
 
 Use **9to5** to create and manage automated Claude Code agents. Run \`9to5 --help\` or \`9to5 <command> --help\` for full usage.
 
-Key commands: \`add\`, \`list\`, \`run\`, \`runs\`, \`inbox\`, \`edit\`, \`remove\`, \`restore\`, \`start\`, \`stop\`, \`export\`, \`import\`, \`ui\`, \`webhook\`.
+Key commands: \`agent add\`, \`agent list\`, \`agent run\`, \`runs\`, \`inbox\`, \`agent edit\`, \`agent remove\`, \`agent restore\`, \`daemon start\`, \`daemon stop\`, \`agent export\`, \`agent import\`, \`ui\`, \`webhook\`.
 
-\`remove\` soft-deletes (recoverable). Use \`remove --force\` to permanently delete. \`restore <id>\` brings back a deleted agent. \`list --deleted\` shows deleted agents.
+\`agent remove\` soft-deletes (recoverable). Use \`agent remove --force\` to permanently delete. \`agent restore <id>\` brings back a deleted agent. \`agent list --deleted\` shows deleted agents.
 
-### Options for \`add\` and \`edit\`
+### Options for \`agent add\` and \`agent edit\`
 
 | Option | Default |
 |--------|---------|
@@ -32,14 +32,14 @@ The \`--rrule\` flag uses RFC 5545 recurrence rules:
 - Weekdays at 10 AM: \`FREQ=DAILY;BYDAY=MO,TU,WE,TH,FR;BYHOUR=10\`
 - Mondays at 9 AM: \`FREQ=WEEKLY;BYDAY=MO;BYHOUR=9\`
 
-Without \`--rrule\`, agents are manual-only (\`9to5 run <id>\`) or webhook-triggered.
+Without \`--rrule\`, agents are manual-only (\`9to5 agent run <id>\`) or webhook-triggered.
 
 ### Editing via file
 
 \`\`\`bash
-9to5 export <id> > agent.json
+9to5 agent export <id> > agent.json
 # edit the JSON file
-9to5 import agent.json --update
+9to5 agent import agent.json --update
 \`\`\`
 
 \`--update\` matches by name and applies changed fields.

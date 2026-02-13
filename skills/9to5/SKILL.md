@@ -47,29 +47,47 @@ bun run build
 
 ## Commands
 
+### Agent management (`9to5 agent`)
+
 | Command | Description |
 |---------|-------------|
-| `9to5 add <name>` | Create a new agent |
-| `9to5 edit <id>` | Edit an existing agent |
-| `9to5 list` | List your agents with status and next run time |
-| `9to5 run <id>` | Run an agent now |
-| `9to5 runs [id]` | View run history (all or filtered by agent) |
+| `9to5 agent add <name>` | Create a new agent |
+| `9to5 agent edit <id>` | Edit an existing agent |
+| `9to5 agent list` | List your agents with status and next run time |
+| `9to5 agent run <id>` | Run an agent now |
+| `9to5 agent remove <id>` | Remove an agent and its runs/inbox items |
+| `9to5 agent restore <id>` | Restore a deleted agent |
+| `9to5 agent hide <id>` | Hide an agent from list and TUI views |
+| `9to5 agent unhide <id>` | Unhide a hidden agent |
+| `9to5 agent export [id]` | Export agent(s) as JSON |
+| `9to5 agent import <file>` | Import agents from JSON (`--update` to merge by name) |
+
+### Runs & inbox
+
+| Command | Description |
+|---------|-------------|
+| `9to5 runs [agent-id]` | View run history (all or filtered by agent) |
 | `9to5 resume <run-id>` | Resume the Claude Code session from a previous run |
 | `9to5 inbox` | Check your inbox |
-| `9to5 remove <id>` | Remove an agent and its runs/inbox items |
-| `9to5 export [id]` | Export agent(s) as JSON |
-| `9to5 import <file>` | Import agents from JSON (`--update` to merge by name) |
-| `9to5 start` | Start the background daemon |
-| `9to5 stop` | Stop the background daemon |
-| `9to5 onboard` | Add 9to5 instructions to ~/.claude/CLAUDE.md |
-| `9to5 ui` | Launch the interactive TUI dashboard |
+
+### Daemon (`9to5 daemon`)
+
+| Command | Description |
+|---------|-------------|
+| `9to5 daemon start` | Start the background daemon |
+| `9to5 daemon stop` | Stop the background daemon |
+
+### Webhooks (`9to5 webhook`)
+
+| Command | Description |
+|---------|-------------|
 | `9to5 webhook info` | Show webhook configuration and URLs |
 | `9to5 webhook refresh` | Regenerate the webhook secret |
 | `9to5 webhook enable` | Enable webhook triggers |
 | `9to5 webhook disable` | Disable webhook triggers |
 | `9to5 webhook url <id>` | Print ready-to-use trigger commands for an agent |
 
-## Options for `add` and `edit`
+## Options for `agent add` and `agent edit`
 
 | Option | Description | Default |
 |--------|-------------|---------|
@@ -94,7 +112,7 @@ Schedules use RFC 5545 recurrence rules. Examples:
 | `FREQ=WEEKLY;BYDAY=MO;BYHOUR=9` | Mondays at 9 AM |
 | `FREQ=MINUTELY;INTERVAL=30` | Every 30 minutes |
 
-Without `--rrule`, agents are manual-only (`9to5 run <id>`) or webhook-triggered.
+Without `--rrule`, agents are manual-only (`9to5 agent run <id>`) or webhook-triggered.
 
 ## TUI dashboard
 
@@ -110,9 +128,9 @@ Navigation: arrow keys or `j`/`k`, `q` to quit.
 ## Editing via file
 
 ```bash
-9to5 export <id> > agent.json
+9to5 agent export <id> > agent.json
 # edit the JSON
-9to5 import agent.json --update
+9to5 agent import agent.json --update
 ```
 
 `--update` matches by name and applies changed fields.
@@ -121,7 +139,7 @@ Navigation: arrow keys or `j`/`k`, `q` to quit.
 
 Trigger agents from GitHub Actions, CI pipelines, or scripts on other machines. Two paths — local HTTP and remote via ntfy.sh — both secured with HMAC-SHA256 signing. No infrastructure to host, no accounts needed.
 
-Webhooks are enabled by default — the daemon auto-generates a secret on first start. Use `9to5 webhook disable` to turn them off.
+Webhooks are enabled by default — the daemon auto-generates a secret on first start. Use `webhook disable` to turn them off.
 
 ```bash
 # View webhook config and URLs
@@ -151,13 +169,13 @@ All data lives in `~/.9to5/`:
 ## Example
 
 ```bash
-9to5 add "morning-review" \
+9to5 agent add "morning-review" \
   --prompt "Review yesterday's commits and summarize changes" \
   --rrule "FREQ=DAILY;BYHOUR=9" \
   --model sonnet \
   --max-budget-usd 0.25
 
-9to5 start  # daemon triggers it daily at 9 AM
+9to5 daemon start  # daemon triggers it daily at 9 AM
 ```
 
-More examples in the [`examples/`](https://github.com/Michaelliv/9to5/tree/main/examples) directory — import any with `9to5 import examples/<name>.json`.
+More examples in the [`examples/`](https://github.com/Michaelliv/9to5/tree/main/examples) directory — import any with `9to5 agent import examples/<name>.json`.

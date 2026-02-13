@@ -148,7 +148,7 @@ export function AutomationList({
 			lastDeletedRef.current = { id, name };
 			refresh();
 			onNotify(
-				`Deleted "${name}" · u to undo · 9to5 restore ${id}`,
+				`Deleted "${name}" · u to undo · 9to5 agent restore ${id}`,
 				UNDO_DURATION_MS,
 			);
 		}, [focused, selected, db, refresh, onNotify]),
@@ -164,7 +164,7 @@ export function AutomationList({
 					<text>
 						<span fg={t.textMuted}>{"Run "}</span>
 						<span fg={t.listAccent}>
-							<strong>9to5 add</strong>
+							<strong>9to5 agent add</strong>
 						</span>
 						<span fg={t.textMuted}>{" to create one."}</span>
 					</text>
